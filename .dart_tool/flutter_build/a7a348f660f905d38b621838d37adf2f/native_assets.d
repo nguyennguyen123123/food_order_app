@@ -1,0 +1,1 @@
+ /Users/surt/Documents/hitek/food_order_app/.dart_tool/flutter_build/a7a348f660f905d38b621838d37adf2f/native_assets.yaml: 
