@@ -1,26 +1,27 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:food_delivery_app/constant/app_config.dart';
+import 'package:food_delivery_app/resourese/service/base_service.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
+import 'package:get/get.dart';
 
 class AppService {
   /// init your service here for global using
   static Future<void> initAppService() async {
-    await dotenv.load(fileName: 'assets/.env.dev');
+    await dotenv.load(fileName: 'assets/.env');
     final appConfig = AppConfig(
       supabaseApiKey: dotenv.get('SUPABASE_API_KEY'),
       supabaseUrl: dotenv.get('SUPABASE_URL'),
     );
-    // locator.registerSingleton<AppConfig>(appConfig);
+    Get.put<AppConfig>(appConfig);
 
-    // final storage = StorageService();
-    // await storage.initService();
-    // locator.registerSingleton<StorageService>(storage);
+    final storage = StorageService();
+    await storage.initService();
+    Get.put<StorageService>(storage);
 
-    // final server =
-    //     ServerService(storageService: locator.get(), appConfig: locator.get());
-    // await server.init();
+    final server = BaseService(storageService: Get.find(), appConfig: Get.find());
+    await server.init();
 
-    // locator.registerSingleton<ServerService>(server);
+    Get.put<BaseService>(server);
 
     // locator.registerSingleton<IAuthenRepository>(
     //     AuthenRepository(serverService: locator.get()));

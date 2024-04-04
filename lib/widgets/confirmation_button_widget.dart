@@ -33,7 +33,7 @@ class ConfirmationButtonWidget extends StatelessWidget {
             ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator()))
             : Text(
                 text,
-                style: textStyle ?? StyleThemeData.styleSize14Weight700(color: colorText ?? appTheme.whiteText),
+                style: textStyle ?? StyleThemeData.bold14(color: colorText ?? appTheme.whiteText),
                 textAlign: TextAlign.center,
               ),
       ),

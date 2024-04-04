@@ -1,27 +1,24 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/resourese/service/app_service.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/theme/app_theme_util.dart';
 import 'package:food_delivery_app/theme/base_theme_data.dart';
 import 'package:food_delivery_app/utils/universal_variables.dart';
+import 'package:food_delivery_app/widgets/reponsive/size_config.dart';
 import 'package:get/get.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
-
-const supabaseUrl = 'https://qsqxamitksgogcwasibq.supabase.co';
-const supabaseKey = String.fromEnvironment(
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzcXhhbWl0a3Nnb2djd2FzaWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQ4OTI0ODYsImV4cCI6MjAyMDQ2ODQ4Nn0.Qo0iZwQkAGG4DPL1O1BoYxn-ULTxlE1Ii8fkdgclJbg',
-);
 
 AppThemeUtil themeUtil = AppThemeUtil();
 BaseThemeData get appTheme => themeUtil.getAppTheme();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await AppService.initAppService();
 
-  await supabase.Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+  runApp(LayoutBuilder(builder: (context, constraints) {
+    SizeConfig.instance.init(constraints: constraints, screenHeight: 812, screenWidth: 375);
 
-  runApp(MyApp());
+    return MyApp();
+  }));
 }
 
 class MyApp extends StatefulWidget {

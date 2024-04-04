@@ -1,124 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
+import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class StyleThemeData {
-  static TextStyle styleSize10Weight400({Color? color}) => TextStyle(
-        fontSize: 10,
+  static TextStyle regular10({Color? color}) => TextStyle(
+        fontSize: 10.fontSize,
         fontWeight: FontWeight.w400,
         color: color ?? appTheme.blackColor,
-        height: 1.5,
+        height: 1.5.h,
       );
 
-  static TextStyle styleSize10Weight600({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
-        fontSize: 10,
-        fontWeight: FontWeight.w600,
+  static TextStyle bold10({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
+        fontSize: 10.fontSize,
+        fontWeight: FontWeight.w700,
         color: color ?? appTheme.blackColor,
-        height: height,
+        height: height.h,
       );
 
-  static TextStyle styleSize11Weight600({BuildContext? context, Color? color}) => TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
+  static TextStyle bold11({BuildContext? context, Color? color}) => TextStyle(
+        fontSize: 11.fontSize,
+        fontWeight: FontWeight.w700,
         color: color ?? appTheme.blackColor,
-        height: 1.5,
+        height: 1.5.h,
         letterSpacing: -0.2,
       );
 
-  static TextStyle styleSize12Weight400({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
-        fontSize: 12,
+  static TextStyle regular12({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
+        fontSize: 12.fontSize,
         fontWeight: FontWeight.w400,
         color: color ?? appTheme.blackColor,
-        height: height,
+        height: height.h,
       );
 
-  static TextStyle styleSize12Weight500({BuildContext? context, Color? color}) => TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        color: color ?? appTheme.blackColor,
-        height: 1.5,
-      );
-
-  static TextStyle styleSize12Weight600({BuildContext? context, Color? color}) => TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: color ?? appTheme.blackColor,
-        height: 1.5,
-      );
-
-  static TextStyle styleSize12Weight700({Color? color}) => TextStyle(
-        fontSize: 12,
+  static TextStyle bold12({Color? color}) => TextStyle(
+        fontSize: 12.fontSize,
         fontWeight: FontWeight.w700,
         color: color ?? appTheme.blackColor,
-        height: 1.5,
+        height: 1.5.h,
       );
 
-  static TextStyle styleSize14Weight400({Color? color}) => TextStyle(
-        fontSize: 14,
+  static TextStyle regular13({Color? color}) => TextStyle(
+        fontSize: 13.fontSize,
         fontWeight: FontWeight.w400,
         color: color ?? appTheme.blackColor,
-        height: 1.5,
+        height: 1.5.h,
       );
 
-  static TextStyle styleSize14Weight500({Color? color}) => TextStyle(
-        fontSize: 14,
+  static TextStyle bold13({Color? color}) => TextStyle(
+        fontSize: 13.fontSize,
+        fontWeight: FontWeight.w700,
+        color: color ?? appTheme.blackColor,
+        height: 1.5.h,
+      );
+
+  static TextStyle regular14({Color? color}) => TextStyle(
+        fontSize: 14.fontSize,
+        fontWeight: FontWeight.w400,
+        color: color ?? appTheme.blackColor,
+        height: 1.5.h,
+      );
+
+  static TextStyle bold14({Color? color}) => TextStyle(
+        fontSize: 14.fontSize,
         fontWeight: FontWeight.w500,
         color: color ?? appTheme.blackColor,
-        height: 1.5,
+        height: 1.5.h,
       );
 
-  static TextStyle styleSize14Weight600({Color? color}) => TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: color ?? appTheme.blackColor,
-        height: 1.5,
-      );
-  static TextStyle styleSize14Weight700({Color? color}) => TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w700,
-        color: color ?? appTheme.blackColor,
-        height: 1.5,
-      );
-
-  static TextStyle styleSize16Weight400({BuildContext? context, Color? color}) => TextStyle(
-        fontSize: 16,
+  static TextStyle regular16({BuildContext? context, Color? color}) => TextStyle(
+        fontSize: 16.fontSize,
         fontWeight: FontWeight.w400,
         color: color ?? appTheme.blackColor,
-        height: 1.5,
+        height: 1.5.h,
         letterSpacing: 0.2,
       );
 
-  static TextStyle styleSize16Weight600({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
-        fontSize: 16,
+  static TextStyle bold16({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
+        fontSize: 16.fontSize,
+        fontWeight: FontWeight.w700,
+        color: color ?? appTheme.blackColor,
+        height: height.h,
+      );
+
+  static TextStyle bold18({Color? color}) => TextStyle(
+        fontSize: 16.fontSize,
         fontWeight: FontWeight.w600,
         color: color ?? appTheme.blackColor,
-        height: height,
+        height: 1.5.h,
       );
 
-  static TextStyle styleSize16Weight700({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
-        fontSize: 16,
+  static TextStyle bold24({Color? color}) => TextStyle(
+        fontSize: 24.fontSize,
         fontWeight: FontWeight.w700,
         color: color ?? appTheme.blackColor,
-        height: height,
+        height: 1.5.h,
       );
 
-  static TextStyle styleSize18Weight600({Color? color}) => TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: color ?? appTheme.blackColor,
-        height: 1.5,
-      );
-
-  static TextStyle styleSize24Weight700({Color? color}) => TextStyle(
-        fontSize: 24,
+  static TextStyle bold28({Color? color}) => TextStyle(
+        fontSize: 28.fontSize,
         fontWeight: FontWeight.w700,
         color: color ?? appTheme.blackColor,
-        height: 1.5,
+        height: 1.5.h,
       );
 
-  static TextStyle styleSize28Weight700({Color? color}) => TextStyle(
-        fontSize: 28,
+  static TextStyle bold30({Color? color}) => TextStyle(
+        fontSize: 30.fontSize,
         fontWeight: FontWeight.w700,
         color: color ?? appTheme.blackColor,
-        height: 1.5,
+        height: 1.5.h,
       );
 }

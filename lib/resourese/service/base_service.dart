@@ -2,14 +2,14 @@ import 'package:food_delivery_app/constant/app_config.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ServerService {
+class BaseService {
   final StorageService storageService;
   final AppConfig appConfig;
   late final Supabase supabase;
 
   SupabaseClient get supabaseClient => supabase.client;
 
-  ServerService({required this.storageService, required this.appConfig});
+  BaseService({required this.storageService, required this.appConfig});
 
   init() async {
     supabase = await Supabase.initialize(

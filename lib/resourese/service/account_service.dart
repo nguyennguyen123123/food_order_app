@@ -5,14 +5,14 @@ import 'package:food_delivery_app/resourese/service/storage_service.dart';
 
 class AccountService {
   final StorageService storageService;
-  final ServerService serverService;
+  final BaseService baseService;
 
   AccountService({
     required this.storageService,
-    required this.serverService,
+    required this.baseService,
   });
 
   bool isLogin() {
-    return serverService.supabaseClient.auth.currentSession != null;
+    return baseService.supabaseClient.auth.currentSession != null;
   }
 }
