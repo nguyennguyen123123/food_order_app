@@ -16,9 +16,7 @@ abstract class BUCKET_ID {
 }
 
 abstract class TABLE_NAME {
-  static const EMPLOYEE = 'employee';
-  static const WORKING_TIME = 'working_time';
-  static const HEART_MEASURE = 'heart_measure';
+  static const ACCOUNT = 'account';
 }
 
 abstract class ERROR_CODE {
