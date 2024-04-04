@@ -1,45 +1,39 @@
-/*
- * Copyright (c) 2021 Akshay Jadhav <jadhavakshay0701@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 3 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/resourese/auth_methods.dart';
-import 'package:food_delivery_app/screens/homepage.dart';
-import 'package:food_delivery_app/screens/loginpages/login.dart';
+import 'package:food_delivery_app/routes/pages.dart';
+import 'package:food_delivery_app/theme/app_theme_util.dart';
+import 'package:food_delivery_app/theme/base_theme_data.dart';
 import 'package:food_delivery_app/utils/universal_variables.dart';
+import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+
+const supabaseUrl = 'https://qsqxamitksgogcwasibq.supabase.co';
+const supabaseKey = String.fromEnvironment(
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzcXhhbWl0a3Nnb2djd2FzaWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQ4OTI0ODYsImV4cCI6MjAyMDQ2ODQ4Nn0.Qo0iZwQkAGG4DPL1O1BoYxn-ULTxlE1Ii8fkdgclJbg',
+);
+
+AppThemeUtil themeUtil = AppThemeUtil();
+BaseThemeData get appTheme => themeUtil.getAppTheme();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  await supabase.Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  // This widget is the root of your application.
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  final AuthMethods _authMethods = AuthMethods();
+  // final AuthMethods _authMethods = AuthMethods();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Food App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -60,16 +54,18 @@ class _MyAppState extends State<MyApp> {
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: StreamBuilder<User?>(
-        stream: _authMethods.onAuthStateChanged,
-        builder: (context, AsyncSnapshot<User?> snapshot) {
-          if (snapshot.hasData && snapshot.data != null) {
-            return HomePage();
-          } else {
-            return LoginPage();
-          }
-        },
-      ),
+      initialRoute: Routes.ONBOARD,
+      getPages: AppPages.pages,
+      // home: StreamBuilder<User?>(
+      //   stream: _authMethods.onAuthStateChanged,
+      //   builder: (context, AsyncSnapshot<User?> snapshot) {
+      //     if (snapshot.hasData && snapshot.data != null) {
+      //       return HomePage();
+      //     } else {
+      //       return LoginPage();
+      //     }
+      //   },
+      // ),
     );
   }
 }
