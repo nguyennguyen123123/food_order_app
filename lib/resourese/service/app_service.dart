@@ -1,5 +1,8 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:food_delivery_app/constant/app_config.dart';
+import 'package:food_delivery_app/resourese/auth_repository/auth_repository.dart';
+import 'package:food_delivery_app/resourese/auth_repository/iauth_repository.dart';
+import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
 import 'package:get/get.dart';
@@ -22,6 +25,9 @@ class AppService {
     await server.init();
 
     Get.put<BaseService>(server);
+
+    Get.put(AccountService(storageService: Get.find(), baseService: Get.find()));
+    Get.put<IAuthRepository>(AuthRepository(baseService: Get.find()));
 
     // locator.registerSingleton<IAuthenRepository>(
     //     AuthenRepository(serverService: locator.get()));

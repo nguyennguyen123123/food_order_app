@@ -13,6 +13,6 @@ class AccountService {
   });
 
   bool isLogin() {
-    return baseService.supabaseClient.auth.currentSession != null;
+    return baseService.client.auth.currentSession != null;
   }
 }

@@ -7,7 +7,7 @@ class BaseService {
   final AppConfig appConfig;
   late final Supabase supabase;
 
-  SupabaseClient get supabaseClient => supabase.client;
+  SupabaseClient get client => supabase.client;
 
   BaseService({required this.storageService, required this.appConfig});
 

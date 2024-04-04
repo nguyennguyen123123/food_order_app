@@ -1,3 +1,4 @@
+import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
 import 'package:food_delivery_app/screen/onboarding/onboarding_scrreen.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,8 @@ abstract class AppPages {
     ),
     GetPage(
       name: Routes.SIGNIN,
-      page: () => const SignInScreen(),
+      page: () => SignInScreen(),
+      binding: SignInBinding(),
     ),
   ];
 }

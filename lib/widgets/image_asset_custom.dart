@@ -1,40 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
-class SvgImageCustom extends StatelessWidget {
+class ImageAssetCustom extends StatelessWidget {
   final String imagePath;
-  final double size;
+  final double? size;
   final double? width;
   final double? height;
   final Color? color;
   final bool? sizeBaseOnWidth;
-  const SvgImageCustom({
+  final BoxFit? boxFit;
+  const ImageAssetCustom({
     Key? key,
     required this.imagePath,
-    this.size = 24,
+    this.size,
     this.width,
     this.height,
     this.color,
+    this.boxFit,
     this.sizeBaseOnWidth = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
+    if (imagePath.contains('svg')) {
+      return SvgPicture.asset(
+        imagePath,
+        color: color,
+        width: width ?? (sizeBaseOnWidth! ? size?.w : size?.h),
+        height: height != null
+            ? height?.h
+            : sizeBaseOnWidth!
+                ? width?.h
+                : height?.h,
+        fit: boxFit ?? BoxFit.contain,
+      );
+    }
+    return Image.asset(
       imagePath,
-      semanticsLabel: 'Acme Logo',
       color: color,
-      width: width != null
-          ? styles.width(width)
-          : sizeBaseOnWidth!
-              ? styles.width(size)
-              : styles.height(size),
+      width: width ?? (sizeBaseOnWidth! ? size?.w : size?.h),
       height: height != null
-          ? styles.height(height)
+          ? height?.h
           : sizeBaseOnWidth!
-              ? styles.width(size)
-              : styles.height(size),
-      fit: BoxFit.contain,
+              ? width?.h
+              : height?.h,
+      fit: boxFit ?? BoxFit.contain,
     );
 
     // return Image(

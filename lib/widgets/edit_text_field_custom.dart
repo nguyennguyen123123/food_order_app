@@ -25,6 +25,7 @@ class EditTextFieldCustom extends StatelessWidget {
       this.isSecure = false,
       this.suffix,
       this.maxLength,
+      this.isObscure = false,
       this.hintText = ''})
       : super(key: key);
 
@@ -47,6 +48,7 @@ class EditTextFieldCustom extends StatelessWidget {
   final String errorText;
   final bool isShowErrorText;
   final TextInputType? textInputType;
+  final bool isObscure;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -77,14 +79,14 @@ class EditTextFieldCustom extends StatelessWidget {
         ] else ...[
           TextFieldCustom(
             controller: controller,
-            // border: AppTheme.border.borderEditTextField,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             hintStyle: StyleThemeData.regular16(),
             contentPadding: padding(vertical: 16, horizontal: 12),
             hintText: hintText,
             onTap: onTap,
             canEdit: canEdit,
             textInputType: textInputType,
-            obscureText: isSecure,
+            obscureText: isObscure,
             formatter: [if (maxLength != null) LengthLimitingTextInputFormatter(maxLength)],
             suffix: suffix ??
                 (isDropDown && items.isEmpty
