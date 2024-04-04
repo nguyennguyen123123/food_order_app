@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.food_delivery_app-mergeDebugResources-20:/values-v16/values-v16.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\levan\\.gradle\\caches\\transforms-3\\10af854261133a844cc6e400c61a0db2\\transformed\\core-1.10.1\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                }
+            ]
+        }
+    ]
+}

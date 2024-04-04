@@ -119,15 +119,15 @@ EdgeInsets padding({
         bottom: all ?? bottom ?? vertical,
       ) ??
       EdgeInsets.all(0);
-  if (all != null) {
-    return SizeConfig.instance.paddingAll(all: all) ?? const EdgeInsets.all(0);
-  } else if (horizontal != null || vertical != null) {
-    return SizeConfig.instance.paddingSymmetric(horizontal: horizontal, vertical: vertical) ??
-        const EdgeInsets.symmetric();
-  } else {
-    return SizeConfig.instance.paddingOnly(left: left, right: right, top: top, bottom: bottom) ??
-        const EdgeInsets.only();
-  }
+  // if (all != null) {
+  //   return SizeConfig.instance.paddingAll(all: all) ?? const EdgeInsets.all(0);
+  // } else if (horizontal != null || vertical != null) {
+  //   return SizeConfig.instance.paddingSymmetric(horizontal: horizontal, vertical: vertical) ??
+  //       const EdgeInsets.symmetric();
+  // } else {
+  //   return SizeConfig.instance.paddingOnly(left: left, right: right, top: top, bottom: bottom) ??
+  //       const EdgeInsets.only();
+  // }
 }
 
 const _uuid = Uuid();
