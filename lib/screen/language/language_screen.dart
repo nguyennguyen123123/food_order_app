@@ -58,7 +58,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
       ),
       body: Padding(
         padding: padding(all: 16),
-        child: ValueListenableBuilder(
+        child: ValueListenableBuilder<Language>(
           valueListenable: languageNotifier,
           builder: (context, value, child) =>
               child ??
