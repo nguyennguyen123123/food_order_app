@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">807908477937</string>
+    <string name="google_api_key" translatable="false">AIzaSyAPa-nJhqzpQVH2zHlGnojc0NxOzhlO24M</string>
+    <string name="google_app_id" translatable="false">1:807908477937:android:7f086581c207f0c0add250</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAPa-nJhqzpQVH2zHlGnojc0NxOzhlO24M</string>
+    <string name="google_storage_bucket" translatable="false">food-order-app-c8e12.appspot.com</string>
+    <string name="project_id" translatable="false">food-order-app-c8e12</string>
+</resources>
