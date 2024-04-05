@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/main.dart';
-import 'package:food_delivery_app/resourese/controller/main_controller.dart';
+import 'package:food_delivery_app/screen/home/main_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/icons_assets.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -9,8 +9,6 @@ import 'package:get/get.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class HomeMain extends StatelessWidget {
-  HomeMain({Key? key}) : super(key: key);
-
   final MainController _mainController = Get.put(MainController());
 
   @override
@@ -20,7 +18,7 @@ class HomeMain extends StatelessWidget {
         elevation: 0,
         notchMargin: 10,
         child: Container(
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 8),
+          padding: padding(left: 16, right: 16, top: 12, bottom: 8),
           child: Obx(
             () => Row(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,

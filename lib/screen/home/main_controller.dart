@@ -10,7 +10,7 @@ class MainController extends GetxController {
 
   List<Widget> pages = [
     AdminPage(),
-    const ProfileScreen(),
+    ProfileScreen(),
   ];
 
   void switchTheme(ThemeMode mode) {
