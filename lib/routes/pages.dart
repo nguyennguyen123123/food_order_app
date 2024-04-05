@@ -51,7 +51,7 @@ abstract class AppPages {
       page: () => AddFoodView(),
       binding: FoodBinding(),
     ),
-     GetPage(
+    GetPage(
       name: Routes.ADDTYPEFOOD,
       page: () => AddTypeFoodView(),
       binding: FoodBinding(),

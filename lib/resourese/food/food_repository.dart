@@ -1,13 +1,36 @@
+import 'dart:io';
+
 import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
+import 'package:path/path.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FoodRepository extends IFoodRepository {
   final BaseService baseService;
 
   FoodRepository({required this.baseService});
+
+  @override
+  Future<String> updateImages(String path, File file, {String? fileName}) async {
+    try {
+      final name = fileName ?? basename(path);
+
+      await baseService.client.storage.from(BUCKET_ID.IMAGE).upload(
+            name,
+            file,
+            fileOptions: const FileOptions(upsert: true),
+          );
+
+      return baseService.client.storage.from(BUCKET_ID.IMAGE).getPublicUrl(name);
+    } catch (error) {
+      print(error);
+      handleError(error);
+      rethrow;
+    }
+  }
 
   @override
   Future<FoodModel?> addFood(FoodModel foodModel) async {
@@ -63,6 +86,34 @@ class FoodRepository extends IFoodRepository {
       return response.toList();
     } catch (e) {
       handleError(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<FoodModel?> editFood(String foodId, FoodModel foodModel) async {
+    try {
+      final response = await baseService.client.from(TABLE_NAME.FOOD).update(foodModel.toJson()).eq('foodId', foodId);
+
+      if (response.error != null) {
+        throw response.error!;
+      }
+
+      return FoodModel.fromMap(response);
+    } catch (error) {
+      print(error);
+      handleError(error);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteFood(String foodId) async {
+    try {
+      await baseService.client.from(TABLE_NAME.FOOD).delete().eq('foodId', foodId);
+    } catch (error) {
+      print(error);
+      handleError(error);
       rethrow;
     }
   }

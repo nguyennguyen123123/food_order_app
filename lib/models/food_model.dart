@@ -15,7 +15,7 @@
  */
 
 class FoodModel {
-  final String foodId;
+  final String? foodId;
   final String? name;
   final String? description;
   final String? price;
@@ -24,7 +24,7 @@ class FoodModel {
   final String? createdAt;
 
   FoodModel({
-    required this.foodId,
+    this.foodId,
     this.name,
     this.description,
     this.price,
