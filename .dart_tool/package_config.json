@@ -92,6 +92,24 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "cached_network_image",
+      "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image-3.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "cached_network_image_platform_interface",
+      "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image_platform_interface-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "cached_network_image_web",
+      "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image_web-1.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "carousel_slider",
       "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/carousel_slider-4.2.1",
       "packageUri": "lib/",
@@ -240,6 +258,12 @@
       "rootUri": "file:///D:/flutter/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "flutter_cache_manager",
+      "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_cache_manager-3.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
     },
     {
       "name": "flutter_dotenv",
@@ -436,6 +460,12 @@
     {
       "name": "nested",
       "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/nested-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "octo_image",
+      "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/octo_image-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -866,7 +896,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-04-05T01:52:37.622587Z",
+  "generated": "2024-04-05T08:02:19.170226Z",
   "generator": "pub",
   "generatorVersion": "3.0.6"
 }
