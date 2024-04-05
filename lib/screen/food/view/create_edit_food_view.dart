@@ -11,7 +11,7 @@ import 'package:food_delivery_app/widgets/edit_text_field_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
-class AddFoodView extends GetWidget<FoodController> {
+class CreateEditFoodView extends GetWidget<FoodController> {
   @override
   Widget build(BuildContext context) {
     FoodModel food = Get.arguments as FoodModel? ?? FoodModel();

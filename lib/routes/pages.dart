@@ -4,8 +4,8 @@ import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
 import 'package:food_delivery_app/screen/food/food_binding.dart';
 import 'package:food_delivery_app/screen/food/food_screen.dart';
-import 'package:food_delivery_app/screen/food/view/add_food_view.dart';
 import 'package:food_delivery_app/screen/food/view/add_type_food_view.dart';
+import 'package:food_delivery_app/screen/food/view/create_edit_food_view.dart';
 import 'package:food_delivery_app/screen/onboarding/onboarding_scrreen.dart';
 import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
@@ -48,7 +48,7 @@ abstract class AppPages {
     ),
     GetPage(
       name: Routes.ADDFOOD,
-      page: () => AddFoodView(),
+      page: () => CreateEditFoodView(),
       binding: FoodBinding(),
     ),
     GetPage(
