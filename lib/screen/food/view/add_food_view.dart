@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_type.dart';
@@ -34,7 +36,40 @@ class AddFoodView extends GetWidget<FoodController> {
             padding: padding(all: 16),
             child: Column(
               children: [
-                
+                ValueListenableBuilder<File?>(
+                  valueListenable: controller.pickedImageNotifier,
+                  builder: (context, pickedImage, _) {
+                    return pickedImage != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: SizedBox(
+                              width: 150.w,
+                              height: 150.h,
+                              child: Image.file(
+                                pickedImage,
+                                width: 24.w,
+                                height: 24.h,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: 150.w,
+                            height: 150.h,
+                            alignment: Alignment.center,
+                            padding: padding(vertical: 32, horizontal: 24),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: appTheme.backgroundContainer,
+                            ),
+                            child: Text('Chọn ảnh', style: StyleThemeData.regular14()),
+                          );
+                  },
+                ),
+                ElevatedButton(
+                  onPressed: controller.imageFromGallery,
+                  child: Text('Chọn ảnh', style: StyleThemeData.regular14()),
+                ),
                 SizedBox(height: 8.h),
                 EditTextFieldCustom(
                   controller: controller.nameController,

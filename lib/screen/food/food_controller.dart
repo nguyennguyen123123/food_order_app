@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
@@ -5,6 +7,7 @@ import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FoodController extends GetxController {
   final IFoodRepository foodRepository;
@@ -23,6 +26,16 @@ class FoodController extends GetxController {
   var foodTypeList = <FoodType>[].obs;
 
   var selectedFoodType = Rx<FoodType?>(null);
+
+  final ValueNotifier<File?> pickedImageNotifier = ValueNotifier<File?>(null);
+  final ImagePicker imagePicker = ImagePicker();
+
+  Future<void> imageFromGallery() async {
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      pickedImageNotifier.value = File(pickedFile.path);
+    }
+  }
 
   Future<void> getListFood() async {
     final data = await foodRepository.getFood();
@@ -52,16 +65,38 @@ class FoodController extends GetxController {
   final desTypeController = TextEditingController();
 
   void onSubmit() async {
-    if (nameController.text.isEmpty || desController.text.isEmpty || priceController.text.isEmpty) return;
+    // if (pickedImageNotifier.value != null) {
+    //   final url = await foodRepository.updateImages(
+    //     pickedImageNotifier.value!.path,
+    //     pickedImageNotifier.value!,
+    //     fileName: foodId,
+    //   );
+
+    //   print(url);
+    // }
+
+    if (nameController.text.isEmpty ||
+        desController.text.isEmpty ||
+        priceController.text.isEmpty ||
+        selectedFoodType.value?.typeId == null ||
+        pickedImageNotifier.value == null) return;
 
     try {
+      final foodId = getUuid();
+
+      final url = await foodRepository.updateImages(
+        pickedImageNotifier.value!.path,
+        pickedImageNotifier.value!,
+        fileName: foodId,
+      );
+
       FoodModel foodModel = FoodModel(
-        foodId: getUuid(),
+        foodId: foodId,
         name: nameController.text,
         description: desController.text,
         price: priceController.text,
         typeId: selectedFoodType.value?.typeId,
-        image: '',
+        image: url,
         createdAt: DateTime.now().toString(),
       );
 
@@ -94,11 +129,12 @@ class FoodController extends GetxController {
 
   @override
   void onClose() {
+    super.onClose();
     nameController.dispose();
     desController.dispose();
     priceController.dispose();
     nameTypeController.dispose();
     desTypeController.dispose();
-    super.onClose();
+    pickedImageNotifier.value?.delete();
   }
 }
