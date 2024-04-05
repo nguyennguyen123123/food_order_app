@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_app/l10n/l10n.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/screen/profile/profile_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
@@ -69,13 +70,13 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Tài khoản của tôi',
+                    context.l10n.my_account_text,
                     style: StyleThemeData.bold14(),
                   ),
                   SizedBox(height: 8.h),
                   newMethod(
                     onTap: () {},
-                    text: 'Tài khoản',
+                    text: context.l10n.account_text,
                     icons: IconAssets.editIcon,
                   ),
                 ],
@@ -92,16 +93,16 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Quản lý chung',  
+                    context.l10n.general_management_text,
                     style: StyleThemeData.regular16(),
                   ),
                   SizedBox(height: 8.h),
-                  newMethod(onTap: () {}, text: 'Cài đặt', icons: IconAssets.settingsIcon),
+                  newMethod(onTap: () {}, text: context.l10n.settings_text, icons: IconAssets.settingsIcon),
                   const Divider(thickness: 1),
                   newMethod(
                     onTap: () {},
-                    text: 'Cài đặt',
-                    lable: 'Tiếng việt',
+                    text: context.l10n.language_text,
+                    lable: context.l10n.vietnamese_text,
                     icons: IconAssets.languageIcon,
                   ),
                 ],

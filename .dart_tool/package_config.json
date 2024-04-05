@@ -302,6 +302,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_localizations",
+      "rootUri": "file:///D:/flutter/flutter/packages/flutter_localizations",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.17",
       "packageUri": "lib/",
@@ -477,9 +483,9 @@
     },
     {
       "name": "intl",
-      "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.19.0",
+      "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.18.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "2.12"
     },
     {
       "name": "io",
@@ -974,13 +980,19 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "zoom_tap_animation",
+      "rootUri": "file:///C:/Users/levan/AppData/Local/Pub/Cache/hosted/pub.dev/zoom_tap_animation-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "food_delivery_app",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-04-05T10:28:07.176434Z",
+  "generated": "2024-04-05T15:30:36.007770Z",
   "generator": "pub",
   "generatorVersion": "3.0.6"
 }
