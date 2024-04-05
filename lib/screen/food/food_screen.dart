@@ -25,7 +25,7 @@ class FoodScreen extends GetWidget<FoodController> {
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(Icons.arrow_back, color: appTheme.blackColor),
               ),
-              Text('Thêm món', style: StyleThemeData.bold18(height: 0)),
+              Text('Tạo menu', style: StyleThemeData.bold18(height: 0)),
             ],
           ),
         ),

@@ -65,16 +65,6 @@ class FoodController extends GetxController {
   final desTypeController = TextEditingController();
 
   void onSubmit() async {
-    // if (pickedImageNotifier.value != null) {
-    //   final url = await foodRepository.updateImages(
-    //     pickedImageNotifier.value!.path,
-    //     pickedImageNotifier.value!,
-    //     fileName: foodId,
-    //   );
-
-    //   print(url);
-    // }
-
     if (nameController.text.isEmpty ||
         desController.text.isEmpty ||
         priceController.text.isEmpty ||
@@ -111,11 +101,19 @@ class FoodController extends GetxController {
   void addTypeFood() async {
     if (nameTypeController.text.isEmpty || desTypeController.text.isEmpty) return;
     try {
+      final typeId = getUuid();
+
+      final url = await foodRepository.updateImages(
+        pickedImageNotifier.value!.path,
+        pickedImageNotifier.value!,
+        fileName: typeId,
+      );
+
       FoodType foodType = FoodType(
-        typeId: getUuid(),
+        typeId: typeId,
         name: nameTypeController.text,
         description: desTypeController.text,
-        image: '',
+        image: url,
         createdAt: DateTime.now().toString(),
       );
 
