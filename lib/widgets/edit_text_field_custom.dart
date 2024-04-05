@@ -7,27 +7,27 @@ import 'package:food_delivery_app/widgets/text_field_custom.dart';
 import 'package:get/get.dart';
 
 class EditTextFieldCustom extends StatelessWidget {
-  const EditTextFieldCustom(
-      {Key? key,
-      required this.label,
-      required this.controller,
-      this.items = const [],
-      this.mapItems = const {},
-      this.isDropDown = false,
-      this.onTap,
-      this.labelStyle,
-      this.canEdit = true,
-      this.onItemSelected,
-      this.emptyNotifier,
-      this.errorText = '',
-      this.isShowErrorText = false,
-      this.textInputType,
-      this.isSecure = false,
-      this.suffix,
-      this.maxLength,
-      this.isObscure = false,
-      this.hintText = ''})
-      : super(key: key);
+  const EditTextFieldCustom({
+    Key? key,
+    required this.label,
+    required this.controller,
+    this.items = const [],
+    this.mapItems = const {},
+    this.isDropDown = false,
+    this.onTap,
+    this.labelStyle,
+    this.canEdit = true,
+    this.onItemSelected,
+    this.emptyNotifier,
+    this.errorText = '',
+    this.isShowErrorText = false,
+    this.textInputType,
+    this.isSecure = false,
+    this.suffix,
+    this.maxLength,
+    this.isObscure = false,
+    this.hintText = '',
+  }) : super(key: key);
 
   final String label;
   final TextEditingController controller;
@@ -73,8 +73,10 @@ class EditTextFieldCustom extends StatelessWidget {
             // menuStyle: MenuStyle(surfaceTintColor: MaterialStateProperty.all(AppTheme.color.white)),
             dropdownMenuEntries: items.isNotEmpty
                 ? List.generate(items.length, (index) => DropdownMenuEntry(label: items[index], value: index))
-                : List.generate(mapItems.length,
-                    (index) => DropdownMenuEntry(label: mapItems.values.elementAt(index), value: index)),
+                : List.generate(
+                    mapItems.length,
+                    (index) => DropdownMenuEntry(label: mapItems.values.elementAt(index), value: index),
+                  ),
           )
         ] else ...[
           TextFieldCustom(
@@ -103,7 +105,9 @@ class EditTextFieldCustom extends StatelessWidget {
             valueListenable: emptyNotifier!,
             builder: (context, value, child) {
               return Visibility(
-                  visible: value, child: Text(errorText, style: StyleThemeData.regular14(color: appTheme.rejectColor)));
+                visible: value,
+                child: Text(errorText, style: StyleThemeData.regular14(color: appTheme.rejectColor)),
+              );
             },
           )
         ]

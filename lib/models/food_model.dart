@@ -15,32 +15,45 @@
  */
 
 class FoodModel {
-  final String description;
-  final String discount;
-  final String image;
-  final String menuId;
-  final String name;
-  final String price;
-  final String keys;
+  final String? foodId;
+  final String? name;
+  final String? description;
+  final String? price;
+  final String? image;
+  final String? typeId;
+  final String? createdAt;
 
-  FoodModel(
-      {required this.description,
-      required this.discount,
-      required this.image,
-      required this.menuId,
-      required this.name,
-      required this.price,
-      required this.keys});
+  FoodModel({
+    this.foodId,
+    this.name,
+    this.description,
+    this.price,
+    this.image,
+    this.typeId,
+    this.createdAt,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'foodId': foodId,
+      'name': name,
+      'description': description,
+      'price': price,
+      'image': image,
+      'typeId': typeId,
+      'created_at': createdAt,
+    };
+  }
 
   Map toMap(FoodModel food) {
     var data = Map<String, dynamic>();
-    data['description'] = food.description;
-    data['discount'] = food.discount;
-    data['image'] = food.image;
-    data['menuId'] = food.menuId;
+    data['foodId'] = food.foodId;
     data['name'] = food.name;
+    data['description'] = food.description;
     data['price'] = food.price;
-    data['keys'] = food.keys;
+    data['image'] = food.image;
+    data['typeId'] = food.typeId;
+    data['created_at'] = food.createdAt;
     return data;
   }
 
@@ -48,13 +61,13 @@ class FoodModel {
     Map<dynamic, dynamic> mapData,
   ) {
     return FoodModel(
-      description: mapData['description'],
-      discount: mapData['discount'],
-      image: mapData['image'],
-      menuId: mapData['menuId'],
+      foodId: mapData['foodId'],
       name: mapData['name'],
+      description: mapData['description'],
       price: mapData['price'],
-      keys: mapData['keys'],
+      image: mapData['image'],
+      typeId: mapData['typeId'],
+      createdAt: mapData['created_at'],
     );
   }
 }

@@ -16,7 +16,8 @@ class AuthRepository extends IAuthRepository {
       return response.user;
     } catch (e) {
       handleError(e);
-      rethrow;
+
+      return null;
     }
   }
 
