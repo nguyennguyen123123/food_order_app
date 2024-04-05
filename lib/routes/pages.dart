@@ -2,7 +2,6 @@ import 'package:food_delivery_app/screen/admin/admin_binding.dart';
 import 'package:food_delivery_app/screen/admin/admin_page.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
-import 'package:food_delivery_app/screen/home/home_screen.dart';
 import 'package:food_delivery_app/screen/onboarding/onboarding_scrreen.dart';
 import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
