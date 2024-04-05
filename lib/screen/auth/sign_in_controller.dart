@@ -18,10 +18,12 @@ class SignInController extends GetxController {
   void onSubmit() async {
     validateForm.value = true;
     if (!GetUtils.isEmail(emailController.text) || passwordController.text.isEmpty) return;
-    final result = await authRepository.login(emailController.text, passwordController.text);
-
-    if (result != null) {
-      Get.offAllNamed(Routes.HOME);
+    try {
+      final result = await authRepository.login(emailController.text, passwordController.text);
+      accountService.account.value = await authRepository.getAccountById(result?.id ?? '');
+      Get.toNamed(Routes.ADMIN);
+    } catch (e) {
+      print(e);
     }
   }
 

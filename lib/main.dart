@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: Routes.ONBOARD,
+      initialRoute: Routes.SPLASH,
       getPages: AppPages.pages,
       // home: StreamBuilder<User?>(
       //   stream: _authMethods.onAuthStateChanged,
