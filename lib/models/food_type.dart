@@ -1,12 +1,12 @@
 class FoodType {
-  final String typeId;
+  final String? typeId;
   final String? name;
   final String? description;
   final String? image;
   final String? createdAt;
 
   FoodType({
-    required this.typeId,
+    this.typeId,
     this.name,
     this.description,
     this.image,

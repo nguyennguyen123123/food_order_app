@@ -98,6 +98,41 @@ class FoodController extends GetxController {
     }
   }
 
+  void onEditFood(String foodId, String image, String typeId) async {
+    try {
+      FoodModel foodModel = FoodModel(
+        foodId: foodId,
+        name: nameController.text,
+        description: desController.text,
+        price: priceController.text,
+        typeId: typeId,
+        image: image,
+        createdAt: DateTime.now().toString(),
+      );
+
+      // final url = await foodRepository.updateImages(
+      //   pickedImageNotifier.value!.path,
+      //   pickedImageNotifier.value!,
+      //   fileName: foodId,
+      // );
+
+      await foodRepository.editFood(foodId, foodModel);
+
+      Get.back();
+    } catch (error) {
+      print('Error edit food $error');
+    }
+  }
+
+  void deleteFood(String foodId) {
+    try {
+      foodRepository.deleteFood(foodId);
+      foodList.removeWhere((food) => food.foodId == foodId);
+    } catch (error) {
+      print('Error delete food: $error');
+    }
+  }
+
   void addTypeFood() async {
     if (nameTypeController.text.isEmpty || desTypeController.text.isEmpty) return;
     try {

@@ -89,4 +89,32 @@ class FoodRepository extends IFoodRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<FoodModel?> editFood(String foodId, FoodModel foodModel) async {
+    try {
+      final response = await baseService.client.from(TABLE_NAME.FOOD).update(foodModel.toJson()).eq('foodId', foodId);
+
+      if (response.error != null) {
+        throw response.error!;
+      }
+
+      return FoodModel.fromMap(response);
+    } catch (error) {
+      print(error);
+      handleError(error);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteFood(String foodId) async {
+    try {
+      await baseService.client.from(TABLE_NAME.FOOD).delete().eq('foodId', foodId);
+    } catch (error) {
+      print(error);
+      handleError(error);
+      rethrow;
+    }
+  }
 }

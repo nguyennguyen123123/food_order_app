@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
+import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/screen/food/food_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
@@ -13,6 +14,20 @@ import 'package:get/get.dart';
 class AddFoodView extends GetWidget<FoodController> {
   @override
   Widget build(BuildContext context) {
+    FoodModel food = Get.arguments as FoodModel? ?? FoodModel();
+
+    final nameSelection = controller.nameController.selection;
+    final desSelection = controller.desController.selection;
+    final priceSelection = controller.priceController.selection;
+
+    controller.nameController.text = food.name ?? '';
+    controller.desController.text = food.description ?? '';
+    controller.priceController.text = food.price ?? '';
+
+    controller.nameController.selection = nameSelection;
+    controller.desController.selection = desSelection;
+    controller.priceController.selection = priceSelection;
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -27,7 +42,7 @@ class AddFoodView extends GetWidget<FoodController> {
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(Icons.arrow_back, color: appTheme.blackColor),
               ),
-              Text('Thêm món', style: StyleThemeData.bold18(height: 0)),
+              Text(food.foodId != null ? 'Chỉnh sửa' : 'Thêm món', style: StyleThemeData.bold18(height: 0)),
             ],
           ),
         ),
@@ -47,23 +62,30 @@ class AddFoodView extends GetWidget<FoodController> {
                               height: 150.h,
                               child: Image.file(
                                 pickedImage,
-                                width: 24.w,
-                                height: 24.h,
                                 fit: BoxFit.cover,
                               ),
                             ),
                           )
-                        : Container(
-                            width: 150.w,
-                            height: 150.h,
-                            alignment: Alignment.center,
-                            padding: padding(vertical: 32, horizontal: 24),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: appTheme.backgroundContainer,
-                            ),
-                            child: Text('Chọn ảnh', style: StyleThemeData.regular14()),
-                          );
+                        : food.image != null
+                            ? SizedBox(
+                                width: 150.w,
+                                height: 150.h,
+                                child: Image.network(
+                                  food.image.toString(),
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Container(
+                                width: 150.w,
+                                height: 150.h,
+                                alignment: Alignment.center,
+                                padding: padding(vertical: 32, horizontal: 24),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: appTheme.backgroundContainer,
+                                ),
+                                child: Text('Chọn ảnh', style: StyleThemeData.regular14()),
+                              );
                   },
                 ),
                 ElevatedButton(
@@ -125,8 +147,14 @@ class AddFoodView extends GetWidget<FoodController> {
                 SizedBox(height: 24.h),
                 ConfirmationButtonWidget(
                   isLoading: false,
-                  onTap: controller.onSubmit,
-                  text: 'Xác nhận',
+                  onTap: food.foodId != null
+                      ? () => controller.onEditFood(
+                            food.foodId.toString(),
+                            food.image.toString(),
+                            food.typeId.toString(),
+                          )
+                      : controller.onSubmit,
+                  text: food.foodId != null ? 'Chỉnh sửa' : 'Xác nhận',
                 ),
               ],
             ),
