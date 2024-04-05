@@ -1,3 +1,4 @@
+import 'package:food_delivery_app/home_main.dart';
 import 'package:food_delivery_app/screen/admin/admin_binding.dart';
 import 'package:food_delivery_app/screen/admin/admin_page.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
@@ -25,6 +26,11 @@ abstract class AppPages {
       name: Routes.SIGNIN,
       page: () => SignInScreen(),
       binding: SignInBinding(),
+    ),
+    GetPage(
+      name: Routes.MAIN,
+      page: () => HomeMain(),
+      binding: AdminBinding(),
     ),
     GetPage(
       name: Routes.ADMIN,

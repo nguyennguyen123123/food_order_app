@@ -27,7 +27,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final AuthMethods _authMethods = AuthMethods();
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -53,16 +52,6 @@ class _MyAppState extends State<MyApp> {
       ),
       initialRoute: Routes.SPLASH,
       getPages: AppPages.pages,
-      // home: StreamBuilder<User?>(
-      //   stream: _authMethods.onAuthStateChanged,
-      //   builder: (context, AsyncSnapshot<User?> snapshot) {
-      //     if (snapshot.hasData && snapshot.data != null) {
-      //       return HomePage();
-      //     } else {
-      //       return LoginPage();
-      //     }
-      //   },
-      // ),
     );
   }
 }
