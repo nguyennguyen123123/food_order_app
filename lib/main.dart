@@ -20,7 +20,6 @@ BaseThemeData get appTheme => themeUtil.getAppTheme();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppService.initAppService();
-  // await GetStorage.init('MyStorage');
 
   runApp(LayoutBuilder(builder: (context, constraints) {
     SizeConfig.instance.init(constraints: constraints, screenHeight: 812, screenWidth: 375);
@@ -76,41 +75,42 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: _localeStream.stream,
-        initialData: _locale,
-        builder: (context, snapshot) {
-          return GetMaterialApp(
-            title: 'Food App',
-            locale: _locale,
-            supportedLocales: supportedLocales,
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              AppLocalizations.delegate,
-            ],
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              primarySwatch: MaterialColor(
-                UniversalVariables.orangeColor.value,
-                <int, Color>{
-                  50: UniversalVariables.orangeColor,
-                  100: UniversalVariables.orangeColor,
-                  200: UniversalVariables.orangeColor,
-                  300: UniversalVariables.orangeColor,
-                  400: UniversalVariables.orangeColor,
-                  500: UniversalVariables.orangeColor,
-                  600: UniversalVariables.orangeColor,
-                  700: UniversalVariables.orangeColor,
-                  800: UniversalVariables.orangeColor,
-                  900: UniversalVariables.orangeColor,
-                },
-              ),
-              visualDensity: VisualDensity.adaptivePlatformDensity,
+      stream: _localeStream.stream,
+      initialData: _locale,
+      builder: (context, snapshot) {
+        return GetMaterialApp(
+          title: 'Food App',
+          locale: _locale,
+          supportedLocales: supportedLocales,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            AppLocalizations.delegate,
+          ],
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: MaterialColor(
+              UniversalVariables.orangeColor.value,
+              <int, Color>{
+                50: UniversalVariables.orangeColor,
+                100: UniversalVariables.orangeColor,
+                200: UniversalVariables.orangeColor,
+                300: UniversalVariables.orangeColor,
+                400: UniversalVariables.orangeColor,
+                500: UniversalVariables.orangeColor,
+                600: UniversalVariables.orangeColor,
+                700: UniversalVariables.orangeColor,
+                800: UniversalVariables.orangeColor,
+                900: UniversalVariables.orangeColor,
+              },
             ),
-            initialRoute: Routes.SPLASH,
-            getPages: AppPages.pages,
-          );
-        });
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          initialRoute: Routes.SPLASH,
+          getPages: AppPages.pages,
+        );
+      },
+    );
   }
 }

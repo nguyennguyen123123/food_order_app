@@ -1,4 +1,3 @@
-import 'package:food_delivery_app/screen/home/home_main.dart';
 import 'package:food_delivery_app/screen/admin/admin_binding.dart';
 import 'package:food_delivery_app/screen/admin/admin_page.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
@@ -7,6 +6,8 @@ import 'package:food_delivery_app/screen/food/food_binding.dart';
 import 'package:food_delivery_app/screen/food/food_screen.dart';
 import 'package:food_delivery_app/screen/food/view/add_type_food_view.dart';
 import 'package:food_delivery_app/screen/food/view/create_edit_food_view.dart';
+import 'package:food_delivery_app/screen/home/home_main.dart';
+import 'package:food_delivery_app/screen/language/language_screen.dart';
 import 'package:food_delivery_app/screen/onboarding/onboarding_scrreen.dart';
 import 'package:food_delivery_app/screen/profile/profile_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_binding.dart';
@@ -62,6 +63,10 @@ abstract class AppPages {
       name: Routes.ADDTYPEFOOD,
       page: () => AddTypeFoodView(),
       binding: FoodBinding(),
+    ),
+    GetPage(
+      name: Routes.LANGUAGE,
+      page: () => LanguageScreen(),
     ),
   ];
 }

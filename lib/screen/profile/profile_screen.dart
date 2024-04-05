@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/l10n/l10n.dart';
 import 'package:food_delivery_app/main.dart';
+import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/profile/profile_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/icons_assets.dart';
@@ -100,7 +101,9 @@ class ProfileScreen extends GetWidget<ProfileController> {
                   newMethod(onTap: () {}, text: context.l10n.settings_text, icons: IconAssets.settingsIcon),
                   const Divider(thickness: 1),
                   newMethod(
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(Routes.LANGUAGE);
+                    },
                     text: context.l10n.language_text,
                     lable: context.l10n.vietnamese_text,
                     icons: IconAssets.languageIcon,
