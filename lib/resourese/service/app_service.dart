@@ -2,6 +2,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:food_delivery_app/constant/app_config.dart';
 import 'package:food_delivery_app/resourese/auth_repository/auth_repository.dart';
 import 'package:food_delivery_app/resourese/auth_repository/iauth_repository.dart';
+import 'package:food_delivery_app/resourese/food/food_repository.dart';
+import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
@@ -28,20 +30,6 @@ class AppService {
 
     Get.put(AccountService(storageService: Get.find(), baseService: Get.find()));
     Get.put<IAuthRepository>(AuthRepository(baseService: Get.find()));
-
-    // locator.registerSingleton<IAuthenRepository>(
-    //     AuthenRepository(serverService: locator.get()));
-    // locator.registerSingleton<IUploadRepository>(
-    //     UploadRepository(serverService: server));
-
-    // locator.registerSingleton<IAccountRepository>(AccountRepository());
-    // locator.registerSingleton<IEmployeeRepository>(EmployeeRepository(
-    //     serverService: locator.get(), uploadRepository: locator.get()));
-    // locator.registerSingleton<IHeartMeasureRepository>(
-    //     HeartMeasureRepository(serverService: locator.get()));
-    // locator.registerSingleton<AccountService>(AccountService(
-    //   storageService: locator.get(),
-    //   serverService: locator.get(),
-    // ));
+    Get.put<IFoodRepository>(FoodRepository(baseService: Get.find()));
   }
 }

@@ -88,6 +88,8 @@ abstract class BaseThemeData {
 
   Color frameColor = const Color(0xFFC9CCD1);
 
+  Color appColor = const Color(0xFF514BF6);
+
   Color oneActiveColor = const Color(0xFF5E7DF5);
   Color twoActiveColor = const Color(0xFF5661F5);
   Color fatherActiveColor = const Color(0xFF514BF6);

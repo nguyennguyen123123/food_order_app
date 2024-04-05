@@ -6,4 +6,7 @@ abstract class Routes {
   static const ADMIN = '/admin';
   static const SPLASH = '/splash';
   static const STAFF_MANAGE = '/staff-manage';
+  static const FOOD = '/food';
+  static const ADDFOOD = '/add_food';
+  static const ADDTYPEFOOD = '/add_type_food';
 }
