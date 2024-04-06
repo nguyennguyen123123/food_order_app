@@ -57,12 +57,12 @@ abstract class AppPages {
     GetPage(
       name: Routes.ADDFOOD,
       page: () => CreateEditFoodView(),
-      binding: FoodBinding(),
+      // binding: FoodBinding(),
     ),
     GetPage(
       name: Routes.ADDTYPEFOOD,
       page: () => AddTypeFoodView(),
-      binding: FoodBinding(),
+      // binding: FoodBinding(),
     ),
     GetPage(
       name: Routes.LANGUAGE,
