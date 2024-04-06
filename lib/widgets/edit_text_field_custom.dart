@@ -29,6 +29,7 @@ class EditTextFieldCustom extends StatelessWidget {
     this.emptyErrorText,
     this.isRequire = false,
     this.validateText,
+    this.textInputAction,
   }) : super(key: key);
 
   final String label;
@@ -40,6 +41,7 @@ class EditTextFieldCustom extends StatelessWidget {
   final int? maxLength;
   final String? emptyErrorText;
   final bool isRequire;
+  final TextInputAction? textInputAction;
 
   /// this item use for display value but return key
   final Map<String, String> mapItems;
@@ -91,6 +93,7 @@ class EditTextFieldCustom extends StatelessWidget {
             hintText: hintText,
             onTap: onTap,
             canEdit: canEdit,
+            textInputAction: textInputAction,
             textInputType: textInputType,
             obscureText: isObscure,
             formatter: [if (maxLength != null) LengthLimitingTextInputFormatter(maxLength)],

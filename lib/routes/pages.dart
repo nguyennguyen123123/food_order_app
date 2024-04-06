@@ -7,9 +7,11 @@ import 'package:food_delivery_app/screen/food/food_screen.dart';
 import 'package:food_delivery_app/screen/food/view/add_type_food_view.dart';
 import 'package:food_delivery_app/screen/food/view/create_edit_food_view.dart';
 import 'package:food_delivery_app/screen/home/home_main.dart';
+import 'package:food_delivery_app/screen/home/home_main_binding.dart';
 import 'package:food_delivery_app/screen/language/language_screen.dart';
+import 'package:food_delivery_app/screen/list_food/list_food_binding.dart';
+import 'package:food_delivery_app/screen/list_food/list_food_page.dart';
 import 'package:food_delivery_app/screen/onboarding/onboarding_scrreen.dart';
-import 'package:food_delivery_app/screen/profile/profile_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_binding.dart';
@@ -32,7 +34,7 @@ abstract class AppPages {
     GetPage(
       name: Routes.MAIN,
       page: () => HomeMain(),
-      binding: ProfileBinding(),
+      binding: HomeMainBinding(),
     ),
     GetPage(
       name: Routes.ADMIN,
@@ -67,6 +69,11 @@ abstract class AppPages {
     GetPage(
       name: Routes.LANGUAGE,
       page: () => LanguageScreen(),
+    ),
+    GetPage(
+      name: Routes.LIST_FOOD,
+      page: () => ListFoodPage(),
+      binding: ListFoodBinding(),
     ),
   ];
 }

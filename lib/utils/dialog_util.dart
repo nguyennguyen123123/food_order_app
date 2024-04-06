@@ -10,6 +10,19 @@ class DialogUtils {
     return showDialog(context: Get.context!, useRootNavigator: false, builder: (context) => Dialog(child: view));
   }
 
+  static showBTSView(Widget view) {
+    return showModalBottomSheet(
+      context: Get.context!,
+      constraints: BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * .75),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
+      builder: (context) => Container(
+          height: Get.height * .75,
+          constraints: BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * .75),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
+          child: Padding(padding: padding(all: 12), child: view)),
+    );
+  }
+
   static Future<T?> showYesNoDialog<T>(
       {Function()? onNegative,
       Function()? onPositive,

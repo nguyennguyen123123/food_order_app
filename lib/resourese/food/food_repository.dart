@@ -51,8 +51,8 @@ class FoodRepository extends IFoodRepository {
     try {
       final response = await baseService.client
           .from(TABLE_NAME.FOOD)
-          .select()
-          .withConverter((data) => data.map((e) => FoodModel.fromMap(e)).toList());
+          .select("*, typeId (*)")
+          .withConverter((data) => data.map((e) => FoodModel.fromJson(e)).toList());
 
       return response.toList();
     } catch (e) {
@@ -81,7 +81,7 @@ class FoodRepository extends IFoodRepository {
       final response = await baseService.client
           .from(TABLE_NAME.FOODTYPE)
           .select()
-          .withConverter((data) => data.map((e) => FoodType.fromMap(e)).toList());
+          .withConverter((data) => data.map((e) => FoodType.fromJson(e)).toList());
 
       return response.toList();
     } catch (e) {
@@ -99,7 +99,7 @@ class FoodRepository extends IFoodRepository {
         throw response.error!;
       }
 
-      return FoodModel.fromMap(response);
+      return FoodModel.fromJson(response);
     } catch (error) {
       print(error);
       handleError(error);
@@ -114,6 +114,28 @@ class FoodRepository extends IFoodRepository {
     } catch (error) {
       print(error);
       handleError(error);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<FoodModel>> getListFoodByKeyword(
+      {String keyword = '', String? typeId, int page = 0, int limit = LIMIT}) async {
+    try {
+      var query = baseService.client.from(TABLE_NAME.FOOD).select("*, typeId (*)");
+      if (keyword.isNotEmpty) {
+        query = query.textSearch("name", "'$keyword'");
+      }
+      if (typeId != null) {
+        query = query.eq("typeId", typeId);
+      }
+      final response = await query
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
+          .withConverter((data) => data.map((e) => FoodModel.fromJson(e)).toList());
+      return response.toList();
+    } catch (e) {
+      handleError(e);
       rethrow;
     }
   }

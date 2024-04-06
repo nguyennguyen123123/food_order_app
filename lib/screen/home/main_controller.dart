@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/screen/admin/admin_page.dart';
+import 'package:food_delivery_app/screen/home/home_page.dart';
 import 'package:food_delivery_app/screen/profile/profile_screen.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +9,7 @@ class MainController extends GetxController {
   RxInt currentPage = 0.obs;
 
   List<Widget> pages = [
-    AdminPage(),
+    HomePage(),
     ProfileScreen(),
   ];
 

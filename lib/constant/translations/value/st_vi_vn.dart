@@ -15,4 +15,10 @@ const Map<String, String> viVN = {
   "yes": "Có",
   "no": "Không",
   "delete_account": "Bạn chắc chắn muốn xóa tài khoản này không?",
+  "food_type": "Phân loại",
+  "food": "Món ăn",
+  "search": "Search",
+  "add_food": "Thêm món vào đơn",
+  "note": "Ghi chú",
+  "enter_note": "Nhập ghi chú"
 };

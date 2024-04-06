@@ -8,9 +8,7 @@ import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
-class HomeMain extends StatelessWidget {
-  final MainController _mainController = Get.find();
-
+class HomeMain extends GetWidget<MainController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,10 +16,10 @@ class HomeMain extends StatelessWidget {
         children: [
           Expanded(
             child: PageView(
-              controller: _mainController.pageController,
+              controller: controller.pageController,
               physics: const BouncingScrollPhysics(),
-              onPageChanged: _mainController.animateToTab,
-              children: [..._mainController.pages],
+              onPageChanged: controller.animateToTab,
+              children: [...controller.pages],
             ),
           ),
           Container(
@@ -50,7 +48,7 @@ class HomeMain extends StatelessWidget {
     Widget? avatar,
   }) {
     return ZoomTapAnimation(
-      onTap: () => _mainController.goToTab(page),
+      onTap: () => controller.goToTab(page),
       child: Container(
         color: appTheme.transparentColor,
         child: Column(
@@ -59,13 +57,13 @@ class HomeMain extends StatelessWidget {
             avatar ??
                 SvgPicture.asset(
                   icon,
-                  color: _mainController.currentPage == page ? appTheme.appColor : appTheme.textDesColor,
+                  color: controller.currentPage == page ? appTheme.appColor : appTheme.textDesColor,
                 ),
             SizedBox(height: 4.h),
             Text(
               label,
               style: StyleThemeData.bold10(
-                color: _mainController.currentPage == page ? appTheme.appColor : appTheme.textDesColor,
+                color: controller.currentPage == page ? appTheme.appColor : appTheme.textDesColor,
               ),
             ),
           ],
