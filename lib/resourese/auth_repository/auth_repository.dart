@@ -84,13 +84,45 @@ class AuthRepository extends IAuthRepository {
           .select()
           .filter("user_id", "neq", accountService.myAccount?.userId ?? '')
           .limit(limit)
-          .range(page * LIMIT, (page + 1) * LIMIT)
+          .range(page * limit, (page + 1) * limit)
           .withConverter((data) => data.map((e) => Account.fromJson(e)).toList());
       return response;
     } catch (e) {
       handleError(e);
 
       return [];
+    }
+  }
+
+  @override
+  Future<bool> deleteAccount(String userId) async {
+    try {
+      final result = await baseService.client.functions.invoke("delete_user", body: {'user_id': userId});
+      if (result.data['result'] == true) {
+        await baseService.client.from(TABLE_NAME.ACCOUNT).delete().eq("user_id", userId);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      handleError(e);
+
+      return false;
+    }
+  }
+
+  @override
+  Future<Account?> updateAccount(Account account) async {
+    try {
+      final result = await baseService.client
+          .from(TABLE_NAME.ACCOUNT)
+          .update(account.toMap())
+          .eq("user_id", account.userId ?? '')
+          .select()
+          .withConverter((data) => data.map((e) => Account.fromJson(e)).toList());
+      return result.first;
+    } catch (e) {
+      handleError(e);
+      return null;
     }
   }
 }

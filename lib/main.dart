@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:food_delivery_app/constant/translations/localization_service.dart';
 import 'package:food_delivery_app/resourese/service/app_service.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/theme/app_theme_util.dart';
@@ -34,6 +36,24 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       title: 'Food App',
       debugShowCheckedModeBanner: false,
+      locale: LocalizationService.locale,
+      supportedLocales: LocalizationService.locales,
+      localizationsDelegates: [
+        GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      fallbackLocale: LocalizationService.fallbackLocale,
+      translations: LocalizationService(),
+      localeResolutionCallback: (locale, supportedLocales) {
+        for (var supportedLocale in supportedLocales) {
+          if (supportedLocale.languageCode == locale?.languageCode &&
+              supportedLocale.countryCode == locale?.countryCode) {
+            return supportedLocale;
+          }
+        }
+        return supportedLocales.first;
+      },
       theme: ThemeData(
         primarySwatch: MaterialColor(
           UniversalVariables.orangeColor.value,

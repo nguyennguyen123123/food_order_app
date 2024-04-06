@@ -8,7 +8,7 @@ void dissmissLoading() {
   EasyLoading.dismiss();
 }
 
-Future<void> excute({required Future<void> Function() function}) async {
+Future<void> excute(Future<void> Function() function) async {
   try {
     EasyLoading.show();
     function.call();

@@ -26,6 +26,20 @@ class _StaffDialogState extends State<StaffDialog> {
   final validateForm = Rx(false);
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.account != null) {
+      final acc = widget.account!;
+      nameController.text = acc.name ?? '';
+      emailController.text = acc.email ?? '';
+      roleKey = acc.role ?? '';
+      genderKey = acc.gender ?? '';
+      roleController.text = USER_ROLE.map[acc.role] ?? '';
+      genderController.text = GENDER.map[acc.gender] ?? '';
+    }
+  }
+
+  @override
   void dispose() {
     nameController.dispose();
     emailController.dispose();
@@ -40,7 +54,7 @@ class _StaffDialogState extends State<StaffDialog> {
         emailController.text.isEmpty ||
         roleKey.isEmpty ||
         genderKey.isEmpty ||
-        !GetUtils.isEmail(emailController.text)) return;
+        (widget.account == null && !GetUtils.isEmail(emailController.text))) return;
     if (widget.account != null) {
       Get.back(
           result: widget.account!.copyWith(
@@ -68,54 +82,49 @@ class _StaffDialogState extends State<StaffDialog> {
         () => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Thông tin nhân viên', style: StyleThemeData.bold16()),
+            Text('info_account'.tr, style: StyleThemeData.bold16()),
             EditTextFieldCustom(
-              label: 'Tên',
-              hintText: 'nhập tên',
+              label: 'name'.tr,
+              hintText: 'enter_name'.tr,
               controller: nameController,
               isRequire: true,
               isShowErrorText: validateForm.value,
             ),
             SizedBox(height: 8.h),
             EditTextFieldCustom(
-              label: 'Email',
-              hintText: 'nhập email',
+              label: 'email'.tr,
+              hintText: 'enter_email'.tr,
               isRequire: true,
-              errorText: 'Email không hợp lệ',
+              canEdit: widget.account == null,
+              errorText: 'email_not_valid'.tr,
               validateText: GetUtils.isEmail,
               controller: emailController,
               isShowErrorText: validateForm.value,
             ),
             SizedBox(height: 8.h),
             EditTextFieldCustom(
-              label: 'Gender',
-              hintText: 'Chọn gender',
+              label: 'gender'.tr,
+              hintText: 'select_gender'.tr,
               isRequire: true,
               controller: genderController,
               isShowErrorText: validateForm.value,
               onItemSelected: (item) => genderKey = item,
               isDropDown: true,
-              mapItems: {
-                GENDER.MAN: "Nam",
-                GENDER.FEMALE: "Nữ",
-              },
+              mapItems: GENDER.map,
             ),
             SizedBox(height: 8.h),
             EditTextFieldCustom(
-              label: 'Vai trò',
-              hintText: 'Chọn vai trò',
+              label: 'role'.tr,
+              hintText: 'select_role'.tr,
               controller: roleController,
               isRequire: true,
               isShowErrorText: validateForm.value,
               onItemSelected: (item) => roleKey = item,
               isDropDown: true,
-              mapItems: {
-                USER_ROLE.ADMIN: "ADMIN",
-                USER_ROLE.STAFF: "STAFF",
-              },
+              mapItems: USER_ROLE.map,
             ),
             SizedBox(height: 12.h),
-            ConfirmationButtonWidget(onTap: onSubmit, text: 'Xác nhận')
+            ConfirmationButtonWidget(onTap: onSubmit, text: 'confirm'.tr)
           ],
         ),
       ),

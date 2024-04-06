@@ -9,4 +9,6 @@ abstract class IAuthRepository extends IBaseRepository {
   Future<String?> createAuthentication(String email, String name);
   Future<Account?> addAccount(Account account);
   Future<List<Account>> getListAccount({int limit = LIMIT, int page = 0});
+  Future<bool> deleteAccount(String userId);
+  Future<Account?> updateAccount(Account account);
 }

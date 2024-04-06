@@ -35,9 +35,19 @@ abstract class DAY_STATUS {
 abstract class GENDER {
   static const MAN = 'MAN';
   static const FEMALE = 'FEMALE';
+
+  static const map = {
+    GENDER.MAN: "Nam",
+    GENDER.FEMALE: "Nữ",
+  };
 }
 
 abstract class USER_ROLE {
   static const ADMIN = 'ADMIN';
   static const STAFF = 'STAFF';
+
+  static const map = {
+    USER_ROLE.ADMIN: "ADMIN",
+    USER_ROLE.STAFF: "STAFF",
+  };
 }
