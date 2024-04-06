@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/constant/app_constant_key.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/widgets/reponsive/size_config.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -129,6 +130,17 @@ EdgeInsets padding({
   //       const EdgeInsets.only();
   // }
 }
+
+MyAppState? findRootAncestorState(BuildContext context) {
+  return context.findRootAncestorStateOfType<MyAppState>();
+}
+
+// void someFunction(BuildContext context, Locale locale) {
+//   MyAppState? mainAppState = findRootAncestorState(context);
+//   if (mainAppState != null) {
+//     mainAppState.handleLanguageChange(locale);
+//   }
+// }
 
 const _uuid = Uuid();
 

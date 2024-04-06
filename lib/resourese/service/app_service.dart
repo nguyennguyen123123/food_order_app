@@ -4,6 +4,8 @@ import 'package:food_delivery_app/resourese/auth_repository/auth_repository.dart
 import 'package:food_delivery_app/resourese/auth_repository/iauth_repository.dart';
 import 'package:food_delivery_app/resourese/food/food_repository.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
+import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
+import 'package:food_delivery_app/resourese/profile/profile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
@@ -31,5 +33,6 @@ class AppService {
     Get.put(AccountService(storageService: Get.find(), baseService: Get.find()));
     Get.put<IAuthRepository>(AuthRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IFoodRepository>(FoodRepository(baseService: Get.find()));
+    Get.put<IProfileRepository>(ProfileRepository(baseService: Get.find()));
   }
 }

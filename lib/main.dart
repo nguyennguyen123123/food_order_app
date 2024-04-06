@@ -26,11 +26,21 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  // final AuthMethods _authMethods = AuthMethods();
+class MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    themeUtil.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

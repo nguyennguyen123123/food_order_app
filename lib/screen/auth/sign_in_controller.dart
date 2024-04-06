@@ -24,7 +24,7 @@ class SignInController extends GetxController {
       final result = await authRepository.login(emailController.text, passwordController.text);
       accountService.account.value = await authRepository.getAccountById(result?.id ?? '');
       dissmissLoading();
-      Get.toNamed(Routes.ADMIN);
+      Get.toNamed(Routes.MAIN);
     } catch (e) {
       print(e);
     }
