@@ -29,7 +29,7 @@ class AppService {
     Get.put<BaseService>(server);
 
     Get.put(AccountService(storageService: Get.find(), baseService: Get.find()));
-    Get.put<IAuthRepository>(AuthRepository(baseService: Get.find()));
+    Get.put<IAuthRepository>(AuthRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IFoodRepository>(FoodRepository(baseService: Get.find()));
   }
 }

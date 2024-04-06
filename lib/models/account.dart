@@ -21,7 +21,6 @@ part 'account.g.dart';
 
 @JsonSerializable()
 class Account {
-  int? id;
   @JsonKey(name: 'created_at')
   String? createdAt;
   String? email;
@@ -31,7 +30,6 @@ class Account {
   @JsonKey(name: 'user_id')
   String? userId;
   Account({
-    this.id,
     this.createdAt,
     this.email,
     this.role,
@@ -43,4 +41,22 @@ class Account {
   Map<String, dynamic> toMap() => _$AccountToJson(this);
 
   factory Account.fromJson(Map<String, dynamic> json) => _$AccountFromJson(json);
+
+  Account copyWith({
+    String? createdAt,
+    String? email,
+    String? role,
+    String? name,
+    String? gender,
+    String? userId,
+  }) {
+    return Account(
+      createdAt: createdAt ?? this.createdAt,
+      email: email ?? this.email,
+      role: role ?? this.role,
+      name: name ?? this.name,
+      gender: gender ?? this.gender,
+      userId: userId ?? this.userId,
+    );
+  }
 }

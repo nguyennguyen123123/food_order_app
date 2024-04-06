@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class StaffManageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => StaffManageController());
+    Get.lazyPut(() => StaffManageController(authRepository: Get.find()));
   }
 }

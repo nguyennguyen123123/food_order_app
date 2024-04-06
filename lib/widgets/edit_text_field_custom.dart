@@ -18,7 +18,6 @@ class EditTextFieldCustom extends StatelessWidget {
     this.labelStyle,
     this.canEdit = true,
     this.onItemSelected,
-    this.emptyNotifier,
     this.errorText = '',
     this.isShowErrorText = false,
     this.textInputType,
@@ -27,6 +26,9 @@ class EditTextFieldCustom extends StatelessWidget {
     this.maxLength,
     this.isObscure = false,
     this.hintText = '',
+    this.emptyErrorText,
+    this.isRequire = false,
+    this.validateText,
   }) : super(key: key);
 
   final String label;
@@ -36,6 +38,8 @@ class EditTextFieldCustom extends StatelessWidget {
   final bool isSecure;
   final Widget? suffix;
   final int? maxLength;
+  final String? emptyErrorText;
+  final bool isRequire;
 
   /// this item use for display value but return key
   final Map<String, String> mapItems;
@@ -43,8 +47,8 @@ class EditTextFieldCustom extends StatelessWidget {
   final VoidCallback? onTap;
   final TextStyle? labelStyle;
   final bool canEdit;
-  final ValueNotifier<bool>? emptyNotifier;
   final void Function(String item)? onItemSelected;
+  final bool Function(String item)? validateText;
   final String errorText;
   final bool isShowErrorText;
   final TextInputType? textInputType;
@@ -67,9 +71,9 @@ class EditTextFieldCustom extends StatelessWidget {
             // trailingIcon: _buildIcon(),
             // selectedTrailingIcon: _buildIcon(),
             inputDecorationTheme: InputDecorationTheme(contentPadding: padding(vertical: 16, horizontal: 12)),
-            // onSelected: (index) => items.isNotEmpty
-            //     ? onItemSelected?.call(items[index ?? 0])
-            //     : onItemSelected?.call(mapItems.keys.elementAt(index ?? 0)),
+            onSelected: (int? index) => items.isNotEmpty
+                ? onItemSelected?.call(items[index ?? 0])
+                : onItemSelected?.call(mapItems.keys.elementAt(index ?? 0)),
             // menuStyle: MenuStyle(surfaceTintColor: MaterialStateProperty.all(AppTheme.color.white)),
             dropdownMenuEntries: items.isNotEmpty
                 ? List.generate(items.length, (index) => DropdownMenuEntry(label: items[index], value: index))
@@ -100,14 +104,19 @@ class EditTextFieldCustom extends StatelessWidget {
                     : null),
           )
         ],
-        if (emptyNotifier != null && isShowErrorText) ...[
-          ValueListenableBuilder<bool>(
-            valueListenable: emptyNotifier!,
+        if (isShowErrorText && isRequire) ...[
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
             builder: (context, value, child) {
-              return Visibility(
-                visible: value,
-                child: Text(errorText, style: StyleThemeData.regular14(color: appTheme.rejectColor)),
-              );
+              return Text(
+                  value.text.isEmpty
+                      ? emptyErrorText ?? 'Không được để trống'
+                      : validateText != null
+                          ? !(validateText?.call(value.text) ?? false)
+                              ? errorText
+                              : ''
+                          : '',
+                  style: StyleThemeData.regular14(color: appTheme.rejectColor));
             },
           )
         ]

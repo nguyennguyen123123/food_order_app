@@ -138,11 +138,13 @@ class FoodController extends GetxController {
     try {
       final typeId = getUuid();
 
-      final url = await foodRepository.updateImages(
-        pickedImageNotifier.value!.path,
-        pickedImageNotifier.value!,
-        fileName: typeId,
-      );
+      final url = pickedImageNotifier.value != null
+          ? await foodRepository.updateImages(
+              pickedImageNotifier.value!.path,
+              pickedImageNotifier.value!,
+              fileName: typeId,
+            )
+          : '';
 
       FoodType foodType = FoodType(
         typeId: typeId,

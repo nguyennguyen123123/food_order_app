@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:food_delivery_app/resourese/service/app_service.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/theme/app_theme_util.dart';
@@ -53,16 +54,7 @@ class _MyAppState extends State<MyApp> {
       ),
       initialRoute: Routes.SPLASH,
       getPages: AppPages.pages,
-      // home: StreamBuilder<User?>(
-      //   stream: _authMethods.onAuthStateChanged,
-      //   builder: (context, AsyncSnapshot<User?> snapshot) {
-      //     if (snapshot.hasData && snapshot.data != null) {
-      //       return HomePage();
-      //     } else {
-      //       return LoginPage();
-      //     }
-      //   },
-      // ),
+      builder: EasyLoading.init(),
     );
   }
 }
