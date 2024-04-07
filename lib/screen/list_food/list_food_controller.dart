@@ -5,12 +5,12 @@ import 'package:food_delivery_app/screen/list_food/list_food_parameter.dart';
 import 'package:get/get.dart';
 
 class ListFoodController extends GetxController {
-  final ListFoodParameter parameter;
+  final ListFoodParameter? parameter;
   final IFoodRepository foodRepository;
 
-  String? get foodTypeId => parameter.foodType?.typeId;
+  String? get foodTypeId => parameter?.foodType?.typeId;
 
-  ListFoodController({required this.foodRepository, required this.parameter});
+  ListFoodController({required this.foodRepository, this.parameter});
 
   @override
   void onInit() {

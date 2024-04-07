@@ -34,7 +34,7 @@ class ListFoodPage extends GetWidget<ListFoodController> {
                             : ListVerticalItem<FoodModel>(
                                 items: controller.foods.value!,
                                 physics: AlwaysScrollableScrollPhysics(),
-                                itemBuilder: (index, item) => FoodView(foodModel: item),
+                                itemBuilder: (index, item) => FoodView(foodModel: item, showAddBtn: true),
                               )),
               ),
             ],

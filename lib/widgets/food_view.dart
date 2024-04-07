@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/custom_network_image.dart';
+import 'package:food_delivery_app/widgets/dialog_view/add_food_dialog.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class FoodView extends StatelessWidget {
-  const FoodView({required this.foodModel, this.showAddBtn = false, this.onAdd, Key? key}) : super(key: key);
+  const FoodView({required this.foodModel, this.showAddBtn = false, Key? key}) : super(key: key);
 
   final FoodModel foodModel;
   final bool showAddBtn;
-  final VoidCallback? onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,9 @@ class FoodView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (showAddBtn) GestureDetector(onTap: onAdd, child: Icon(Icons.add))
+                  if (showAddBtn)
+                    GestureDetector(
+                        onTap: () => DialogUtils.showBTSView(AddFoodBTS(foodModel: foodModel)), child: Icon(Icons.add))
                 ],
               )),
         ],

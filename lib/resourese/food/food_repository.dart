@@ -124,7 +124,8 @@ class FoodRepository extends IFoodRepository {
     try {
       var query = baseService.client.from(TABLE_NAME.FOOD).select("*, typeId (*)");
       if (keyword.isNotEmpty) {
-        query = query.textSearch("name", "'$keyword'");
+        // query = query.textSearch("name", "'$keyword'");
+        query = query.like("name", "%$keyword%");
       }
       if (typeId != null) {
         query = query.eq("typeId", typeId);

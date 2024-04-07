@@ -5,9 +5,7 @@ import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/home/home_controller.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
-import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/custom_avatar.dart';
-import 'package:food_delivery_app/widgets/dialog_view/add_food_dialog.dart';
 import 'package:food_delivery_app/widgets/food_view.dart';
 import 'package:food_delivery_app/widgets/list_vertical_item.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -55,10 +53,10 @@ class HomePage extends GetWidget<HomeController> {
                   padding: padding(vertical: 8),
                   child: controller.foods.value == null
                       ? Center(child: CircularProgressIndicator())
-                      : ListVerticalItem(
+                      : ListVerticalItem<FoodModel>(
                           lineItemCount: 2,
                           items: controller.foods.value!,
-                          itemBuilder: _buildFood,
+                          itemBuilder: (index, item) => FoodView(foodModel: item, showAddBtn: true),
                         )),
             ),
           ],
@@ -84,28 +82,29 @@ class HomePage extends GetWidget<HomeController> {
     );
   }
 
-  Widget _buildFood(int index, FoodModel foodModel) {
-    return FoodView(
-      foodModel: foodModel,
-      showAddBtn: true,
-      onAdd: () => DialogUtils.showBTSView(AddFoodBTS(foodModel: foodModel)),
-    );
-  }
-
   Widget _buildSearchBar() {
-    return GestureDetector(
-      onTap: () => Get.toNamed(Routes.LIST_FOOD),
-      child: Container(
-        padding: padding(all: 12),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), border: Border.all()),
-        child: Row(
-          children: [
-            Icon(Icons.search, size: 12.w),
-            SizedBox(width: 8.w),
-            Expanded(child: Text('search'.tr)),
-          ],
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => Get.toNamed(Routes.LIST_FOOD),
+            child: Container(
+              padding: padding(all: 12),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), border: Border.all()),
+              child: Row(
+                children: [
+                  Icon(Icons.search, size: 12.w),
+                  SizedBox(width: 8.w),
+                  Expanded(child: Text('search'.tr)),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
+        Padding(
+            padding: padding(horizontal: 12),
+            child: GestureDetector(onTap: () => Get.toNamed(Routes.CART), child: Icon(Icons.shopping_bag)))
+      ],
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:food_delivery_app/screen/admin/admin_binding.dart';
 import 'package:food_delivery_app/screen/admin/admin_page.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
+import 'package:food_delivery_app/screen/cart/cart_binding.dart';
+import 'package:food_delivery_app/screen/cart/cart_page.dart';
 import 'package:food_delivery_app/screen/food/food_binding.dart';
 import 'package:food_delivery_app/screen/food/food_screen.dart';
 import 'package:food_delivery_app/screen/food/view/add_type_food_view.dart';
@@ -74,6 +76,11 @@ abstract class AppPages {
       name: Routes.LIST_FOOD,
       page: () => ListFoodPage(),
       binding: ListFoodBinding(),
+    ),
+    GetPage(
+      name: Routes.CART,
+      page: () => CartPage(),
+      binding: CartBinding(),
     ),
   ];
 }
