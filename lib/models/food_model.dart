@@ -14,14 +14,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:food_delivery_app/models/food_type.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'food_model.g.dart';
+
+@JsonSerializable()
 class FoodModel {
   final String? foodId;
   final String? name;
   final String? description;
-  final String? price;
+  final int? price;
   final String? image;
+  @JsonKey(includeToJson: true, includeFromJson: false)
   final String? typeId;
   final String? createdAt;
+  @JsonKey(includeToJson: false, includeFromJson: true, name: 'typeId')
+  FoodType? foodType;
 
   FoodModel({
     this.foodId,
@@ -31,43 +40,12 @@ class FoodModel {
     this.image,
     this.typeId,
     this.createdAt,
+    this.foodType,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'foodId': foodId,
-      'name': name,
-      'description': description,
-      'price': price,
-      'image': image,
-      'typeId': typeId,
-      'created_at': createdAt,
-    };
-  }
+  Map<String, dynamic> toJson() => _$FoodModelToJson(this);
 
-  Map toMap(FoodModel food) {
-    var data = Map<String, dynamic>();
-    data['foodId'] = food.foodId;
-    data['name'] = food.name;
-    data['description'] = food.description;
-    data['price'] = food.price;
-    data['image'] = food.image;
-    data['typeId'] = food.typeId;
-    data['created_at'] = food.createdAt;
-    return data;
-  }
+  Map toMap(FoodModel food) => _$FoodModelToJson(this);
 
-  factory FoodModel.fromMap(
-    Map<dynamic, dynamic> mapData,
-  ) {
-    return FoodModel(
-      foodId: mapData['foodId'],
-      name: mapData['name'],
-      description: mapData['description'],
-      price: mapData['price'],
-      image: mapData['image'],
-      typeId: mapData['typeId'],
-      createdAt: mapData['created_at'],
-    );
-  }
+  factory FoodModel.fromJson(Map<String, dynamic> json) => _$FoodModelFromJson(json);
 }

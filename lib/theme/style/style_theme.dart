@@ -17,6 +17,13 @@ class StyleThemeData {
         height: height.h,
       );
 
+  static TextStyle bold17({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
+        fontSize: 17.fontSize,
+        fontWeight: FontWeight.w700,
+        color: color ?? appTheme.blackColor,
+        height: height.h,
+      );
+
   static TextStyle bold11({BuildContext? context, Color? color}) => TextStyle(
         fontSize: 11.fontSize,
         fontWeight: FontWeight.w700,
@@ -73,6 +80,12 @@ class StyleThemeData {
         color: color ?? appTheme.blackColor,
         height: 1.5.h,
         letterSpacing: 0.2,
+      );
+
+  static TextStyle regular17({BuildContext? context, Color? color}) => TextStyle(
+        fontSize: 17.fontSize,
+        fontWeight: FontWeight.w400,
+        color: color ?? appTheme.blackColor,
       );
 
   static TextStyle bold16({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(

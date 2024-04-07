@@ -21,6 +21,12 @@ class FoodScreen extends GetWidget<FoodController> {
           backgroundColor: appTheme.transparentColor,
           titleSpacing: 0,
           automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              onPressed: () => controller.addRandomFood(),
+              icon: Icon(Icons.ad_units, color: appTheme.blackColor),
+            ),
+          ],
           title: Row(
             children: [
               IconButton(

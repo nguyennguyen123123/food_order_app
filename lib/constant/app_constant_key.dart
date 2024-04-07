@@ -4,6 +4,8 @@ const DAY_FORMAT = 'dd/MM/yyyy';
 const DAY_MONTH_FORMAT = 'dd/MM';
 const HOUR_FORMAT = 'HH:mm';
 
+const LIMIT = 10;
+
 class AppConstant {}
 
 const List<Locale> supportedLocales = <Locale>[
@@ -28,4 +30,24 @@ abstract class ERROR_CODE {
 abstract class DAY_STATUS {
   static const MORNING = 'MORNING';
   static const AFTERNOON = 'AFTERNOON';
+}
+
+abstract class GENDER {
+  static const MAN = 'MAN';
+  static const FEMALE = 'FEMALE';
+
+  static const map = {
+    GENDER.MAN: "Nam",
+    GENDER.FEMALE: "Nữ",
+  };
+}
+
+abstract class USER_ROLE {
+  static const ADMIN = 'ADMIN';
+  static const STAFF = 'STAFF';
+
+  static const map = {
+    USER_ROLE.ADMIN: "ADMIN",
+    USER_ROLE.STAFF: "STAFF",
+  };
 }

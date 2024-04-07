@@ -7,7 +7,6 @@ part of 'account.dart';
 // **************************************************************************
 
 Account _$AccountFromJson(Map<String, dynamic> json) => Account(
-      id: json['id'] as int?,
       createdAt: json['created_at'] as String?,
       email: json['email'] as String?,
       role: json['role'] as String?,
@@ -17,7 +16,6 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
     );
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
-      'id': instance.id,
       'created_at': instance.createdAt,
       'email': instance.email,
       'role': instance.role,

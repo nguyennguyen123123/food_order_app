@@ -135,12 +135,12 @@ MyAppState? findRootAncestorState(BuildContext context) {
   return context.findRootAncestorStateOfType<MyAppState>();
 }
 
-void someFunction(BuildContext context, Locale locale) {
-  MyAppState? mainAppState = findRootAncestorState(context);
-  if (mainAppState != null) {
-    mainAppState.handleLanguageChange(locale);
-  }
-}
+// void someFunction(BuildContext context, Locale locale) {
+//   MyAppState? mainAppState = findRootAncestorState(context);
+//   if (mainAppState != null) {
+//     mainAppState.handleLanguageChange(locale);
+//   }
+// }
 
 const _uuid = Uuid();
 

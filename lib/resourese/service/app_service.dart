@@ -8,6 +8,7 @@ import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/profile/profile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
+import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
 import 'package:get/get.dart';
 
@@ -30,8 +31,9 @@ class AppService {
 
     Get.put<BaseService>(server);
 
+    Get.put<OrderCartService>(OrderCartService());
     Get.put(AccountService(storageService: Get.find(), baseService: Get.find()));
-    Get.put<IAuthRepository>(AuthRepository(baseService: Get.find()));
+    Get.put<IAuthRepository>(AuthRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IFoodRepository>(FoodRepository(baseService: Get.find()));
     Get.put<IProfileRepository>(ProfileRepository(baseService: Get.find()));
   }

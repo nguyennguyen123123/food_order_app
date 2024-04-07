@@ -22,7 +22,7 @@ class CreateEditFoodView extends GetWidget<FoodController> {
 
     controller.nameController.text = food.name ?? '';
     controller.desController.text = food.description ?? '';
-    controller.priceController.text = food.price ?? '';
+    controller.priceController.text = (food.price ?? 0).toString();
 
     controller.nameController.selection = nameSelection;
     controller.desController.selection = desSelection;

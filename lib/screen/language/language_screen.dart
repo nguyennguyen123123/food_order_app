@@ -78,11 +78,11 @@ class _LanguageScreenState extends State<LanguageScreen> {
                             languageValue: language['value'] as Language,
                             onLanguageTap: (languageCode, countryCode, lang) {
                               this.language = language;
-                              if (countryCode != null) {
-                                someFunction(context, Locale(languageCode, countryCode));
-                              } else {
-                                someFunction(context, Locale(languageCode));
-                              }
+                              // if (countryCode != null) {
+                              //   someFunction(context, Locale(languageCode, countryCode));
+                              // } else {
+                              //   someFunction(context, Locale(languageCode));
+                              // }
                               Navigator.pop(context);
                               if (lang != null) {
                                 languageNotifier.value = lang;

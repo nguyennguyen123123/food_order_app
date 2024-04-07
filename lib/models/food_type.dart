@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'food_type.g.dart';
+
+@JsonSerializable()
 class FoodType {
   final String? typeId;
   final String? name;
@@ -33,15 +38,5 @@ class FoodType {
     return data;
   }
 
-  factory FoodType.fromMap(
-    Map<dynamic, dynamic> mapData,
-  ) {
-    return FoodType(
-      typeId: mapData['typeId'],
-      name: mapData['name'],
-      description: mapData['description'],
-      image: mapData['image'],
-      createdAt: mapData['created_at'],
-    );
-  }
+  factory FoodType.fromJson(Map<String, dynamic> json) => _$FoodTypeFromJson(json);
 }
