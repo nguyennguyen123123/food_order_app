@@ -1,3 +1,4 @@
+import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/routes/pages.dart';
@@ -10,6 +11,14 @@ class ProfileController extends GetxController {
 
   ProfileController({required this.profileRepository, required this.accountService});
 
+  @override
+  void onInit() {
+    getProfile();
+    super.onInit();
+  }
+
+  var account = Account().obs;
+
   Future<void> signOut() async {
     try {
       profileRepository.signOut();
@@ -19,6 +28,13 @@ class ProfileController extends GetxController {
       print(error);
     } finally {
       Get.offAllNamed(Routes.SIGNIN);
+    }
+  }
+
+  void getProfile() async {
+    Account? data = await profileRepository.getProfile();
+    if (data != null) {
+      account.value = data;
     }
   }
 }

@@ -8,6 +8,7 @@ import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/icons_assets.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
+import 'package:food_delivery_app/widgets/show_no_system_widget.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends GetWidget<ProfileController> {
@@ -42,12 +43,12 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Name',
+                    controller.account.value.name.toString(),
                     style: StyleThemeData.regular16(color: appTheme.whiteText),
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'Admin',
+                    controller.account.value.role.toString(),
                     style: StyleThemeData.regular14(color: appTheme.whiteText),
                   ),
                 ],
@@ -97,8 +98,8 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     style: StyleThemeData.regular16(),
                   ),
                   SizedBox(height: 8.h),
-                  newMethod(onTap: () {}, text: "setting", icons: IconAssets.settingsIcon),
-                  const Divider(thickness: 1),
+                  // newMethod(onTap: () {}, text: "setting", icons: IconAssets.settingsIcon),
+                  // const Divider(thickness: 1),
                   newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.settingsIcon),
                   const Divider(thickness: 1),
                   newMethod(
@@ -121,7 +122,17 @@ class ProfileScreen extends GetWidget<ProfileController> {
               ),
               child: newMethod(
                 onTap: () {
-                  Get.snackbar('Đã đăng xuất', 'Bạn đã đăng xuất thành công');
+                  showNoSystemWidget(
+                    context,
+                    title: 'Xác nhận đăng xuất',
+                    des: 'Bạn chắc chắn muốn đăng xuất.',
+                    cancel: 'Hủy',
+                    confirm: 'Xác nhận',
+                    ontap: () {
+                      Get.back();
+                      controller.signOut().then((value) => Get.snackbar('Đã đăng xuất', 'Bạn đã đăng xuất thành công'));
+                    },
+                  );
                 },
                 text: 'Đăng xuất',
                 color: appTheme.errorColor,

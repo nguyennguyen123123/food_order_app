@@ -137,7 +137,7 @@ class FoodScreen extends GetWidget<FoodController> {
                                         cancel: 'Hủy',
                                         confirm: 'Xác nhận',
                                         ontap: () {
-                                          Navigator.pop(context);
+                                          Get.back();
                                           controller.deleteFood(food.foodId.toString());
                                         },
                                       );
