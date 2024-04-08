@@ -11,6 +11,7 @@ class PrinterRepository extends IPrinterRepository {
   @override
   Future<Printer?> addPrinter(Printer printer) async {
     try {
+      print(printer);
       final response = await baseService.client.from(TABLE_NAME.PRINTER).insert(printer.toJson());
 
       return response;
@@ -19,6 +20,32 @@ class PrinterRepository extends IPrinterRepository {
       handleError(e);
 
       return null;
+    }
+  }
+
+  @override
+  Future<List<Printer>?> getPrinter() async {
+    try {
+      final response = await baseService.client
+          .from(TABLE_NAME.PRINTER)
+          .select()
+          .withConverter((data) => data.map((e) => Printer.fromJson(e)).toList());
+
+      return response.toList();
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deletePrinter(String printerId) async {
+    try {
+      await baseService.client.from(TABLE_NAME.PRINTER).delete().eq('id', printerId);
+    } catch (error) {
+      print(error);
+      handleError(error);
+      rethrow;
     }
   }
 }
