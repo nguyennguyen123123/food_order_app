@@ -39,19 +39,21 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 ),
               ),
               SizedBox(width: 16.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    controller.account.value.name.toString(),
-                    style: StyleThemeData.regular16(color: appTheme.whiteText),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    controller.account.value.role.toString(),
-                    style: StyleThemeData.regular14(color: appTheme.whiteText),
-                  ),
-                ],
+              Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      controller.account.value.name.toString(),
+                      style: StyleThemeData.regular16(color: appTheme.whiteText),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      controller.account.value.role.toString(),
+                      style: StyleThemeData.regular14(color: appTheme.whiteText),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -76,7 +78,7 @@ class ProfileScreen extends GetWidget<ProfileController> {
                   ),
                   SizedBox(height: 8.h),
                   newMethod(
-                    onTap: () {},
+                    onTap: () => Get.toNamed(Routes.MYACCOUNT),
                     text: "account",
                     icons: IconAssets.editIcon,
                   ),

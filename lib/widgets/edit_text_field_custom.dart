@@ -30,6 +30,7 @@ class EditTextFieldCustom extends StatelessWidget {
     this.isRequire = false,
     this.validateText,
     this.textInputAction,
+    this.enabled,
   }) : super(key: key);
 
   final String label;
@@ -42,7 +43,6 @@ class EditTextFieldCustom extends StatelessWidget {
   final String? emptyErrorText;
   final bool isRequire;
   final TextInputAction? textInputAction;
-
   /// this item use for display value but return key
   final Map<String, String> mapItems;
   final bool isDropDown;
@@ -55,6 +55,9 @@ class EditTextFieldCustom extends StatelessWidget {
   final bool isShowErrorText;
   final TextInputType? textInputType;
   final bool isObscure;
+  final  bool? enabled;
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -97,6 +100,7 @@ class EditTextFieldCustom extends StatelessWidget {
             textInputType: textInputType,
             obscureText: isObscure,
             formatter: [if (maxLength != null) LengthLimitingTextInputFormatter(maxLength)],
+            enabled: enabled,
             suffix: suffix ??
                 (isDropDown && items.isEmpty
                     ? Row(

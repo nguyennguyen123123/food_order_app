@@ -35,4 +35,28 @@ class ProfileRepository extends IProfileRepository {
       return null;
     }
   }
+
+  @override
+  Future<Account?> updateProfile(String name, String gender) async {
+    try {
+      final userId = baseService.client.auth.currentSession!.user.id;
+
+      final updates = {
+        'user_id': userId,
+        'name': name,
+        'gender': gender,
+      };
+
+      final result = await baseService.client.from(TABLE_NAME.ACCOUNT).upsert(updates);
+
+      return result;
+    } on PostgrestException catch (error) {
+      print(error.message);
+      return null;
+    } catch (error) {
+      handleError(error);
+      print(error);
+      return null;
+    }
+  }
 }

@@ -94,6 +94,8 @@ abstract class BaseThemeData {
   Color twoActiveColor = const Color(0xFF5661F5);
   Color fatherActiveColor = const Color(0xFF514BF6);
 
+  Color primary40Color = const Color(0xFF5488F5);
+
   LinearGradient activeGradient = LinearGradient(
     colors: const [
       Color(0xFF5E7DF5),

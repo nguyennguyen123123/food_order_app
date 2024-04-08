@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileController extends GetxController {
@@ -11,13 +13,30 @@ class ProfileController extends GetxController {
 
   ProfileController({required this.profileRepository, required this.accountService});
 
+  var account = Account().obs;
+  final ValueNotifier<bool> isEditAccountVisible = ValueNotifier<bool>(false);
+  final ImagePicker imagePicker = ImagePicker();
+
+  late TextEditingController nameController;
+  var selectedGender = ''.obs;
+
+  void handleClick(String gender) {
+    account.update((val) {
+      val!.gender = gender;
+    });
+    selectedGender.value = gender;
+  }
+
   @override
   void onInit() {
     getProfile();
+    nameController = TextEditingController();
+    ever(account, (_) {
+      nameController.text = account.value.name ?? '';
+      selectedGender.value = account.value.gender ?? '';
+    });
     super.onInit();
   }
-
-  var account = Account().obs;
 
   Future<void> signOut() async {
     try {
@@ -36,5 +55,17 @@ class ProfileController extends GetxController {
     if (data != null) {
       account.value = data;
     }
+  }
+
+  void updateProfile() async {
+    await profileRepository.updateProfile(nameController.text, selectedGender.value);
+    getProfile();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    isEditAccountVisible.dispose();
+    nameController.dispose();
   }
 }
