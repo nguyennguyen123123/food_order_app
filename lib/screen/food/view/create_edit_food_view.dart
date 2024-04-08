@@ -17,17 +17,9 @@ class CreateEditFoodView extends GetWidget<FoodController> {
   Widget build(BuildContext context) {
     FoodModel food = Get.arguments as FoodModel? ?? FoodModel();
 
-    final nameSelection = controller.nameController.selection;
-    final desSelection = controller.desController.selection;
-    final priceSelection = controller.priceController.selection;
-
     controller.nameController.text = food.name ?? '';
     controller.desController.text = food.description ?? '';
     controller.priceController.text = (food.price ?? 0).toString();
-
-    controller.nameController.selection = nameSelection;
-    controller.desController.selection = desSelection;
-    controller.priceController.selection = priceSelection;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),

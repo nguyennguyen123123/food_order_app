@@ -17,10 +17,10 @@ class MyAccountView extends GetWidget<ProfileController> {
           if (controller.isEditAccountVisible.value)
             showNoSystemWidget(
               context,
-              title: 'Xác nhận hủy?',
-              des: 'Bạn có chắc chắn muốn hủy và không thể lưu thông tin?',
-              cancel: 'Đóng',
-              confirm: 'Đồng ý',
+              title: 'confirm_cancel'.tr + '?',
+              des: 'are_you_sure_you_want_to_cancel_and_cannot_save_the_information'.tr + '?',
+              cancel: 'close'.tr,
+              confirm: 'agree'.tr,
               ontap: () {
                 Get.back();
                 Get.back();
@@ -52,10 +52,10 @@ class MyAccountView extends GetWidget<ProfileController> {
                             ? () {
                                 showNoSystemWidget(
                                   context,
-                                  title: 'Xác nhận hủy?',
-                                  des: 'Bạn có chắc chắn muốn hủy và không thể lưu thông tin?',
-                                  cancel: 'Đóng',
-                                  confirm: 'Đồng ý',
+                                  title: 'confirm_cancel'.tr + '?',
+                                  des: 'are_you_sure_you_want_to_cancel_and_cannot_save_the_information'.tr + '?',
+                                  cancel: 'close'.tr,
+                                  confirm: 'agree'.tr,
                                   ontap: () {
                                     Get.back();
                                     Get.back();
@@ -72,7 +72,7 @@ class MyAccountView extends GetWidget<ProfileController> {
                     valueListenable: controller.isEditAccountVisible,
                     builder: (context, showEdit, _) {
                       return Text(
-                        controller.isEditAccountVisible.value ? 'Cập nhật tài khoản' : 'Tài khoản ',
+                        controller.isEditAccountVisible.value ? 'update_account'.tr : 'account'.tr,
                         style: StyleThemeData.bold18(height: 0),
                       );
                     },
@@ -100,7 +100,7 @@ class MyAccountView extends GetWidget<ProfileController> {
                                   border: Border.all(color: appTheme.appColor),
                                 ),
                                 child: Text(
-                                  'Chỉnh sửa',
+                                  'edit'.tr,
                                   style: StyleThemeData.bold14(color: appTheme.appColor, height: 0),
                                 ),
                               ),
@@ -142,7 +142,7 @@ class MyAccountView extends GetWidget<ProfileController> {
                                 border: Border.all(color: appTheme.appColor),
                               ),
                               child: Text(
-                                'Hủy',
+                                'cancel'.tr,
                                 style: StyleThemeData.bold14(color: appTheme.appColor, height: 0),
                               ),
                             ),
@@ -175,7 +175,7 @@ class MyAccountView extends GetWidget<ProfileController> {
                               //         style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
                               //       ),
                               child: Text(
-                                'Cập nhật thông tin',
+                                'update_information'.tr,
                                 style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
                               ),
                             ),
@@ -202,7 +202,7 @@ class MyAccountView extends GetWidget<ProfileController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Thông tin cá nhân',
+                'personal_information'.tr,
                 style: StyleThemeData.bold14(),
               ),
               SizedBox(height: 16.h),
@@ -213,8 +213,8 @@ class MyAccountView extends GetWidget<ProfileController> {
                   children: [
                     EditTextFieldCustom(
                       controller: controller.nameController,
-                      hintText: 'Nhập tên',
-                      label: 'Tên',
+                      hintText: 'enter_name'.tr,
+                      label: 'name'.tr,
                       enabled: showEdit,
                       suffix: Icon(Icons.account_circle_sharp),
                       textInputType: TextInputType.emailAddress,
@@ -231,13 +231,13 @@ class MyAccountView extends GetWidget<ProfileController> {
                     SizedBox(
                       width: 120.w,
                       child: Text(
-                        'Giới tính',
+                        'gender'.tr,
                         style: StyleThemeData.bold14(color: appTheme.textDesColor, height: 0),
                       ),
                     ),
-                    _buildGenderIcon('Nam', 'MAN', clickOntap: showEdit),
+                    _buildGenderIcon('male'.tr, 'MAN', clickOntap: showEdit),
                     SizedBox(width: 18.w),
-                    _buildGenderIcon('Nữ', 'FEMALE', clickOntap: showEdit),
+                    _buildGenderIcon('female'.tr, 'FEMALE', clickOntap: showEdit),
                   ],
                 ),
               ),

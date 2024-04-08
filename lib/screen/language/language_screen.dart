@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/constant/translations/localization_service.dart';
 import 'package:food_delivery_app/main.dart';
-import 'package:food_delivery_app/screen/language/language_value.dart';
 import 'package:food_delivery_app/screen/language/language_widgets.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
+import 'package:get/get.dart';
 
 class LanguageScreen extends StatefulWidget {
   const LanguageScreen({Key? key}) : super(key: key);
@@ -13,24 +14,10 @@ class LanguageScreen extends StatefulWidget {
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
-  final languageNotifier = ValueNotifier<Language>(Language.english);
-  late Map<String, dynamic>? language;
-  late Language currentLanguage;
-
-  @override
-  void initState() {
-    super.initState();
-    getLocale().then((value) {
-      currentLanguage = value;
-      languageNotifier.value = value;
-    });
-  }
-
-  @override
-  void dispose() {
-    languageNotifier.dispose();
-    super.dispose();
-  }
+  final locales = [
+    {'name': 'English', 'locale': 'en'},
+    {'name': 'Vietnamese', 'locale': 'vi'},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,41 +45,26 @@ class _LanguageScreenState extends State<LanguageScreen> {
       ),
       body: Padding(
         padding: padding(all: 16),
-        child: ValueListenableBuilder<Language>(
-          valueListenable: languageNotifier,
-          builder: (context, value, child) =>
-              child ??
-              ListView(
-                padding: padding(bottom: 5),
-                children: getLanguageListWithContext(context).map((language) {
-                  return language == null
-                      ? const SizedBox()
-                      : Padding(
-                          padding: padding(top: language['languageCode'] != 'vi' ? 16 : 0),
-                          child: LanguageWidgets(
-                            flagCode: language['flag_code'].toString(),
-                            languageCode: language['languageCode'].toString(),
-                            countryCode: language['countryCode'] as String? ?? '',
-                            languageIcon: language['icon'].toString(),
-                            languageText: language['text'].toString(),
-                            languageValue: language['value'] as Language,
-                            onLanguageTap: (languageCode, countryCode, lang) {
-                              this.language = language;
-                              // if (countryCode != null) {
-                              //   someFunction(context, Locale(languageCode, countryCode));
-                              // } else {
-                              //   someFunction(context, Locale(languageCode));
-                              // }
-                              Navigator.pop(context);
-                              if (lang != null) {
-                                languageNotifier.value = lang;
-                              }
-                            },
-                            groupValue: value,
-                          ),
-                        );
-                }).toList(),
-              ),
+        child: ListView.builder(
+          itemCount: locales.length,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemBuilder: (context, index) => Padding(
+            padding: padding(bottom: 16),
+            child: LanguageWidgets(
+              languageCode: LocalizationService.locale.languageCode,
+              languageText: locales[index]['name'].toString(),
+              countryCode: LocalizationService.locale.languageCode,
+              locale: locales[index]['locale'].toString(),
+              onLanguageTap: () {
+                String _selectedLang = LocalizationService.locale.languageCode;
+                _selectedLang = locales[index]['locale'].toString();
+                LocalizationService.changeLocale(_selectedLang);
+                Get.updateLocale(LocalizationService.locale);
+                Get.back();
+              },
+            ),
+          ),
         ),
       ),
     );

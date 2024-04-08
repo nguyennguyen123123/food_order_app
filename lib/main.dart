@@ -10,12 +10,15 @@ import 'package:food_delivery_app/utils/universal_variables.dart';
 import 'package:food_delivery_app/widgets/reponsive/size_config.dart';
 import 'package:get/get.dart';
 
+import 'utils/local_storage.dart';
+
 AppThemeUtil themeUtil = AppThemeUtil();
 BaseThemeData get appTheme => themeUtil.getAppTheme();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppService.initAppService();
+  await LocalStorage.init();
 
   runApp(LayoutBuilder(builder: (context, constraints) {
     SizeConfig.instance.init(constraints: constraints, screenHeight: 812, screenWidth: 375);
@@ -30,11 +33,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   void dispose() {
     themeUtil.dispose();

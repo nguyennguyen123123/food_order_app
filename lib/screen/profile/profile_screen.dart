@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_app/constant/translations/localization_service.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/profile/profile_controller.dart';
@@ -73,13 +74,13 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "my account",
+                    'my_account'.tr,
                     style: StyleThemeData.bold14(),
                   ),
                   SizedBox(height: 8.h),
                   newMethod(
                     onTap: () => Get.toNamed(Routes.MYACCOUNT),
-                    text: "account",
+                    text: 'account'.tr,
                     icons: IconAssets.editIcon,
                   ),
                 ],
@@ -96,7 +97,7 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "context.l10n.general_management_text",
+                    'general_management'.tr,
                     style: StyleThemeData.regular16(),
                   ),
                   SizedBox(height: 8.h),
@@ -108,8 +109,8 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     onTap: () {
                       Get.toNamed(Routes.LANGUAGE);
                     },
-                    text: "context.l10n.language_text",
-                    lable: "context.l10n.vietnamese_text",
+                    text: 'language'.tr,
+                    lable: LocalizationService.locale.languageCode == 'en' ? 'english'.tr : 'vietnamese'.tr,
                     icons: IconAssets.languageIcon,
                   ),
                 ],
@@ -126,17 +127,19 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 onTap: () {
                   showNoSystemWidget(
                     context,
-                    title: 'Xác nhận đăng xuất',
-                    des: 'Bạn chắc chắn muốn đăng xuất.',
-                    cancel: 'Hủy',
-                    confirm: 'Xác nhận',
+                    title: 'confirm_logout'.tr,
+                    des: 'you_definitely_want_to_sign_out'.tr,
+                    cancel: 'cancel'.tr,
+                    confirm: 'confirm'.tr,
                     ontap: () {
                       Get.back();
-                      controller.signOut().then((value) => Get.snackbar('Đã đăng xuất', 'Bạn đã đăng xuất thành công'));
+                      controller.signOut().then(
+                            (value) => Get.snackbar('signed_out'.tr, 'you_have_successfully_logged_out'.tr),
+                          );
                     },
                   );
                 },
-                text: 'Đăng xuất',
+                text: 'log_out'.tr,
                 color: appTheme.errorColor,
                 icons: IconAssets.logoutIcon,
               ),
