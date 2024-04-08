@@ -6,6 +6,7 @@ import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/screen/food/food_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/utils/number_formatter.dart';
 import 'package:food_delivery_app/widgets/confirmation_button_widget.dart';
 import 'package:food_delivery_app/widgets/edit_text_field_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -115,6 +116,7 @@ class CreateEditFoodView extends GetWidget<FoodController> {
                   label: 'Giá món ăn',
                   suffix: Icon(Icons.price_change),
                   textInputType: TextInputType.number,
+                  numberFormat: NumericTextFormatter(),
                 ),
                 SizedBox(height: 8.h),
                 Align(alignment: Alignment.centerLeft, child: Text('Phân loại', style: StyleThemeData.bold14())),

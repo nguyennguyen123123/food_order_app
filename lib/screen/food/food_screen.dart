@@ -123,7 +123,15 @@ class FoodScreen extends GetWidget<FoodController> {
                                 style: StyleThemeData.bold18(),
                                 textAlign: TextAlign.center,
                               ),
-                              Text('Mô tả: ${food.description}', style: StyleThemeData.regular14()),
+                              Container(
+                                constraints: BoxConstraints(maxWidth: 120.w),
+                                child: Text(
+                                  'Mô tả: ${food.description}',
+                                  style: StyleThemeData.regular14(),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                               Text('Giá: ${food.price}', style: StyleThemeData.regular14()),
                               SizedBox(height: 12.h),
                               Row(
