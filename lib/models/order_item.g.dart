@@ -8,9 +8,7 @@ part of 'order_item.dart';
 
 OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
       orderItemId: json['order_item_id'] as String?,
-      food: json['food_id'] == null
-          ? null
-          : FoodModel.fromJson(json['food_id'] as Map<String, dynamic>),
+      food: json['food_id'] == null ? null : FoodModel.fromJson(json['food_id'] as Map<String, dynamic>),
       quantity: json['quantity'] as int?,
       note: json['note'] as String?,
     );

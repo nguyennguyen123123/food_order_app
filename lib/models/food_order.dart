@@ -9,10 +9,8 @@ part 'food_order.g.dart';
 class FoodOrder {
   @JsonKey(name: 'order_id')
   String? orderId;
-  @JsonKey(name: 'order_items', includeFromJson: true, includeToJson: false)
+  @JsonKey(name: 'food_order_item', includeFromJson: false, includeToJson: false)
   List<OrderItem>? orderItems;
-  @JsonKey(name: 'order_items', includeFromJson: false, includeToJson: true)
-  List<String>? orderItemsId;
   @JsonKey(name: 'voucher_price')
   double? voucherPrice;
   @JsonKey(name: 'table_number')
@@ -25,11 +23,14 @@ class FoodOrder {
   FoodOrder({
     this.orderId,
     this.orderItems,
-    this.orderItemsId,
     this.voucherPrice,
     this.tableNumber,
     this.total,
     this.userOrder,
     this.userOrderId,
   });
+
+  factory FoodOrder.fromJson(Map<String, dynamic> json) => _$FoodOrderFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FoodOrderToJson(this);
 }

@@ -1,3 +1,5 @@
 class IBaseRepository {
-  void handleError(error) {}
+  void handleError(error) {
+    print(error);
+  }
 }
