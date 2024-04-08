@@ -14,4 +14,5 @@ abstract class Routes {
   static const LIST_FOOD = '/list-food';
   static const CART = '/cart';
   static const MYACCOUNT = '/my_account';
+  static const PRINT = '/printer';
 }
