@@ -3,29 +3,30 @@ import 'package:flutter/services.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class TextFieldCustom extends StatefulWidget {
-  const TextFieldCustom(
-      {Key? key,
-      this.hintStyle,
-      this.hintText,
-      this.obscureText = false,
-      required this.controller,
-      this.suffix,
-      this.border,
-      this.onFieldSubmitted,
-      this.onEditingComplete,
-      this.cursorColor,
-      this.textInputAction,
-      this.focusNode,
-      this.contentPadding,
-      this.maxLine,
-      this.counterStyle,
-      this.maxLength,
-      this.filledColor,
-      this.canEdit = true,
-      this.textInputType,
-      this.formatter = const [],
-      this.onTap})
-      : super(key: key);
+  const TextFieldCustom({
+    Key? key,
+    this.hintStyle,
+    this.hintText,
+    this.obscureText = false,
+    required this.controller,
+    this.suffix,
+    this.border,
+    this.onFieldSubmitted,
+    this.onEditingComplete,
+    this.cursorColor,
+    this.textInputAction,
+    this.focusNode,
+    this.contentPadding,
+    this.maxLine,
+    this.counterStyle,
+    this.maxLength,
+    this.filledColor,
+    this.canEdit = true,
+    this.textInputType,
+    this.formatter = const [],
+    this.onTap,
+    this.enabled,
+  }) : super(key: key);
   final String? hintText;
   final TextStyle? hintStyle;
   final TextStyle? counterStyle;
@@ -46,6 +47,7 @@ class TextFieldCustom extends StatefulWidget {
   final bool canEdit;
   final TextInputType? textInputType;
   final List<TextInputFormatter> formatter;
+  final bool? enabled;
   @override
   State<TextFieldCustom> createState() => _TextFieldCustomState();
 }
@@ -67,16 +69,18 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
       readOnly: !widget.canEdit,
       inputFormatters: widget.formatter,
       keyboardType: widget.textInputType,
+      enabled: widget.enabled,
       decoration: InputDecoration(
-          contentPadding: widget.contentPadding ?? padding(vertical: 1, horizontal: 12),
-          filled: widget.filledColor != null,
-          fillColor: widget.filledColor,
-          hintText: widget.hintText,
-          hintStyle: widget.hintStyle,
-          enabledBorder: widget.border,
-          focusedBorder: widget.border,
-          counterStyle: widget.counterStyle,
-          suffixIcon: widget.suffix),
+        contentPadding: widget.contentPadding ?? padding(vertical: 1, horizontal: 12),
+        filled: widget.filledColor != null,
+        fillColor: widget.filledColor,
+        hintText: widget.hintText,
+        hintStyle: widget.hintStyle,
+        enabledBorder: widget.border,
+        focusedBorder: widget.border,
+        counterStyle: widget.counterStyle,
+        suffixIcon: widget.suffix,
+      ),
     );
   }
 }

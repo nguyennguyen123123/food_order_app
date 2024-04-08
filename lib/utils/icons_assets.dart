@@ -7,4 +7,5 @@ class IconAssets {
   static String caretRightIcon = '${_basePath}caret_right.svg';
   static String logoutIcon = '${_basePath}logout.svg';
   static String languageIcon = '${_basePath}language.svg';
+  static String buttonCameraIcon = '${_basePath}button_camera.svg';
 }

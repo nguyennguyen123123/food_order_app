@@ -84,7 +84,7 @@ class FoodController extends GetxController {
         foodId: foodId,
         name: nameController.text,
         description: desController.text,
-        price: int.tryParse(priceController.text) ?? 0,
+        price: int.tryParse(priceController.text.replaceAll(',', '')),
         typeId: selectedFoodType.value?.typeId,
         image: url,
         createdAt: DateTime.now().toString(),

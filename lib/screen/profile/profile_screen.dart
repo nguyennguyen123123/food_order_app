@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_app/constant/translations/localization_service.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/profile/profile_controller.dart';
@@ -8,6 +9,7 @@ import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/icons_assets.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
+import 'package:food_delivery_app/widgets/show_no_system_widget.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends GetWidget<ProfileController> {
@@ -38,19 +40,21 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 ),
               ),
               SizedBox(width: 16.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Name',
-                    style: StyleThemeData.regular16(color: appTheme.whiteText),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    'Admin',
-                    style: StyleThemeData.regular14(color: appTheme.whiteText),
-                  ),
-                ],
+              Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      controller.account.value.name.toString(),
+                      style: StyleThemeData.regular16(color: appTheme.whiteText),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      controller.account.value.role.toString(),
+                      style: StyleThemeData.regular14(color: appTheme.whiteText),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -70,13 +74,13 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "my account",
+                    'my_account'.tr,
                     style: StyleThemeData.bold14(),
                   ),
                   SizedBox(height: 8.h),
                   newMethod(
-                    onTap: () {},
-                    text: "account",
+                    onTap: () => Get.toNamed(Routes.MYACCOUNT),
+                    text: 'account'.tr,
                     icons: IconAssets.editIcon,
                   ),
                 ],
@@ -93,20 +97,20 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "context.l10n.general_management_text",
+                    'general_management'.tr,
                     style: StyleThemeData.regular16(),
                   ),
                   SizedBox(height: 8.h),
-                  newMethod(onTap: () {}, text: "setting", icons: IconAssets.settingsIcon),
-                  const Divider(thickness: 1),
+                  // newMethod(onTap: () {}, text: "setting", icons: IconAssets.settingsIcon),
+                  // const Divider(thickness: 1),
                   newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.settingsIcon),
                   const Divider(thickness: 1),
                   newMethod(
                     onTap: () {
                       Get.toNamed(Routes.LANGUAGE);
                     },
-                    text: "context.l10n.language_text",
-                    lable: "context.l10n.vietnamese_text",
+                    text: 'language'.tr,
+                    lable: LocalizationService.locale.languageCode == 'en' ? 'english'.tr : 'vietnamese'.tr,
                     icons: IconAssets.languageIcon,
                   ),
                 ],
@@ -121,9 +125,21 @@ class ProfileScreen extends GetWidget<ProfileController> {
               ),
               child: newMethod(
                 onTap: () {
-                  Get.snackbar('Đã đăng xuất', 'Bạn đã đăng xuất thành công');
+                  showNoSystemWidget(
+                    context,
+                    title: 'confirm_logout'.tr,
+                    des: 'you_definitely_want_to_sign_out'.tr,
+                    cancel: 'cancel'.tr,
+                    confirm: 'confirm'.tr,
+                    ontap: () {
+                      Get.back();
+                      controller.signOut().then(
+                            (value) => Get.snackbar('signed_out'.tr, 'you_have_successfully_logged_out'.tr),
+                          );
+                    },
+                  );
                 },
-                text: 'Đăng xuất',
+                text: 'log_out'.tr,
                 color: appTheme.errorColor,
                 icons: IconAssets.logoutIcon,
               ),

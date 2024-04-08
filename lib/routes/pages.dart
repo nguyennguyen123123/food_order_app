@@ -14,6 +14,7 @@ import 'package:food_delivery_app/screen/language/language_screen.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_binding.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_page.dart';
 import 'package:food_delivery_app/screen/onboarding/onboarding_scrreen.dart';
+import 'package:food_delivery_app/screen/profile/view/my_account_view.dart';
 import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_binding.dart';
@@ -81,6 +82,10 @@ abstract class AppPages {
       name: Routes.CART,
       page: () => CartPage(),
       binding: CartBinding(),
+    ),
+    GetPage(
+      name: Routes.MYACCOUNT,
+      page: () => MyAccountView(),
     ),
   ];
 }

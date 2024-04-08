@@ -30,6 +30,8 @@ class EditTextFieldCustom extends StatelessWidget {
     this.isRequire = false,
     this.validateText,
     this.textInputAction,
+    this.enabled,
+    this.numberFormat,
   }) : super(key: key);
 
   final String label;
@@ -55,6 +57,9 @@ class EditTextFieldCustom extends StatelessWidget {
   final bool isShowErrorText;
   final TextInputType? textInputType;
   final bool isObscure;
+  final bool? enabled;
+  final TextInputFormatter? numberFormat;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -96,7 +101,11 @@ class EditTextFieldCustom extends StatelessWidget {
             textInputAction: textInputAction,
             textInputType: textInputType,
             obscureText: isObscure,
-            formatter: [if (maxLength != null) LengthLimitingTextInputFormatter(maxLength)],
+            formatter: [
+              if (maxLength != null) LengthLimitingTextInputFormatter(maxLength),
+              if (numberFormat != null) numberFormat!,
+            ],
+            enabled: enabled,
             suffix: suffix ??
                 (isDropDown && items.isEmpty
                     ? Row(
