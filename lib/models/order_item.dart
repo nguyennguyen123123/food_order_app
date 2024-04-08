@@ -6,13 +6,17 @@ part 'order_item.g.dart';
 
 @JsonSerializable()
 class OrderItem {
+  @JsonKey(name: 'order_item_id')
+  String? orderItemId;
+  @JsonKey(name: 'food_id', includeFromJson: true, includeToJson: false)
   FoodModel? food;
-  @JsonKey(name: 'food_id')
+  @JsonKey(name: 'food_id', includeFromJson: false, includeToJson: true)
   String? foodId;
   int? quantity;
   String? note;
 
   OrderItem({
+    this.orderItemId,
     this.food,
     this.foodId,
     this.quantity,
