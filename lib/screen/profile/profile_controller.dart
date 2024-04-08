@@ -20,6 +20,8 @@ class ProfileController extends GetxController {
   late TextEditingController nameController;
   var selectedGender = ''.obs;
 
+  var isLoadingupdate = false.obs;
+
   void handleClick(String gender) {
     account.update((val) {
       val!.gender = gender;
@@ -58,8 +60,18 @@ class ProfileController extends GetxController {
   }
 
   void updateProfile() async {
-    await profileRepository.updateProfile(nameController.text, selectedGender.value);
-    getProfile();
+    try {
+      isLoadingupdate(true);
+
+      await profileRepository.updateProfile(nameController.text, selectedGender.value);
+      getProfile();
+
+      isLoadingupdate(false);
+    } catch (error) {
+      print(error);
+    } finally {
+      isLoadingupdate(false);
+    }
   }
 
   @override
