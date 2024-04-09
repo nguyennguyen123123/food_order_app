@@ -24,3 +24,5 @@ pubspec.lock
 .dart_tool/flutter_build/a7a348f660f905d38b621838d37adf2f/kernel_snapshot.d
 .dart_tool/flutter_build/a7a348f660f905d38b621838d37adf2f/kernel_snapshot.stamp
 .dart_tool/flutter_build/a7a348f660f905d38b621838d37adf2f/outputs.json
+.flutter-plugins
+.flutter-plugins-dependencies

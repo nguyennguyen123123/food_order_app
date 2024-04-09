@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class CartBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => CartController());
+    Get.put(CartController(cartService: Get.find(), orderRepository: Get.find()));
   }
 }
