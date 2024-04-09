@@ -28,7 +28,8 @@ class FoodModel {
   final String? image;
   @JsonKey(includeToJson: true, includeFromJson: false)
   final String? typeId;
-  final String? createdAt;
+  @JsonKey(name: 'created_at')
+  String? createdAt;
   @JsonKey(includeToJson: false, includeFromJson: true, name: 'typeId')
   FoodType? foodType;
 

@@ -2,9 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
-import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
-import 'package:food_delivery_app/screen/food/food_controller.dart';
+import 'package:food_delivery_app/screen/edit_food/edit_food_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/number_formatter.dart';
 import 'package:food_delivery_app/widgets/confirmation_button_widget.dart';
@@ -12,15 +11,9 @@ import 'package:food_delivery_app/widgets/edit_text_field_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
-class CreateEditFoodView extends GetWidget<FoodController> {
+class EditFoodView extends GetWidget<EditFoodController> {
   @override
   Widget build(BuildContext context) {
-    FoodModel food = Get.arguments as FoodModel? ?? FoodModel();
-
-    controller.nameController.text = food.name ?? '';
-    controller.desController.text = food.description ?? '';
-    controller.priceController.text = (food.price ?? 0).toString();
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -35,7 +28,7 @@ class CreateEditFoodView extends GetWidget<FoodController> {
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(Icons.arrow_back, color: appTheme.blackColor),
               ),
-              Text(food.foodId != null ? 'Chỉnh sửa' : 'Thêm món', style: StyleThemeData.bold18(height: 0)),
+              Text('Chỉnh sửa món', style: StyleThemeData.bold18(height: 0)),
             ],
           ),
         ),
@@ -59,12 +52,12 @@ class CreateEditFoodView extends GetWidget<FoodController> {
                               ),
                             ),
                           )
-                        : food.image != null
+                        : controller.editFoodModel?.image != null
                             ? SizedBox(
                                 width: 150.w,
                                 height: 150.h,
                                 child: Image.network(
-                                  food.image.toString(),
+                                  controller.editFoodModel?.image ?? '',
                                   fit: BoxFit.cover,
                                 ),
                               )
@@ -139,16 +132,12 @@ class CreateEditFoodView extends GetWidget<FoodController> {
                   ),
                 ),
                 SizedBox(height: 24.h),
-                ConfirmationButtonWidget(
-                  isLoading: false,
-                  onTap: food.foodId != null
-                      ? () => controller.onEditFood(
-                            food.foodId.toString(),
-                            food.image.toString(),
-                            food.typeId.toString(),
-                          )
-                      : controller.onSubmit,
-                  text: food.foodId != null ? 'Chỉnh sửa' : 'Xác nhận',
+                Obx(
+                  () => ConfirmationButtonWidget(
+                    isLoading: controller.isLoading.isTrue,
+                    onTap: controller.onEditFood,
+                    text: 'Chỉnh sửa',
+                  ),
                 ),
               ],
             ),

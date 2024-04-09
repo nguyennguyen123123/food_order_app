@@ -4,6 +4,7 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/routes/pages.dart';
+import 'package:food_delivery_app/screen/edit_food/edit_food_parameter.dart';
 import 'package:food_delivery_app/screen/food/food_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -161,9 +162,8 @@ class FoodScreen extends GetWidget<FoodController> {
                                   ),
                                   SizedBox(width: 8.w),
                                   InkWell(
-                                    onTap: () {
-                                      Get.toNamed(Routes.ADDFOOD, arguments: food);
-                                    },
+                                    onTap: () =>
+                                        Get.toNamed(Routes.EDITFOOD, arguments: EditFoodParameter(foodModel: food)),
                                     child: Container(
                                       padding: padding(horizontal: 16, vertical: 5),
                                       decoration: BoxDecoration(

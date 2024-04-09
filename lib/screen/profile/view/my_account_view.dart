@@ -125,15 +125,15 @@ class MyAccountView extends GetWidget<ProfileController> {
             builder: (context, showEdit, _) => showEdit
                 ? Padding(
                     padding: padding(horizontal: 16, vertical: 16),
-                    child: FittedBox(
-                      child: Row(
-                        children: [
-                          InkWell(
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: InkWell(
                             onTap: () {
                               controller.isEditAccountVisible.value = false;
                             },
                             child: Container(
-                              width: MediaQuery.of(context).size.width / 2.w,
+                              width: MediaQuery.of(context).size.width.w,
                               height: 40.h,
                               alignment: Alignment.center,
                               padding: padding(vertical: 9),
@@ -147,15 +147,17 @@ class MyAccountView extends GetWidget<ProfileController> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 24.w),
-                          InkWell(
+                        ),
+                        SizedBox(width: 24.w),
+                        Flexible(
+                          child: InkWell(
                             onTap: () async {
                               controller.updateProfile();
                               Get.back();
                               controller.isEditAccountVisible.value = false;
                             },
                             child: Container(
-                              width: MediaQuery.of(context).size.width / 2.w,
+                              width: MediaQuery.of(context).size.width.w,
                               height: 40.h,
                               alignment: Alignment.center,
                               padding: padding(vertical: 10),
@@ -163,25 +165,22 @@ class MyAccountView extends GetWidget<ProfileController> {
                                 borderRadius: BorderRadius.circular(8),
                                 color: appTheme.appColor,
                               ),
-                              // child: authController.isUpdateLoading.isTrue
-                              //     ? Center(
-                              //         child: SpinKitFadingCircle(
-                              //           size: 25,
-                              //           color: appTheme.whiteText,
-                              //         ),
-                              //       )
-                              //     : Text(
-                              //         'Cập nhật thông tin',
-                              //         style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
-                              //       ),
-                              child: Text(
-                                'update_information'.tr,
-                                style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
-                              ),
+                              child: controller.isLoadingupdate.isTrue
+                                  ? Container(
+                                      width: 20.w,
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator(
+                                        color: appTheme.whiteText,
+                                      ),
+                                    )
+                                  : Text(
+                                      'update_information'.tr,
+                                      style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
+                                    ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   )
                 : const SizedBox.shrink(),

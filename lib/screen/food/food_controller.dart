@@ -22,6 +22,8 @@ class FoodController extends GetxController {
     getListFoodType();
   }
 
+  var isLoadingFood = false.obs;
+
   var foodList = <FoodModel>[].obs;
   var foodTypeList = <FoodType>[].obs;
 
@@ -72,6 +74,8 @@ class FoodController extends GetxController {
         pickedImageNotifier.value == null) return;
 
     try {
+      isLoadingFood(true);
+
       final foodId = getUuid();
 
       final url = await foodRepository.updateImages(
@@ -91,36 +95,20 @@ class FoodController extends GetxController {
       );
 
       await foodRepository.addFood(foodModel);
-
+      await getListFood();
       Get.back();
+
+      nameController.clear();
+      desController.clear();
+      priceController.clear();
+      pickedImageNotifier.value = null;
+      selectedFoodType.value = null;
+
+      isLoadingFood(false);
     } catch (error) {
       print('Error add food $error');
-    }
-  }
-
-  void onEditFood(String foodId, String image, String typeId) async {
-    try {
-      FoodModel foodModel = FoodModel(
-        foodId: foodId,
-        name: nameController.text,
-        description: desController.text,
-        price: int.tryParse(priceController.text) ?? 0,
-        typeId: typeId,
-        image: image,
-        createdAt: DateTime.now().toString(),
-      );
-
-      // final url = await foodRepository.updateImages(
-      //   pickedImageNotifier.value!.path,
-      //   pickedImageNotifier.value!,
-      //   fileName: foodId,
-      // );
-
-      await foodRepository.editFood(foodId, foodModel);
-
-      Get.back();
-    } catch (error) {
-      print('Error edit food $error');
+    } finally {
+      isLoadingFood(false);
     }
   }
 

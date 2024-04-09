@@ -4,17 +4,23 @@ import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
 import 'package:food_delivery_app/screen/cart/cart_binding.dart';
 import 'package:food_delivery_app/screen/cart/cart_page.dart';
+import 'package:food_delivery_app/screen/edit_food/edit_food_binding.dart';
+import 'package:food_delivery_app/screen/edit_food/edit_food_view.dart';
 import 'package:food_delivery_app/screen/food/food_binding.dart';
 import 'package:food_delivery_app/screen/food/food_screen.dart';
+import 'package:food_delivery_app/screen/food/view/add_food_view.dart';
 import 'package:food_delivery_app/screen/food/view/add_type_food_view.dart';
-import 'package:food_delivery_app/screen/food/view/create_edit_food_view.dart';
 import 'package:food_delivery_app/screen/home/home_main.dart';
 import 'package:food_delivery_app/screen/home/home_main_binding.dart';
 import 'package:food_delivery_app/screen/language/language_screen.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_binding.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_page.dart';
 import 'package:food_delivery_app/screen/onboarding/onboarding_scrreen.dart';
-import 'package:food_delivery_app/screen/printer_management/printe_pages.dart';
+import 'package:food_delivery_app/screen/printer/edit/edit_printer_binding.dart';
+import 'package:food_delivery_app/screen/printer/printe_pages.dart';
+import 'package:food_delivery_app/screen/printer/printer_binding.dart';
+import 'package:food_delivery_app/screen/printer/view/add_printer_view.dart';
+import 'package:food_delivery_app/screen/printer/view/edit_printer_view.dart';
 import 'package:food_delivery_app/screen/profile/view/my_account_view.dart';
 import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
@@ -62,8 +68,13 @@ abstract class AppPages {
     ),
     GetPage(
       name: Routes.ADDFOOD,
-      page: () => CreateEditFoodView(),
+      page: () => AddFoodView(),
       // binding: FoodBinding(),
+    ),
+    GetPage(
+      name: Routes.EDITFOOD,
+      page: () => EditFoodView(),
+      binding: EditFoodBinding(),
     ),
     GetPage(
       name: Routes.ADDTYPEFOOD,
@@ -91,6 +102,16 @@ abstract class AppPages {
     GetPage(
       name: Routes.PRINT,
       page: () => PrinterPages(),
+      binding: PrinterBinding(),
+    ),
+    GetPage(
+      name: Routes.ADDPRINTER,
+      page: () => AddPrinterView(),
+    ),
+    GetPage(
+      name: Routes.EDITPRINTER,
+      page: () => EditPrinterView(),
+      binding: EditPrinterBinding(),
     ),
   ];
 }

@@ -1,4 +1,4 @@
-import 'package:food_delivery_app/screen/printer_management/printer_controller.dart';
+import 'package:food_delivery_app/screen/printer/printer_controller.dart';
 import 'package:food_delivery_app/screen/temp/_binding.dart';
 import 'package:get/get.dart';
 
