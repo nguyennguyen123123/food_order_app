@@ -23,7 +23,7 @@ part 'account.g.dart';
 class Account {
   @JsonKey(name: 'created_at')
   String? createdAt;
-  String? email;
+  String? email; 
   String? role;
   String? name;
   String? gender;
