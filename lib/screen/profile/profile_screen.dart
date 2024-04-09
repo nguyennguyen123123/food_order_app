@@ -101,8 +101,8 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     style: StyleThemeData.regular16(),
                   ),
                   SizedBox(height: 8.h),
-                  // newMethod(onTap: () {}, text: "setting", icons: IconAssets.settingsIcon),
-                  // const Divider(thickness: 1),
+                  newMethod(onTap: () {}, text: "Quản lý đơn", icons: IconAssets.settingsIcon),
+                  const Divider(thickness: 1),
                   newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.settingsIcon),
                   const Divider(thickness: 1),
                   newMethod(

@@ -15,6 +15,7 @@ class OrderRepository extends IOrderRepository {
   @override
   Future<FoodOrder?> onPlaceOrder(List<OrderItem> orderItems, {required String tableNumber}) async {
     try {
+      if (orderItems.isEmpty) return null;
       final orderId = getUuid();
       var total = 0;
       for (final item in orderItems) {
@@ -28,12 +29,17 @@ class OrderRepository extends IOrderRepository {
         total: total.toDouble(),
       );
 
-      foodOrder.orderItems = await Future.wait(orderItems.map((e) => _uploadOrderItem(orderId, e)));
+      foodOrder.orderItems = await Future.wait(orderItems.map(_uploadOrderItem));
       final order = await baseService.client
           .from(TABLE_NAME.FOOD_ORDER)
           .insert(foodOrder.toJson())
           .select("*, user_order_id(*)")
           .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
+      await Future.wait((foodOrder.orderItems ?? []).map((e) async {
+        await baseService.client
+            .from(TABLE_NAME.FOOD_ORDER_ITEM)
+            .insert({"food_order_id": orderId, "order_item_id": e.orderItemId ?? ''});
+      }).toList());
       return order.first;
     } catch (e) {
       handleError(e);
@@ -41,7 +47,7 @@ class OrderRepository extends IOrderRepository {
     }
   }
 
-  Future<OrderItem> _uploadOrderItem(String orderId, OrderItem item) async {
+  Future<OrderItem> _uploadOrderItem(OrderItem item) async {
     final id = getUuid();
     item.orderItemId = id;
     final result = await baseService.client
@@ -49,9 +55,6 @@ class OrderRepository extends IOrderRepository {
         .insert(item.toJson())
         .select("*, food_id (*, typeId(*) )")
         .withConverter((data) => data.map((e) => OrderItem.fromJson(e)).toList());
-    await baseService.client
-        .from(TABLE_NAME.FOOD_ORDER_ITEM)
-        .insert({"food_order_id": orderId, "order_item_id": id}).select();
     return result.first;
   }
 

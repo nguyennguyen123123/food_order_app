@@ -18,7 +18,7 @@ class CartPage extends GetWidget<CartController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lên đơn", style: StyleThemeData.bold18()),
+        title: Text("place_order_title".tr, style: StyleThemeData.bold18()),
         centerTitle: true,
         leading: GestureDetector(onTap: Get.back, child: Icon(Icons.arrow_back_ios, size: 24)),
       ),
@@ -33,8 +33,8 @@ class CartPage extends GetWidget<CartController> {
             return Padding(
               padding: padding(horizontal: 12),
               child: EditTextFieldCustom(
-                label: "Số bàn",
-                hintText: 'Nhập số bàn',
+                label: "table_number".tr,
+                hintText: 'enter_table_number'.tr,
                 controller: controller.tableNumberController,
                 textInputType: TextInputType.number,
               ),
@@ -55,7 +55,7 @@ class CartPage extends GetWidget<CartController> {
                         backgroundColor: appTheme.primaryColor,
                         borderColor: appTheme.primaryColor,
                         onPressed: Get.back,
-                        child: Text('Chọn món', style: StyleThemeData.regular14(color: appTheme.whiteText)))
+                        child: Text('select_food'.tr, style: StyleThemeData.regular14(color: appTheme.whiteText)))
                   ],
                 );
               }
@@ -85,7 +85,7 @@ class CartPage extends GetWidget<CartController> {
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Tổng cộng:", style: StyleThemeData.bold18()),
+                      Text("total".tr, style: StyleThemeData.bold18()),
                       SizedBox(height: 8.h),
                       Text(Utils.getCurrency(total), style: StyleThemeData.regular17())
                     ],
@@ -118,8 +118,8 @@ class CartPage extends GetWidget<CartController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(orderItem.food?.name ?? '', style: StyleThemeData.regular16()),
-          Text("Loại: " + (orderItem.food?.foodType?.name ?? '')),
-          Text('Lưu ý: ' + (orderItem.note ?? '')),
+          Text("type".tr + (orderItem.food?.foodType?.name ?? '')),
+          Text('note_text'.tr + (orderItem.note ?? '')),
           QuantityView(
             quantity: orderItem.quantity ?? 1,
             updateQuantity: (value) => controller.updateQuantityCart(index, value),
