@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 class CartController extends GetxController {
   final OrderCartService cartService;
   final IOrderRepository orderRepository;
+  final isLoading = false.obs;
+  final isValidateForm = false.obs;
 
   CartController({required this.cartService, required this.orderRepository});
 
@@ -20,7 +22,10 @@ class CartController extends GetxController {
   }
 
   Future<void> onPlaceOrder() async {
+    isValidateForm.value = true;
+
     if (tableNumberController.text.isEmpty) return;
+    isLoading.value = true;
     showLoading();
     try {
       final result =
@@ -35,11 +40,14 @@ class CartController extends GetxController {
       print(e);
       DialogUtils.showInfoErrorDialog(content: "create_order_fail".tr);
     }
+    isLoading.value = false;
     dissmissLoading();
   }
 
   @override
   void onClose() {
+    isValidateForm.close();
+    isLoading.close();
     tableNumberController.dispose();
     super.onClose();
   }

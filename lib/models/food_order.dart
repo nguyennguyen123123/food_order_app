@@ -20,6 +20,8 @@ class FoodOrder {
   Account? userOrder;
   @JsonKey(includeFromJson: false, includeToJson: true, name: 'user_order_id')
   String? userOrderId;
+  @JsonKey(name: 'order_status')
+  String? orderStatus;
   FoodOrder({
     this.orderId,
     this.orderItems,
@@ -28,6 +30,7 @@ class FoodOrder {
     this.total,
     this.userOrder,
     this.userOrderId,
+    this.orderStatus,
   });
 
   factory FoodOrder.fromJson(Map<String, dynamic> json) => _$FoodOrderFromJson(json);

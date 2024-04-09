@@ -27,6 +27,7 @@ class OrderRepository extends IOrderRepository {
         userOrderId: accountService.myAccount?.userId,
         tableNumber: tableNumber,
         total: total.toDouble(),
+        orderStatus: ORDER_STATUS.CREATED,
       );
 
       foodOrder.orderItems = await Future.wait(orderItems.map(_uploadOrderItem));

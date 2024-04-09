@@ -16,97 +16,99 @@ import 'package:get/get.dart';
 class CartPage extends GetWidget<CartController> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("place_order_title".tr, style: StyleThemeData.bold18()),
-        centerTitle: true,
-        leading: GestureDetector(onTap: Get.back, child: Icon(Icons.arrow_back_ios, size: 24)),
-      ),
-      body: Column(
+    return Obx(() {
+      final foods = controller.cartService.items.value;
+      var total = 0;
+      for (final food in foods) {
+        total = (food.quantity ?? 1) * (food.food?.price ?? 0);
+      }
+      return Stack(
         children: [
-          Obx(() {
-            final foods = controller.cartService.items.value;
-            if (foods.isEmpty) {
-              return SizedBox();
-            }
-
-            return Padding(
-              padding: padding(horizontal: 12),
-              child: EditTextFieldCustom(
-                label: "table_number".tr,
-                hintText: 'enter_table_number'.tr,
-                controller: controller.tableNumberController,
-                textInputType: TextInputType.number,
-              ),
-            );
-          }),
-          Expanded(
-            child: Obx(() {
-              final foods = controller.cartService.items.value;
-              if (foods.isEmpty) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Center(child: ImageAssetCustom(imagePath: ImagesAssets.emptyCart, size: 200)),
-                    SizedBox(height: 12.h),
-                    PrimaryButton(
-                        contentPadding: padding(all: 12),
-                        backgroundColor: appTheme.primaryColor,
-                        borderColor: appTheme.primaryColor,
-                        onPressed: Get.back,
-                        child: Text('select_food'.tr, style: StyleThemeData.regular14(color: appTheme.whiteText)))
-                  ],
-                );
-              }
-
-              return ListView.separated(
-                  padding: padding(all: 12),
-                  itemBuilder: (context, index) => _buildCartItem(index, foods[index]),
-                  separatorBuilder: (context, index) => SizedBox(height: 8.h),
-                  itemCount: foods.length);
-            }),
+          Scaffold(
+            appBar: AppBar(
+              title: Text("place_order_title".tr, style: StyleThemeData.bold18()),
+              centerTitle: true,
+              leading: GestureDetector(onTap: Get.back, child: Icon(Icons.arrow_back_ios, size: 24)),
+            ),
+            body: Column(
+              children: [
+                foods.isEmpty
+                    ? SizedBox()
+                    : Padding(
+                        padding: padding(horizontal: 12),
+                        child: EditTextFieldCustom(
+                          label: "table_number".tr,
+                          hintText: 'enter_table_number'.tr,
+                          controller: controller.tableNumberController,
+                          isShowErrorText: controller.isValidateForm.value,
+                          isRequire: true,
+                          textInputType: TextInputType.number,
+                        ),
+                      ),
+                Expanded(
+                    child: foods.isEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Center(child: ImageAssetCustom(imagePath: ImagesAssets.emptyCart, size: 200)),
+                              SizedBox(height: 12.h),
+                              PrimaryButton(
+                                  contentPadding: padding(all: 12),
+                                  backgroundColor: appTheme.primaryColor,
+                                  borderColor: appTheme.primaryColor,
+                                  onPressed: Get.back,
+                                  child: Text('select_food'.tr,
+                                      style: StyleThemeData.regular14(color: appTheme.whiteText)))
+                            ],
+                          )
+                        : ListView.separated(
+                            padding: padding(all: 12),
+                            itemBuilder: (context, index) => _buildCartItem(index, foods[index]),
+                            separatorBuilder: (context, index) => SizedBox(height: 8.h),
+                            itemCount: foods.length)),
+                foods.isEmpty
+                    ? SizedBox()
+                    : Container(
+                        padding: padding(all: 12),
+                        decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("total".tr, style: StyleThemeData.bold18()),
+                                SizedBox(height: 8.h),
+                                Text(Utils.getCurrency(total), style: StyleThemeData.regular17())
+                              ],
+                            )),
+                            PrimaryButton(
+                                onPressed: controller.onPlaceOrder,
+                                contentPadding: padding(horizontal: 18, vertical: 12),
+                                radius: BorderRadius.circular(100),
+                                backgroundColor: appTheme.primaryColor,
+                                borderColor: appTheme.primaryColor,
+                                child: Text(
+                                  'confirm'.tr,
+                                  style: StyleThemeData.bold18(color: appTheme.whiteText),
+                                ))
+                          ],
+                        ),
+                      )
+              ],
+            ),
           ),
-          Obx(() {
-            final foods = controller.cartService.items.value;
-            if (foods.isEmpty) {
-              return SizedBox();
-            }
-            var total = 0;
-            for (final food in foods) {
-              total = (food.quantity ?? 1) * (food.food?.price ?? 0);
-            }
-            return Container(
-              padding: padding(all: 12),
-              decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("total".tr, style: StyleThemeData.bold18()),
-                      SizedBox(height: 8.h),
-                      Text(Utils.getCurrency(total), style: StyleThemeData.regular17())
-                    ],
-                  )),
-                  PrimaryButton(
-                      onPressed: controller.onPlaceOrder,
-                      contentPadding: padding(horizontal: 18, vertical: 12),
-                      radius: BorderRadius.circular(100),
-                      backgroundColor: appTheme.primaryColor,
-                      borderColor: appTheme.primaryColor,
-                      child: Text(
-                        'confirm'.tr,
-                        style: StyleThemeData.bold18(color: appTheme.whiteText),
-                      ))
-                ],
-              ),
-            );
-          })
+          if (controller.isLoading.value) ...[
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: appTheme.blackColor.withOpacity(0.2),
+            ),
+          ]
         ],
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildCartItem(int index, OrderItem orderItem) {
