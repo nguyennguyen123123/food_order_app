@@ -42,7 +42,7 @@ class ProfileController extends GetxController {
 
   Future<void> signOut() async {
     try {
-      profileRepository.signOut();
+      await profileRepository.signOut();
     } on AuthException catch (error) {
       print(error.message);
     } catch (error) {

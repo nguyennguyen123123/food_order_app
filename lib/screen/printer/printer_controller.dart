@@ -18,7 +18,7 @@ class PrinterController extends GetxController {
   var isLoadingAdd = false.obs;
   var isLoadingDelete = false.obs;
 
-  final printer = Rx<List<Printer>?>(null);
+  var printer = <Printer>[].obs;
 
   @override
   void onInit() {
@@ -29,7 +29,13 @@ class PrinterController extends GetxController {
   void getPrinter() async {
     final result = await printerRepository.getPrinter();
 
-    printer.value = result as List<Printer>;
+    // printer.value = result as List<Printer>;
+
+    if (result != null) {
+      printer.assignAll(result);
+    } else {
+      printer.clear();
+    }
   }
 
   void addPrinter() async {
@@ -48,6 +54,10 @@ class PrinterController extends GetxController {
       await printerRepository.addPrinter(printer);
       getPrinter();
       Get.back();
+
+      ipController.clear();
+      nameControler.clear();
+      portController.clear();
       isLoadingAdd(false);
     } catch (error) {
       print(error);
@@ -56,12 +66,12 @@ class PrinterController extends GetxController {
     }
   }
 
-  void deletePrinter(String printerId) {
+  Future<void> deletePrinter(String printerId) async {
     try {
       isLoadingDelete(true);
 
-      printerRepository.deletePrinter(printerId);
-      printer.value?.removeWhere((print) => print.id == printerId);
+      await printerRepository.deletePrinter(printerId);
+      printer.removeWhere((print) => print.id == printerId);
 
       isLoadingDelete(false);
     } catch (error) {
