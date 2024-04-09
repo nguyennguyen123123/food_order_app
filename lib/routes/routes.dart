@@ -17,4 +17,5 @@ abstract class Routes {
   static const MYACCOUNT = '/my_account';
   static const PRINT = '/printer';
   static const ADDPRINTER = '/add_printer';
+  static const EDITPRINTER = '/edit_printer';
 }

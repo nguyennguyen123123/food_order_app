@@ -48,4 +48,26 @@ class PrinterRepository extends IPrinterRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<Printer?> editPrinter(Printer printer, String printerId) async {
+    try {
+      final response = await baseService.client
+          .from(TABLE_NAME.PRINTER)
+          .update(printer.toJson())
+          .eq('id', printerId)
+          .select()
+          .withConverter((data) => data.map((e) => Printer.fromJson(e)).toList());
+
+      // if (response.error != null) {
+      //   throw response.error!;
+      // }
+
+      return response.first;
+    } catch (error) {
+      handleError(error);
+
+      return null;
+    }
+  }
 }

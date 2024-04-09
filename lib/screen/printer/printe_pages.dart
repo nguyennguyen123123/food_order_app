@@ -3,6 +3,7 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/printer.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/printer/printer_controller.dart';
+import 'package:food_delivery_app/screen/printer/printer_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -85,17 +86,20 @@ class PrinterPages extends GetWidget<PrinterController> {
                   ),
                   SizedBox(width: 16.w),
                   Flexible(
-                    child: Container(
-                      width: Get.size.width.w,
-                      height: 32.h,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: appTheme.appColor,
-                      ),
-                      child: Text(
-                        'Chỉnh sửa',
-                        style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
+                    child: InkWell(
+                      onTap: () => Get.toNamed(Routes.EDITPRINTER, arguments: PrinterParameter(printer: printer)),
+                      child: Container(
+                        width: Get.size.width.w,
+                        height: 32.h,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: appTheme.appColor,
+                        ),
+                        child: Text(
+                          'Chỉnh sửa',
+                          style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
+                        ),
                       ),
                     ),
                   ),
