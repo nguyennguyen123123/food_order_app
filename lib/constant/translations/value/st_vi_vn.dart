@@ -46,5 +46,16 @@ const Map<String, String> viVN = {
   "update_information": "Cập nhật thông tin",
   "personal_information": "Thông tin cá nhân",
   "male": "Nam",
-  "female": "Nữ"
+  "female": "Nữ",
+  "place_order_title": "Lên đơn",
+  "table_number": "Số bàn",
+  "enter_table_number": "Nhập số bàn",
+  "select_food": "Chọn món",
+  "total": "Tổng cộng:",
+  "type": "Loại: ",
+  "note_text": "Lưu ý: ",
+  "congrate": "Chúc mừng",
+  "apologize": "Xin lỗi",
+  "create_order_success": "Bạn lên đơn thành công.",
+  "create_order_fail": "Bạn lên đơn thất bại.",
 };

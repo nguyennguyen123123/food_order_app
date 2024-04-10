@@ -55,3 +55,8 @@ abstract class USER_ROLE {
     USER_ROLE.STAFF: "STAFF",
   };
 }
+
+abstract class ORDER_STATUS {
+  static const CREATED = 'CREATED';
+  static const DONE = 'DONE';
+}

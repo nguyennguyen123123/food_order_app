@@ -10,6 +10,8 @@ import 'package:food_delivery_app/screen/food/food_binding.dart';
 import 'package:food_delivery_app/screen/food/food_screen.dart';
 import 'package:food_delivery_app/screen/food/view/add_food_view.dart';
 import 'package:food_delivery_app/screen/food/view/add_type_food_view.dart';
+import 'package:food_delivery_app/screen/food_order_manage/food_order_manage_binding.dart';
+import 'package:food_delivery_app/screen/food_order_manage/food_order_manage_page.dart';
 import 'package:food_delivery_app/screen/home/home_main.dart';
 import 'package:food_delivery_app/screen/home/home_main_binding.dart';
 import 'package:food_delivery_app/screen/language/language_screen.dart';
@@ -112,6 +114,11 @@ abstract class AppPages {
       name: Routes.EDITPRINTER,
       page: () => EditPrinterView(),
       binding: EditPrinterBinding(),
+    ),
+    GetPage(
+      name: Routes.MANAGE_ORDER,
+      page: () => FoodOrderManagePage(),
+      binding: FoodOrderManageBinding(),
     ),
   ];
 }
