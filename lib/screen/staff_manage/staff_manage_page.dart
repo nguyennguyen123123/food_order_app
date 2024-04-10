@@ -92,28 +92,31 @@ class StaffManagePage extends GetWidget<StaffManageController> {
         Expanded(flex: 1, child: Text(account.name ?? '', style: StyleThemeData.regular14())),
         Expanded(flex: 2, child: Text(account.email ?? '', style: StyleThemeData.regular14())),
         Expanded(
-            flex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                    onTap: () async {
-                      final result = await DialogUtils.showYesNoDialog(title: 'delete_account'.tr);
-                      if (result == true) {
-                        controller.onRemoveAccount(index, account);
-                      }
-                    },
-                    child: Icon(Icons.remove_circle_outline)),
-                GestureDetector(
-                    onTap: () async {
-                      final result = await DialogUtils.showDialogView(StaffDialog(account: account));
-                      if (result != null) {
-                        controller.updateAccount(index, result);
-                      }
-                    },
-                    child: Icon(Icons.edit)),
-              ],
-            ))
+          flex: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  final result = await DialogUtils.showYesNoDialog(title: 'delete_account'.tr);
+                  if (result == true) {
+                    controller.onRemoveAccount(index, account);
+                  }
+                },
+                child: Icon(Icons.remove_circle_outline),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  final result = await DialogUtils.showDialogView(StaffDialog(account: account));
+                  if (result != null) {
+                    controller.updateAccount(index, result);
+                  }
+                },
+                child: Icon(Icons.edit),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

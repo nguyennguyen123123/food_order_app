@@ -47,18 +47,20 @@ class FoodRepository extends IFoodRepository {
   }
 
   @override
-  Future<List<FoodModel>?> getFood() async {
+  Future<List<FoodModel>> getFood({int page = 0, int limit = LIMIT}) async {
     try {
-      final response = await baseService.client
-          .from(TABLE_NAME.FOOD)
-          .select("*, typeId (*)")
+      final food = baseService.client.from(TABLE_NAME.FOOD).select("*, typeId (*)");
+
+      final response = await food
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
           .withConverter((data) => data.map((e) => FoodModel.fromJson(e)).toList());
 
       return response.toList();
     } catch (e) {
       handleError(e);
-      rethrow;
     }
+    return [];
   }
 
   @override

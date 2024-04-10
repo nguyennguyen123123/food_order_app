@@ -67,7 +67,6 @@ class OrderRepository extends IOrderRepository {
     try {
       final orders = baseService.client.from(TABLE_NAME.FOOD_ORDER).select(
           "*, user_order_id(*), food_order_item!inner(*, order_item!inner (*, food_id:food!inner(*, typeId(*)))))");
-      // .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
 
       final response = await orders
           .limit(limit)

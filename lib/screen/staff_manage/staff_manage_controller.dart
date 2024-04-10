@@ -28,8 +28,9 @@ class StaffManageController extends GetxController {
 
   Future<bool> onLoadMore() async {
     final length = (accounts.value ?? []).length;
-    if (length < (page + 1) * limit) return false;
+    if (length < LIMIT * (page + 1)) return false;
     page += 1;
+
     final result = await authRepository.getListAccount(page: page, limit: limit);
     accounts.update((val) => val?.addAll(result));
     if (result.length < limit) {

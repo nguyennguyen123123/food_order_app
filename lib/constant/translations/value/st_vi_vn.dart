@@ -60,5 +60,6 @@ const Map<String, String> viVN = {
   "create_order_fail": "Bạn lên đơn thất bại.",
   "order_list": "Danh sách đơn hàng",
   "price": "Giá",
-  "order_management": "Quản lý đơn"
+  "order_management": "Quản lý đơn",
+  "are_you_sure_you_want_to_delete_this_dish": "Bạn chắc chắn muốn xóa món ăn này?"
 };

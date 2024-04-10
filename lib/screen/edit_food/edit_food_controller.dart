@@ -89,7 +89,7 @@ class EditFoodController extends GetxController {
       await foodRepository.editFood(foodId, foodModel);
 
       Get.back();
-      Get.find<FoodController>().getListFood();
+      Get.find<FoodController>().onRefresh();
 
       isLoading(false);
     } catch (error) {
@@ -97,7 +97,7 @@ class EditFoodController extends GetxController {
     } finally {
       isLoading(false);
       Get.back();
-      Get.find<FoodController>().getListFood();
+      Get.find<FoodController>().onRefresh();
     }
   }
 
