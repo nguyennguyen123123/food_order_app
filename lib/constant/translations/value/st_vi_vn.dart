@@ -26,7 +26,7 @@ const Map<String, String> viVN = {
   "delete_account": "Bạn chắc chắn muốn xóa tài khoản này không?",
   "food_type": "Phân loại",
   "food": "Món ăn",
-  "search": "Search",
+  "search": "Tìm kiếm",
   "add_food": "Thêm món vào đơn",
   "note": "Ghi chú",
   "enter_note": "Nhập ghi chú",
@@ -58,4 +58,7 @@ const Map<String, String> viVN = {
   "apologize": "Xin lỗi",
   "create_order_success": "Bạn lên đơn thành công.",
   "create_order_fail": "Bạn lên đơn thất bại.",
+  "order_list": "Danh sách đơn hàng",
+  "price": "Giá",
+  "order_management": "Quản lý đơn"
 };

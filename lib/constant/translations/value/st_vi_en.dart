@@ -46,5 +46,8 @@ const Map<String, String> enUS = {
   "update_information": "Update Information",
   "personal_information": "Personal Information",
   "male": "Male",
-  "female": "Female"
+  "female": "Female",
+  "order_list": "Order list",
+  "price": "Price",
+  "order_management": "Order management"
 };

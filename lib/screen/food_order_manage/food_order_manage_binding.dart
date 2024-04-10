@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 class FoodOrderManageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(FoodOrderManageController(orderRepository: Get.find()));
+    Get.put(
+      FoodOrderManageController(
+        orderRepository: Get.find(),
+      ),
+    );
   }
 }

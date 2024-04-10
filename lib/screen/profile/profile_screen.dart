@@ -101,9 +101,13 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     style: StyleThemeData.regular16(),
                   ),
                   SizedBox(height: 8.h),
-                  newMethod(onTap: () {}, text: "Quản lý đơn", icons: IconAssets.settingsIcon),
+                  newMethod(
+                    onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
+                    text: "order_management".tr,
+                    icons: IconAssets.cancelIcon,
+                  ),
                   const Divider(thickness: 1),
-                  newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.settingsIcon),
+                  newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.adminIcon),
                   const Divider(thickness: 1),
                   newMethod(
                     onTap: () {
@@ -163,7 +167,7 @@ class ProfileScreen extends GetWidget<ProfileController> {
         padding: padding(vertical: 8),
         child: Row(
           children: [
-            SvgPicture.asset(icons, color: color ?? appTheme.colorLightmodeNeutral40),
+            SvgPicture.asset(icons, width: 20.w, color: color ?? appTheme.colorLightmodeNeutral40),
             SizedBox(width: 8.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
