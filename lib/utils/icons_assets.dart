@@ -8,4 +8,6 @@ class IconAssets {
   static String logoutIcon = '${_basePath}logout.svg';
   static String languageIcon = '${_basePath}language.svg';
   static String buttonCameraIcon = '${_basePath}button_camera.svg';
+  static String cancelIcon = '${_basePath}cancel.svg';
+  static String adminIcon = '${_basePath}admin.svg';
 }

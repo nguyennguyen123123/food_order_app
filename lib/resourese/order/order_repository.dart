@@ -31,11 +31,13 @@ class OrderRepository extends IOrderRepository {
       );
 
       foodOrder.orderItems = await Future.wait(orderItems.map(_uploadOrderItem));
+
       final order = await baseService.client
           .from(TABLE_NAME.FOOD_ORDER)
           .insert(foodOrder.toJson())
           .select("*, user_order_id(*)")
           .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
+
       await Future.wait((foodOrder.orderItems ?? []).map((e) async {
         await baseService.client
             .from(TABLE_NAME.FOOD_ORDER_ITEM)
@@ -63,12 +65,15 @@ class OrderRepository extends IOrderRepository {
   @override
   Future<List<FoodOrder>> getListFoodOrders({int page = 0, int limit = LIMIT}) async {
     try {
-      final orders = await baseService.client
-          .from(TABLE_NAME.FOOD_ORDER)
-          .select(
-              "*, user_order_id(*), food_order_item!inner(*, order_item!inner (*, food_id:food!inner(*, typeId(*)))))")
+      final orders = baseService.client.from(TABLE_NAME.FOOD_ORDER).select(
+          "*, user_order_id(*), food_order_item!inner(*, order_item!inner (*, food_id:food!inner(*, typeId(*)))))");
+
+      final response = await orders
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
           .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
-      print(orders);
+
+      return response.toList();
     } catch (e) {
       handleError(e);
     }

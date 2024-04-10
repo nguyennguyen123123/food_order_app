@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
+import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,16 +17,21 @@ class FoodController extends GetxController {
 
   FoodController({required this.foodRepository, required this.accountService});
 
+  int page = 0;
+  int limit = LIMIT;
+
+  // final foodList = Rx<List<FoodModel>?>(null);
+  final foodList = Rx<List<FoodModel>?>([]);
+
   @override
   void onInit() {
     super.onInit();
-    getListFood();
+    onRefresh();
     getListFoodType();
   }
 
   var isLoadingFood = false.obs;
 
-  var foodList = <FoodModel>[].obs;
   var foodTypeList = <FoodType>[].obs;
 
   var selectedFoodType = Rx<FoodType?>(null);
@@ -39,14 +46,24 @@ class FoodController extends GetxController {
     }
   }
 
-  Future<void> getListFood() async {
-    final data = await foodRepository.getFood();
+  Future<void> onRefresh() async {
+    page = 0;
+    foodList.value = null;
+    final result = await foodRepository.getFood(page: page, limit: limit);
 
-    if (data != null) {
-      foodList.assignAll(data);
-    } else {
-      foodList.clear();
-    }
+    foodList.value = result;
+  }
+
+  Future<bool> onLoadMoreFood() async {
+    final length = (foodList.value ?? []).length;
+    if (length < LIMIT * (page + 1)) return false;
+    page += 1;
+
+    final result = await foodRepository.getFood(page: page, limit: limit);
+
+    foodList.update((val) => val?.addAll(result));
+    if (result.length < limit) return false;
+    return true;
   }
 
   Future<void> getListFoodType() async {
@@ -95,7 +112,7 @@ class FoodController extends GetxController {
       );
 
       await foodRepository.addFood(foodModel);
-      await getListFood();
+      await onRefresh();
       Get.back();
 
       nameController.clear();
@@ -112,13 +129,11 @@ class FoodController extends GetxController {
     }
   }
 
-  void deleteFood(String foodId) {
-    try {
-      foodRepository.deleteFood(foodId);
-      foodList.removeWhere((food) => food.foodId == foodId);
-    } catch (error) {
-      print('Error delete food: $error');
-    }
+  Future<void> deleteFood(String foodId, int index) async {
+    excute(() async {
+      await foodRepository.deleteFood(foodId);
+      foodList.update((val) => val?.removeAt(index));
+    });
   }
 
   void addTypeFood() async {

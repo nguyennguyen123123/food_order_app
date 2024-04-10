@@ -24,79 +24,82 @@ class CartPage extends GetWidget<CartController> {
       }
       return Stack(
         children: [
-          Scaffold(
-            appBar: AppBar(
-              title: Text("place_order_title".tr, style: StyleThemeData.bold18()),
-              centerTitle: true,
-              leading: GestureDetector(onTap: Get.back, child: Icon(Icons.arrow_back_ios, size: 24)),
-            ),
-            body: Column(
-              children: [
-                foods.isEmpty
-                    ? SizedBox()
-                    : Padding(
-                        padding: padding(horizontal: 12),
-                        child: EditTextFieldCustom(
-                          label: "table_number".tr,
-                          hintText: 'enter_table_number'.tr,
-                          controller: controller.tableNumberController,
-                          isShowErrorText: controller.isValidateForm.value,
-                          isRequire: true,
-                          textInputType: TextInputType.number,
+          GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text("place_order_title".tr, style: StyleThemeData.bold18()),
+                centerTitle: true,
+                leading: GestureDetector(onTap: Get.back, child: Icon(Icons.arrow_back_ios, size: 24)),
+              ),
+              body: Column(
+                children: [
+                  foods.isEmpty
+                      ? SizedBox()
+                      : Padding(
+                          padding: padding(horizontal: 12),
+                          child: EditTextFieldCustom(
+                            label: "table_number".tr,
+                            hintText: 'enter_table_number'.tr,
+                            controller: controller.tableNumberController,
+                            isShowErrorText: controller.isValidateForm.value,
+                            isRequire: true,
+                            textInputType: TextInputType.number,
+                          ),
                         ),
-                      ),
-                Expanded(
-                    child: foods.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
+                  Expanded(
+                      child: foods.isEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Center(child: ImageAssetCustom(imagePath: ImagesAssets.emptyCart, size: 200)),
+                                SizedBox(height: 12.h),
+                                PrimaryButton(
+                                    contentPadding: padding(all: 12),
+                                    backgroundColor: appTheme.primaryColor,
+                                    borderColor: appTheme.primaryColor,
+                                    onPressed: Get.back,
+                                    child: Text('select_food'.tr,
+                                        style: StyleThemeData.regular14(color: appTheme.whiteText)))
+                              ],
+                            )
+                          : ListView.separated(
+                              padding: padding(all: 12),
+                              itemBuilder: (context, index) => _buildCartItem(index, foods[index]),
+                              separatorBuilder: (context, index) => SizedBox(height: 8.h),
+                              itemCount: foods.length)),
+                  foods.isEmpty
+                      ? SizedBox()
+                      : Container(
+                          padding: padding(all: 12),
+                          decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
+                          child: Row(
                             children: [
-                              Center(child: ImageAssetCustom(imagePath: ImagesAssets.emptyCart, size: 200)),
-                              SizedBox(height: 12.h),
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("total".tr, style: StyleThemeData.bold18()),
+                                  SizedBox(height: 8.h),
+                                  Text(Utils.getCurrency(total), style: StyleThemeData.regular17())
+                                ],
+                              )),
                               PrimaryButton(
-                                  contentPadding: padding(all: 12),
+                                  onPressed: controller.onPlaceOrder,
+                                  contentPadding: padding(horizontal: 18, vertical: 12),
+                                  radius: BorderRadius.circular(100),
                                   backgroundColor: appTheme.primaryColor,
                                   borderColor: appTheme.primaryColor,
-                                  onPressed: Get.back,
-                                  child: Text('select_food'.tr,
-                                      style: StyleThemeData.regular14(color: appTheme.whiteText)))
+                                  child: Text(
+                                    'confirm'.tr,
+                                    style: StyleThemeData.bold18(color: appTheme.whiteText),
+                                  ))
                             ],
-                          )
-                        : ListView.separated(
-                            padding: padding(all: 12),
-                            itemBuilder: (context, index) => _buildCartItem(index, foods[index]),
-                            separatorBuilder: (context, index) => SizedBox(height: 8.h),
-                            itemCount: foods.length)),
-                foods.isEmpty
-                    ? SizedBox()
-                    : Container(
-                        padding: padding(all: 12),
-                        decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("total".tr, style: StyleThemeData.bold18()),
-                                SizedBox(height: 8.h),
-                                Text(Utils.getCurrency(total), style: StyleThemeData.regular17())
-                              ],
-                            )),
-                            PrimaryButton(
-                                onPressed: controller.onPlaceOrder,
-                                contentPadding: padding(horizontal: 18, vertical: 12),
-                                radius: BorderRadius.circular(100),
-                                backgroundColor: appTheme.primaryColor,
-                                borderColor: appTheme.primaryColor,
-                                child: Text(
-                                  'confirm'.tr,
-                                  style: StyleThemeData.bold18(color: appTheme.whiteText),
-                                ))
-                          ],
-                        ),
-                      )
-              ],
+                          ),
+                        )
+                ],
+              ),
             ),
           ),
           if (controller.isLoading.value) ...[

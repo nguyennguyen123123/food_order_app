@@ -50,14 +50,15 @@ class HomePage extends GetWidget<HomeController> {
             ),
             Obx(
               () => Padding(
-                  padding: padding(vertical: 8),
-                  child: controller.foods.value == null
-                      ? Center(child: CircularProgressIndicator())
-                      : ListVerticalItem<FoodModel>(
-                          lineItemCount: 2,
-                          items: controller.foods.value!,
-                          itemBuilder: (index, item) => FoodView(foodModel: item, showAddBtn: true),
-                        )),
+                padding: padding(vertical: 8),
+                child: controller.foods.value == null
+                    ? Center(child: CircularProgressIndicator())
+                    : ListVerticalItem<FoodModel>(
+                        lineItemCount: 2,
+                        items: controller.foods.value!,
+                        itemBuilder: (index, item) => FoodView(foodModel: item, showAddBtn: true),
+                      ),
+              ),
             ),
           ],
         ),
@@ -102,8 +103,9 @@ class HomePage extends GetWidget<HomeController> {
           ),
         ),
         Padding(
-            padding: padding(horizontal: 12),
-            child: GestureDetector(onTap: () => Get.toNamed(Routes.CART), child: Icon(Icons.shopping_bag)))
+          padding: padding(horizontal: 12),
+          child: GestureDetector(onTap: () => Get.toNamed(Routes.CART), child: Icon(Icons.shopping_bag)),
+        ),
       ],
     );
   }
