@@ -61,5 +61,10 @@ const Map<String, String> viVN = {
   "order_list": "Danh sách đơn hàng",
   "price": "Giá",
   "order_management": "Quản lý đơn",
-  "are_you_sure_you_want_to_delete_this_dish": "Bạn chắc chắn muốn xóa món ăn này?"
+  "are_you_sure_you_want_to_delete_this_dish": "Bạn chắc chắn muốn xóa món ăn này?",
+  "time": "Thời gian",
+  "order_person": "Người lên đơn: ",
+  "detail_order": "Chi tiết đơn",
+  "order_id": "Mã đơn hàng:",
+  "quantity": "Số lượng:"
 };

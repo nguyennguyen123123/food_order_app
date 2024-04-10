@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_type.dart';
@@ -56,8 +57,8 @@ class EditFoodView extends GetWidget<EditFoodController> {
                             ? SizedBox(
                                 width: 150.w,
                                 height: 150.h,
-                                child: Image.network(
-                                  controller.editFoodModel?.image ?? '',
+                                child: CachedNetworkImage(
+                                  imageUrl: controller.editFoodModel?.image ?? '',
                                   fit: BoxFit.cover,
                                 ),
                               )

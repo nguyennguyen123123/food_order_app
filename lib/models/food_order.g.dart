@@ -15,7 +15,8 @@ FoodOrder _$FoodOrderFromJson(Map<String, dynamic> json) => FoodOrder(
     tableNumber: json['table_number'] as String?,
     total: (json['total'] as num?)?.toDouble(),
     userOrder: json['user_order_id'] == null ? null : Account.fromJson(json['user_order_id'] as Map<String, dynamic>),
-    orderStatus: json['order_status'] as String?);
+    orderStatus: json['order_status'] as String?,
+    createdAt: json['createdAt'] as String?);
 
 Map<String, dynamic> _$FoodOrderToJson(FoodOrder instance) => <String, dynamic>{
       'order_id': instance.orderId,
