@@ -53,11 +53,9 @@ class EditFoodController extends GetxController {
   Future<void> getListFoodType() async {
     final data = await foodRepository.getTypeFood();
 
-    if (data != null) {
-      foodTypeList.assignAll(data);
-    } else {
-      foodTypeList.clear();
-    }
+    foodTypeList.value = data ?? <FoodType>[];
+    selectedFoodType.value =
+        foodTypeList.firstWhereOrNull((element) => element.typeId == parameter?.foodModel?.foodType?.typeId);
   }
 
   void onEditFood() async {
