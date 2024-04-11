@@ -40,14 +40,14 @@ class CartController extends GetxController {
     isValidateForm.value = true;
 
     // if (tableNumberController.text.isEmpty) return;
-    if (selectedValue.value.tableId == null) return;
+    if (selectedValue.value.tableNumber == null) return;
 
     isLoading.value = true;
     showLoading();
     try {
       final result = await orderRepository.onPlaceOrder(
         cartService.items.value,
-        tableNumber: selectedValue.value.tableId.toString(),
+        tableNumber: selectedValue.value.tableNumber.toString(),
       );
       if (result != null) {
         cartService.items.value = [];

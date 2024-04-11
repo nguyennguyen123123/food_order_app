@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/routes/pages.dart';
@@ -102,9 +103,35 @@ class HomePage extends GetWidget<HomeController> {
             ),
           ),
         ),
-        Padding(
-          padding: padding(horizontal: 12),
-          child: GestureDetector(onTap: () => Get.toNamed(Routes.CART), child: Icon(Icons.shopping_bag)),
+        Obx(
+          () => Padding(
+            padding: padding(horizontal: 8),
+            child: IconButton(
+              onPressed: () => Get.toNamed(Routes.CART),
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(Icons.shopping_cart),
+                  if (controller.cartService.items.value.isNotEmpty)
+                    Positioned(
+                      top: -12,
+                      right: -6,
+                      child: Container(
+                        padding: padding(all: 4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: appTheme.errorColor,
+                        ),
+                        child: Text(
+                          controller.cartService.items.value.length.toString(),
+                          style: StyleThemeData.regular14(height: 0, color: appTheme.whiteText),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );

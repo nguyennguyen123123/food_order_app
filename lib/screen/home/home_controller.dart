@@ -3,13 +3,15 @@ import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/models/printer.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/printer/iprinter_repository.dart';
+import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   final IFoodRepository foodRepository;
   final IPrinterRepository printerRepository;
+  final OrderCartService cartService;
 
-  HomeController({required this.foodRepository, required this.printerRepository});
+  HomeController({required this.foodRepository, required this.printerRepository, required this.cartService});
 
   final foodTypes = Rx<List<FoodType>?>(null);
   final foods = Rx<List<FoodModel>?>(null);
