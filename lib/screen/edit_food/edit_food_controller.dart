@@ -7,6 +7,7 @@ import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/screen/edit_food/edit_food_parameter.dart';
 import 'package:food_delivery_app/screen/food/food_controller.dart';
+import 'package:food_delivery_app/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -32,7 +33,7 @@ class EditFoodController extends GetxController {
 
     nameController = TextEditingController(text: editFoodModel?.name ?? '');
     desController = TextEditingController(text: editFoodModel?.description ?? '');
-    priceController = TextEditingController(text: editFoodModel?.price.toString() ?? '');
+    priceController = TextEditingController(text: Utils.getCurrency(editFoodModel?.price, removeCurrencyFormat: true));
   }
 
   var foodTypeList = <FoodType>[].obs;
@@ -52,11 +53,9 @@ class EditFoodController extends GetxController {
   Future<void> getListFoodType() async {
     final data = await foodRepository.getTypeFood();
 
-    if (data != null) {
-      foodTypeList.assignAll(data);
-    } else {
-      foodTypeList.clear();
-    }
+    foodTypeList.value = data ?? <FoodType>[];
+    selectedFoodType.value =
+        foodTypeList.firstWhereOrNull((element) => element.typeId == parameter?.foodModel?.foodType?.typeId);
   }
 
   void onEditFood() async {
@@ -107,6 +106,6 @@ class EditFoodController extends GetxController {
     nameController.dispose();
     desController.dispose();
     priceController.dispose();
-    pickedImageNotifier.value?.delete();
+    pickedImageNotifier.dispose();
   }
 }

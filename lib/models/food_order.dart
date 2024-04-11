@@ -22,6 +22,8 @@ class FoodOrder {
   String? userOrderId;
   @JsonKey(name: 'order_status')
   String? orderStatus;
+  @JsonKey(name: 'created_at', includeToJson: false)
+  String? createdAt;
   FoodOrder({
     this.orderId,
     this.orderItems,
@@ -31,6 +33,7 @@ class FoodOrder {
     this.userOrder,
     this.userOrderId,
     this.orderStatus,
+    this.createdAt,
   });
 
   factory FoodOrder.fromJson(Map<String, dynamic> json) => _$FoodOrderFromJson(json);
