@@ -58,4 +58,5 @@ const Map<String, String> enUS = {
   "table_deleted_successfully": "Table deleted successfully",
   "edit_successfully": "Edit successfully",
   "edit_failed": "Edit failed",
+  "select_table_number": "Select table number"
 };

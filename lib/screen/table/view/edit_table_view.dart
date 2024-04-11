@@ -59,7 +59,7 @@ class EditTableView extends GetWidget<EditTableController> {
               () => ConfirmationButtonWidget(
                 isLoading: controller.isLoading.isTrue,
                 onTap: controller.editTable,
-                text: 'Chỉnh sửa',
+                text: 'edit'.tr,
               ),
             ),
           ],

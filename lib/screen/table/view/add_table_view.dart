@@ -59,7 +59,7 @@ class AddTableView extends GetWidget<TableControlller> {
               () => ConfirmationButtonWidget(
                 isLoading: controller.isLoadingAdd.isTrue,
                 onTap: controller.addTable,
-                text: 'Xác nhận',
+                text: 'confirm'.tr,
               ),
             ),
           ],
