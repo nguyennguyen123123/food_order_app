@@ -22,7 +22,7 @@ class CartController extends GetxController {
   }
 
   Future<void> onPlaceOrder() async {
-    isValidateForm.value = true;
+    isValidateForm.value = true; 
 
     if (tableNumberController.text.isEmpty) return;
     isLoading.value = true;

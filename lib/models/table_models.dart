@@ -1,21 +1,21 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'table.g.dart';
+part 'table_models.g.dart';
 
 @JsonSerializable()
-class Table {
+class TableModels {
   @JsonKey(name: 'table_id')
   String? tableId;
   @JsonKey(name: 'table_number') // số bàn
   int? tableNumber;
-  @JsonKey(name: 'number_of_order ') // số đơn
+  @JsonKey(name: 'number_of_order') // số đơn
   int? numberOfOrder;
-  @JsonKey(name: 'number_of_people ') // số người
+  @JsonKey(name: 'number_of_people') // số khách
   int? numberOfPeople;
   @JsonKey(name: 'created_at')
   String? createdAt;
 
-  Table({
+  TableModels({
     this.tableId,
     this.tableNumber,
     this.numberOfOrder,
@@ -23,9 +23,9 @@ class Table {
     this.createdAt,
   });
 
-  Map<String, dynamic> toJson() => _$TableToJson(this);
+  Map<String, dynamic> toJson() => _$TableModelsToJson(this);
 
-  Map toMap(Table table) => _$TableToJson(this);
+  Map toMap(TableModels tableModels) => _$TableModelsToJson(this);
 
-  factory Table.fromJson(Map<String, dynamic> json) => _$TableFromJson(json);
+  factory TableModels.fromJson(Map<String, dynamic> json) => _$TableModelsFromJson(json);
 }

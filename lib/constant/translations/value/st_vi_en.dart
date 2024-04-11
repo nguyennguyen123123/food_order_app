@@ -50,5 +50,12 @@ const Map<String, String> enUS = {
   "order_list": "Order list",
   "price": "Price",
   "order_management": "Order management",
-  "are_you_sure_you_want_to_delete_this_dish": "Are you sure you want to delete this dish?"
+  "are_you_sure_you_want_to_delete_this_dish": "Are you sure you want to delete this dish?",
+  "successfully_added_new_table": "Successfully added new table",
+  "table_number_already_exists_text": "Table number already exists",
+  "failed_to_add_table": "Failed to add table",
+  "failed_to_delete_table": "Failed to delete table",
+  "table_deleted_successfully": "Table deleted successfully",
+  "edit_successfully": "Edit successfully",
+  "edit_failed": "Edit failed",
 };

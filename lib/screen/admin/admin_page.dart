@@ -16,6 +16,8 @@ class AdminPage extends GetWidget<AdminController> {
           SizedBox(height: 24.h),
           ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.STAFF_MANAGE), text: "create_staff".tr),
           SizedBox(height: 24.h),
+          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.TABLE), text: 'Quản lý số bàn'),
+          SizedBox(height: 24.h),
           ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.PRINT), text: 'Quản lý máy in'),
         ],
       ),
