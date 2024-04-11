@@ -4,39 +4,29 @@ part 'food_type.g.dart';
 
 @JsonSerializable()
 class FoodType {
-  final String? typeId;
-  final String? name;
-  final String? description;
-  final String? image;
-  final String? createdAt;
+  String? typeId;
+  String? name;
+  String? description;
+  String? image;
+  @JsonKey(name: 'parent_type_id')
+  String? parentTypeId;
+  int? order;
+  @JsonKey(name: 'created_at')
+  String? createdAt;
 
   FoodType({
     this.typeId,
     this.name,
     this.description,
     this.image,
+    this.parentTypeId,
+    this.order,
     this.createdAt,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'typeId': typeId,
-      'name': name,
-      'description': description,
-      'image': image,
-      'created_at': createdAt,
-    };
-  }
+  Map<String, dynamic> toJson() => _$FoodTypeToJson(this);
 
-  Map toMap(FoodType food) {
-    var data = Map<String, dynamic>();
-    data['typeId'] = food.typeId;
-    data['name'] = food.name;
-    data['description'] = food.description;
-    data['image'] = food.image;
-    data['created_at'] = food.createdAt;
-    return data;
-  }
+  Map toMap(FoodType foodType) => _$FoodTypeToJson(this);
 
   factory FoodType.fromJson(Map<String, dynamic> json) => _$FoodTypeFromJson(json);
 }
