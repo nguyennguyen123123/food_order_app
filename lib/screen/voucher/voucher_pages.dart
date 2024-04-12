@@ -3,6 +3,7 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/voucher/voucher_controller.dart';
+import 'package:food_delivery_app/screen/voucher/voucher_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/cupon_clipper.dart';
@@ -37,59 +38,65 @@ class VoucherPages extends GetWidget<VoucherController> {
             () => Column(
               children: controller.voucherList.map((voucher) {
                 print(voucher.discountType);
-                return Padding(
-                  padding: padding(vertical: 12),
-                  child: ClipPath(
-                    clipper: CuponClipper(),
-                    child: Container(
-                      height: 120,
-                      width: 400,
-                      alignment: Alignment.center,
-                      color: Colors.amber,
-                      child: Padding(
-                        padding: padding(horizontal: 24),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                voucher.code.toString(),
-                                style: StyleThemeData.bold18(color: appTheme.whiteText),
-                              ),
-                            ),
-                            Container(
-                              height: 90,
-                              width: 2,
-                              color: appTheme.whiteText,
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Padding(
-                                padding: padding(vertical: 12, horizontal: 8),
-                                child: Column(
-                                  children: [
-                                    itemTextWidget('Tên:', voucher.name.toString()),
-                                    SizedBox(height: 4.h),
-                                    if (voucher.discountType == DiscountType.percentage)
-                                      Text(
-                                        voucher.discountValue.toString() + '%',
-                                        style: StyleThemeData.bold24(height: 0),
-                                      )
-                                    else
-                                      Text(
-                                        Utils.getCurrency(voucher.discountValue?.toInt()),
-                                        style: StyleThemeData.bold24(height: 0),
-                                      ),
-                                    Spacer(),
-                                    itemTextWidget(
-                                      'Hạn sử dụng:',
-                                      DateFormat('dd/MM/yyyy').format(DateTime.parse(voucher.expiryDate.toString())),
-                                    ),
-                                  ],
+                return GestureDetector(
+                  onLongPressStart: (ontap) => Get.toNamed(
+                    Routes.EDITVOUCHER,
+                    arguments: VoucherParameter(voucher: voucher),
+                  ),
+                  child: Padding(
+                    padding: padding(vertical: 12),
+                    child: ClipPath(
+                      clipper: CuponClipper(),
+                      child: Container(
+                        height: 120,
+                        width: 400,
+                        alignment: Alignment.center,
+                        color: Colors.amber,
+                        child: Padding(
+                          padding: padding(horizontal: 24),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  voucher.code.toString(),
+                                  style: StyleThemeData.bold18(color: appTheme.whiteText),
                                 ),
                               ),
-                            ),
-                          ],
+                              Container(
+                                height: 90,
+                                width: 2,
+                                color: appTheme.whiteText,
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Padding(
+                                  padding: padding(vertical: 12, horizontal: 8),
+                                  child: Column(
+                                    children: [
+                                      itemTextWidget('Tên:', voucher.name.toString()),
+                                      SizedBox(height: 4.h),
+                                      if (voucher.discountType == DiscountType.percentage)
+                                        Text(
+                                          voucher.discountValue.toString() + '%',
+                                          style: StyleThemeData.bold24(height: 0),
+                                        )
+                                      else
+                                        Text(
+                                          Utils.getCurrency(voucher.discountValue?.toInt()),
+                                          style: StyleThemeData.bold24(height: 0),
+                                        ),
+                                      Spacer(),
+                                      itemTextWidget(
+                                        'Hạn sử dụng:',
+                                        DateFormat('dd/MM/yyyy').format(DateTime.parse(voucher.expiryDate.toString())),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

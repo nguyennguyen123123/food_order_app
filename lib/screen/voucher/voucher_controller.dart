@@ -63,8 +63,8 @@ class VoucherController extends GetxController {
       Voucher voucher = Voucher(
         voucherId: getUuid(),
         code: randomString,
-        discountValue: double.tryParse(discountValueController.text.replaceAll(',', '')),
-        discountType: DiscountType.percentage,
+        discountValue: int.tryParse(discountValueController.text.replaceAll(',', '')),
+        discountType: DiscountType.amount,
         name: nameController.text,
         expiryDate: DateTime.now().toString(),
         createdAt: DateTime.now().toString(),
@@ -90,6 +90,13 @@ class VoucherController extends GetxController {
       DialogUtils.showInfoErrorDialog(content: "Thêm voucher thất bại".tr);
     } finally {
       isLoadingAdd(false);
+    }
+  }
+
+  void updateTable(Voucher updatedVoucher) {
+    final index = voucherList.indexWhere((voucher) => voucher.voucherId == updatedVoucher.voucherId);
+    if (index != -1) {
+      voucherList[index] = updatedVoucher;
     }
   }
 

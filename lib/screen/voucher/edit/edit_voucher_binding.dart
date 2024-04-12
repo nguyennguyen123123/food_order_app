@@ -6,6 +6,7 @@ class EditVoucherBinding implements Bindings {
   void dependencies() {
     Get.lazyPut(
       () => EditVoucherController(
+        parameter: Get.arguments,
         voucherepository: Get.find(),
       ),
     );

@@ -22,15 +22,32 @@ class VoucherRepository extends IVoucherRepository {
   }
 
   @override
-  Future<Map<String, dynamic>?> deleteVoucher(String voucherId) {
-    // TODO: implement deleteVoucher
-    throw UnimplementedError();
+  Future<Map<String, dynamic>?> deleteVoucher(String voucherId) async {
+    try {
+      final data = await baseService.client.from(TABLE_NAME.VOUCHER).delete().match({'voucher_id': voucherId}).select();
+
+      return data.first;
+    } catch (error) {
+      handleError(error);
+      return null;
+    }
   }
 
   @override
-  Future<Voucher?> editVoucher(String voucherId, Voucher voucher) {
-    // TODO: implement editVoucher
-    throw UnimplementedError();
+  Future<Voucher?> editVoucher(String voucherId, Voucher voucher) async {
+    try {
+      final response = await baseService.client
+          .from(TABLE_NAME.VOUCHER)
+          .update(voucher.toJson())
+          .eq('voucher_id', voucherId)
+          .select()
+          .withConverter((data) => data.map((e) => Voucher.fromJson(e)).toList());
+
+      return response.first;
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
   }
 
   @override
