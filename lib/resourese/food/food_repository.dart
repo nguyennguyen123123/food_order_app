@@ -118,6 +118,7 @@ class FoodRepository extends IFoodRepository {
   Future<void> deleteFood(String foodId) async {
     try {
       await baseService.client.from(TABLE_NAME.FOOD).delete().eq('foodId', foodId);
+      // await baseService.client.from(TABLE_NAME.FOOD).delete().eq('foodId', foodId).single();
     } catch (error) {
       print(error);
       handleError(error);

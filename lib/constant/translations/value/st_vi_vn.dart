@@ -66,5 +66,13 @@ const Map<String, String> viVN = {
   "order_person": "Người lên đơn: ",
   "detail_order": "Chi tiết đơn",
   "order_id": "Mã đơn hàng:",
-  "quantity": "Số lượng:"
+  "quantity": "Số lượng:",
+  "successfully_added_new_table": "Thêm bàn mới thành công",
+  "table_number_already_exists_text": "Số bàn đã tồn tại",
+  "failed_to_add_table": "Thêm bàn thất bại",
+  "failed_to_delete_table": "Xóa bàn thất bại",
+  "table_deleted_successfully": "Xóa bàn thành công",
+  "edit_successfully": "Chỉnh sửa thành công",
+  "edit_failed": "Chỉnh sửa thất bại",
+  "select_table_number": "Chọn số bàn"
 };

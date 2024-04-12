@@ -11,7 +11,9 @@ FoodType _$FoodTypeFromJson(Map<String, dynamic> json) => FoodType(
       name: json['name'] as String?,
       description: json['description'] as String?,
       image: json['image'] as String?,
-      createdAt: json['createdAt'] as String?,
+      // parentTypeId: json['parent_type_id'] as String?,
+      // order: json['order'] as int?,
+      createdAt: json['created_at'] as String?,
     );
 
 Map<String, dynamic> _$FoodTypeToJson(FoodType instance) => <String, dynamic>{
@@ -19,5 +21,7 @@ Map<String, dynamic> _$FoodTypeToJson(FoodType instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'image': instance.image,
-      'createdAt': instance.createdAt,
+      // 'parent_type_id': instance.parentTypeId,
+      // 'order': instance.order,
+      'created_at': instance.createdAt,
     };

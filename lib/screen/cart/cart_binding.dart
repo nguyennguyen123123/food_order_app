@@ -4,6 +4,12 @@ import 'package:get/get.dart';
 class CartBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(CartController(cartService: Get.find(), orderRepository: Get.find()));
+    Get.put(
+      CartController(
+        cartService: Get.find(),
+        orderRepository: Get.find(),
+        tableRepository: Get.find(),
+      ),
+    );
   }
 }

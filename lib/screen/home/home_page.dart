@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/home/home_controller.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/utils/icons_assets.dart';
 import 'package:food_delivery_app/widgets/custom_avatar.dart';
 import 'package:food_delivery_app/widgets/food_view.dart';
 import 'package:food_delivery_app/widgets/list_vertical_item.dart';
@@ -22,31 +25,40 @@ class HomePage extends GetWidget<HomeController> {
             _buildSearchBar(),
             Obx(
               () => Padding(
-                  padding: padding(vertical: 8),
-                  child: controller.foodTypes.value == null
-                      ? Text("food_type".tr, style: StyleThemeData.bold12())
-                      : controller.foodTypes.value!.isEmpty
-                          ? SizedBox()
-                          : Text("food_type".tr, style: StyleThemeData.bold12())),
+                padding: padding(vertical: 8),
+                child: controller.foodTypes.value == null
+                    ? Text("food_type".tr, style: StyleThemeData.bold12())
+                    : controller.foodTypes.value!.isEmpty
+                        ? SizedBox()
+                        : Text(
+                            "food_type".tr,
+                            style: StyleThemeData.bold12(),
+                          ),
+              ),
             ),
             Obx(
               () => Padding(
-                  padding: padding(vertical: 8),
-                  child: controller.foodTypes.value == null
-                      ? Center(child: CircularProgressIndicator())
-                      : SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(children: controller.foodTypes.value!.map(_buildFoodType).toList()),
-                        )),
+                padding: padding(vertical: 8),
+                child: controller.foodTypes.value == null
+                    ? Center(child: CircularProgressIndicator())
+                    : SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(children: controller.foodTypes.value!.map(_buildFoodType).toList()),
+                      ),
+              ),
             ),
             Obx(
               () => Padding(
-                  padding: padding(vertical: 8),
-                  child: controller.foods.value == null
-                      ? Text("food".tr, style: StyleThemeData.bold12())
-                      : controller.foods.value!.isEmpty
-                          ? SizedBox()
-                          : Text("food".tr, style: StyleThemeData.bold12())),
+                padding: padding(vertical: 8),
+                child: controller.foods.value == null
+                    ? Text("food".tr, style: StyleThemeData.bold12())
+                    : controller.foods.value!.isEmpty
+                        ? SizedBox()
+                        : Text(
+                            "food".tr,
+                            style: StyleThemeData.bold12(),
+                          ),
+              ),
             ),
             Obx(
               () => Padding(
@@ -88,23 +100,60 @@ class HomePage extends GetWidget<HomeController> {
       children: [
         Expanded(
           child: GestureDetector(
-            onTap: () => Get.toNamed(Routes.LIST_FOOD),
-            child: Container(
-              padding: padding(all: 12),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), border: Border.all()),
-              child: Row(
+              onTap: () => Get.toNamed(Routes.LIST_FOOD),
+              child: Container(
+                padding: padding(all: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(41),
+                  color: appTheme.blackColor.withOpacity(0.05),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 12),
+                        child: SvgPicture.asset(IconAssets.searchIcon, width: 18.w, height: 18.h),
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'search'.tr,
+                      style: StyleThemeData.regular14(color: appTheme.textDesColor, height: 0),
+                    ),
+                  ],
+                ),
+              )),
+        ),
+        Obx(
+          () => Padding(
+            padding: padding(left: 10),
+            child: IconButton(
+              onPressed: () => Get.toNamed(Routes.CART),
+              icon: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  Icon(Icons.search, size: 12.w),
-                  SizedBox(width: 8.w),
-                  Expanded(child: Text('search'.tr)),
+                  SvgPicture.asset(IconAssets.shoppingCartIcon),
+                  if (controller.cartService.items.value.isNotEmpty)
+                    Positioned(
+                      top: -12,
+                      right: -10,
+                      child: Container(
+                        padding: padding(all: 4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: appTheme.errorColor,
+                        ),
+                        child: Text(
+                          controller.cartService.items.value.length.toString(),
+                          style: StyleThemeData.regular14(height: 0, color: appTheme.whiteText),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: padding(horizontal: 12),
-          child: GestureDetector(onTap: () => Get.toNamed(Routes.CART), child: Icon(Icons.shopping_bag)),
         ),
       ],
     );

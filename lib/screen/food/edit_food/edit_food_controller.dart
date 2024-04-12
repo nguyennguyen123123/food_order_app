@@ -5,7 +5,7 @@ import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
-import 'package:food_delivery_app/screen/edit_food/edit_food_parameter.dart';
+import 'package:food_delivery_app/screen/food/edit_food/edit_food_parameter.dart';
 import 'package:food_delivery_app/screen/food/food_controller.dart';
 import 'package:food_delivery_app/utils/utils.dart';
 import 'package:get/get.dart';

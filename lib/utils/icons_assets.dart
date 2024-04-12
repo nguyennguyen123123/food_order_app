@@ -10,4 +10,6 @@ class IconAssets {
   static String buttonCameraIcon = '${_basePath}button_camera.svg';
   static String cancelIcon = '${_basePath}cancel.svg';
   static String adminIcon = '${_basePath}admin.svg';
+  static String searchIcon = '${_basePath}search.svg';
+  static String shoppingCartIcon = '${_basePath}shopping_cart.svg';
 }

@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_type.dart';
-import 'package:food_delivery_app/screen/edit_food/edit_food_controller.dart';
+import 'package:food_delivery_app/screen/food/edit_food/edit_food_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/number_formatter.dart';
 import 'package:food_delivery_app/widgets/confirmation_button_widget.dart';

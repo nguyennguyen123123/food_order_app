@@ -78,7 +78,7 @@ class PrinterPages extends GetWidget<PrinterController> {
                         child: controller.isLoadingDelete.isTrue
                             ? Container(width: 16.w, height: 16.h, child: CircularProgressIndicator())
                             : Text(
-                                'Xóa',
+                                'Xóa', 
                                 style: StyleThemeData.bold14(color: appTheme.errorColor, height: 0),
                               ),
                       ),
@@ -97,7 +97,7 @@ class PrinterPages extends GetWidget<PrinterController> {
                           color: appTheme.appColor,
                         ),
                         child: Text(
-                          'Chỉnh sửa',
+                          'edit'.tr,
                           style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
                         ),
                       ),

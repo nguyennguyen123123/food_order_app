@@ -11,6 +11,7 @@ class HomeMainBinding implements Bindings {
       HomeController(
         foodRepository: Get.find(),
         printerRepository: Get.find(),
+        cartService: Get.find(),
       ),
     );
     Get.put(ProfileController(

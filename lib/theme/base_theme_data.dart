@@ -70,6 +70,8 @@ abstract class BaseThemeData {
 
   Color textDesColor = const Color(0xFF7E8695);
 
+  Color background700Color = const Color(0xFF9AA0AC);
+
   Color usageSematicErrorColor = const Color(0xFFF73131);
 
   Color lineColor = const Color(0xFFF4F4F6);

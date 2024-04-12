@@ -46,7 +46,6 @@ class AddPrinterView extends GetWidget<PrinterController> {
                 label: 'Port',
                 suffix: Icon(Icons.price_change),
                 textInputType: TextInputType.number,
-                numberFormat: NumericTextFormatter(),
               ),
               SizedBox(height: 24.h),
               Obx(

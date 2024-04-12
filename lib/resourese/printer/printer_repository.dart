@@ -11,7 +11,6 @@ class PrinterRepository extends IPrinterRepository {
   @override
   Future<Printer?> addPrinter(Printer printer) async {
     try {
-      print(printer);
       final response = await baseService.client.from(TABLE_NAME.PRINTER).insert(printer.toJson());
 
       return response;

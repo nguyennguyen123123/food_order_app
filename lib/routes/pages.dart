@@ -4,8 +4,8 @@ import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
 import 'package:food_delivery_app/screen/cart/cart_binding.dart';
 import 'package:food_delivery_app/screen/cart/cart_page.dart';
-import 'package:food_delivery_app/screen/edit_food/edit_food_binding.dart';
-import 'package:food_delivery_app/screen/edit_food/edit_food_view.dart';
+import 'package:food_delivery_app/screen/food/edit_food/edit_food_binding.dart';
+import 'package:food_delivery_app/screen/food/edit_food/edit_food_view.dart';
 import 'package:food_delivery_app/screen/food/food_binding.dart';
 import 'package:food_delivery_app/screen/food/food_screen.dart';
 import 'package:food_delivery_app/screen/food/view/add_food_view.dart';
@@ -30,6 +30,11 @@ import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_binding.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_page.dart';
+import 'package:food_delivery_app/screen/table/edit/edit_table_binding.dart';
+import 'package:food_delivery_app/screen/table/table_binding.dart';
+import 'package:food_delivery_app/screen/table/table_page.dart';
+import 'package:food_delivery_app/screen/table/view/add_table_view.dart';
+import 'package:food_delivery_app/screen/table/view/edit_table_view.dart';
 import 'package:get/get.dart';
 
 part 'routes.dart';
@@ -126,6 +131,20 @@ abstract class AppPages {
       name: Routes.ORDER_DETAIL,
       page: () => OrderDetailPage(),
       binding: OrderDetailBinding(),
+    ),
+    GetPage(
+      name: Routes.TABLE,
+      page: () => TablePage(),
+      binding: TableBinding(),
+    ),
+    GetPage(
+      name: Routes.ADDTABLE,
+      page: () => AddTableView(),
+    ),
+    GetPage(
+      name: Routes.EDITTABLE,
+      page: () => EditTableView(),
+      binding: EditTableBinding(),
     ),
   ];
 }

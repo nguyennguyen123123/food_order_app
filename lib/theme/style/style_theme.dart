@@ -74,11 +74,11 @@ class StyleThemeData {
         height: height.h,
       );
 
-  static TextStyle regular16({BuildContext? context, Color? color}) => TextStyle(
+  static TextStyle regular16({BuildContext? context, Color? color, double height = 1.5}) => TextStyle(
         fontSize: 16.fontSize,
         fontWeight: FontWeight.w400,
         color: color ?? appTheme.blackColor,
-        height: 1.5.h,
+        height: height.h,
         letterSpacing: 0.2,
       );
 
