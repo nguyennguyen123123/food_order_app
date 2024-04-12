@@ -46,6 +46,8 @@ abstract class BaseThemeData {
 
   Color blackColor = const Color(0xFF0F172A);
 
+  Color foodAppBackground = Color(0xFFf8f8f8);
+
   Color baseColor = const Color(0xFFFF9F29);
 
   Color greyscale50Color = const Color(0xFFF8FAFC);
@@ -91,6 +93,8 @@ abstract class BaseThemeData {
   Color frameColor = const Color(0xFFC9CCD1);
 
   Color appColor = const Color(0xFF514BF6);
+
+  Color textPrimaryColor = Color(0xFF2E3033);
 
   Color oneActiveColor = const Color(0xFF5E7DF5);
   Color twoActiveColor = const Color(0xFF5661F5);

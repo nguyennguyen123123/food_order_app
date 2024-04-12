@@ -13,11 +13,12 @@ class CustomAvatar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(100),
       child: CachedNetworkImage(
-          imageUrl: url ?? '',
-          width: size ?? 50.w,
-          height: size ?? 50.w,
-          fit: BoxFit.cover,
-          errorWidget: (context, url, error) => Image.asset('assets/logo.jpg')),
+        imageUrl: url ?? '',
+        width: size ?? 50.w,
+        height: size ?? 50.w,
+        fit: BoxFit.cover,
+        errorWidget: (context, url, error) => Image.asset('assets/logo.jpg'),
+      ),
     );
   }
 }

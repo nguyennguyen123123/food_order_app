@@ -5,6 +5,7 @@ import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/custom_network_image.dart';
+import 'package:food_delivery_app/widgets/default_box_shadow.dart';
 import 'package:food_delivery_app/widgets/dialog_view/add_food_dialog.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
@@ -19,7 +20,8 @@ class FoodView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: appTheme.background,
+        color: appTheme.whiteText,
+        boxShadow: defaultBoxShadow(),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,29 +31,37 @@ class FoodView extends StatelessWidget {
             url: foodModel.image,
             height: 150,
             width: double.infinity,
-            radius: 12,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
           ),
           SizedBox(height: 12.h),
           Padding(
-              padding: padding(horizontal: 12, bottom: 12, top: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(foodModel.name ?? '', style: StyleThemeData.regular16()),
-                        SizedBox(height: 2.h),
-                        Text(Utils.getCurrency(foodModel.price), style: StyleThemeData.regular16()),
-                      ],
-                    ),
+            padding: padding(horizontal: 12, bottom: 12, top: 2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        foodModel.name ?? '',
+                        style: StyleThemeData.regular16(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 2.h),
+                      Text(Utils.getCurrency(foodModel.price), style: StyleThemeData.regular16()),
+                    ],
                   ),
-                  if (showAddBtn)
-                    GestureDetector(
-                        onTap: () => DialogUtils.showBTSView(AddFoodBTS(foodModel: foodModel)), child: Icon(Icons.add))
-                ],
-              )),
+                ),
+                if (showAddBtn)
+                  GestureDetector(
+                    onTap: () => DialogUtils.showBTSView(AddFoodBTS(foodModel: foodModel)),
+                    child: Icon(Icons.add),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );

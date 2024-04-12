@@ -74,5 +74,9 @@ const Map<String, String> viVN = {
   "table_deleted_successfully": "Xóa bàn thành công",
   "edit_successfully": "Chỉnh sửa thành công",
   "edit_failed": "Chỉnh sửa thất bại",
-  "select_table_number": "Chọn số bàn"
+  "select_table_number": "Chọn số bàn",
+  "no_data_available": "Không có dữ liệu",
+  "view_all": "Xem tất cả",
+  "list_of_dishes": "Danh sách món ăn"
+
 };

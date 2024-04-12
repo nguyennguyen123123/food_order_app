@@ -148,4 +148,21 @@ class FoodRepository extends IFoodRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<List<FoodModel>> getListDataFoodType() async {
+    try {
+      final response = await baseService.client.from(TABLE_NAME.FOOD).select("*, typeId (*)");
+
+      final List<Map<String, dynamic>> data = response;
+
+      final List<FoodModel> foodList = data.map((json) => FoodModel.fromJson(json)).toList();
+
+      return foodList;
+    } catch (error) {
+      handleError(error);
+
+      return [];
+    }
+  }
 }
