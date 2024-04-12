@@ -16,6 +16,8 @@ import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/resourese/table/table_repository.dart';
+import 'package:food_delivery_app/resourese/voucher/ivoucher_repository.dart';
+import 'package:food_delivery_app/resourese/voucher/voucher_repository.dart';
 import 'package:get/get.dart';
 
 class AppService {
@@ -45,5 +47,6 @@ class AppService {
     Get.put<IOrderRepository>(OrderRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IPrinterRepository>(PrinterRepository(baseService: Get.find()));
     Get.put<ITableRepository>(TableRepository(baseService: Get.find()));
+    Get.put<IVoucherRepository>(VoucherRepository(baseService: Get.find()));
   }
 }

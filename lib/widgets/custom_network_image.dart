@@ -3,24 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class CustomNetworkImage extends StatelessWidget {
-  const CustomNetworkImage({this.url, Key? key, this.size, this.width, this.height, this.radius}) : super(key: key);
+  const CustomNetworkImage({
+    this.url,
+    Key? key,
+    this.size,
+    this.width,
+    this.height,
+    this.borderRadius,
+  }) : super(key: key);
 
   final String? url;
   final double? size;
   final double? width;
   final double? height;
-  final double? radius;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(radius ?? 0),
+      borderRadius: borderRadius ?? BorderRadius.circular(12),
       child: CachedNetworkImage(
-          imageUrl: url ?? '',
-          width: width?.w ?? size ?? 50.w,
-          height: height?.h ?? size ?? 50.w,
-          fit: BoxFit.cover,
-          errorWidget: (context, url, error) => Image.asset('assets/logo.jpg')),
+        imageUrl: url ?? '',
+        width: width?.w ?? size ?? 50.w,
+        height: height?.h ?? size ?? 50.w,
+        fit: BoxFit.cover,
+        errorWidget: (context, url, error) => Image.asset('assets/logo.jpg'),
+      ),
     );
   }
 }

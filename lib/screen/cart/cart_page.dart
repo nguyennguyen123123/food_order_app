@@ -183,7 +183,7 @@ class CartPage extends GetWidget<CartController> {
   Widget _buildCartItem(int index, OrderItem orderItem) {
     return Row(
       children: [
-        CustomNetworkImage(url: orderItem.food?.image, size: 100, radius: 12),
+        CustomNetworkImage(url: orderItem.food?.image, size: 100),
         SizedBox(width: 8.w),
         Expanded(
           child: Column(

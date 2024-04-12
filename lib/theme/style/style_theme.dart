@@ -102,11 +102,11 @@ class StyleThemeData {
         height: height.h,
       );
 
-  static TextStyle bold24({Color? color}) => TextStyle(
+  static TextStyle bold24({Color? color, double height=1.5}) => TextStyle(
         fontSize: 24.fontSize,
         fontWeight: FontWeight.w700,
         color: color ?? appTheme.blackColor,
-        height: 1.5.h,
+        height: height.h,
       );
 
   static TextStyle bold28({Color? color}) => TextStyle(

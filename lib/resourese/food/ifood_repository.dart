@@ -12,6 +12,7 @@ abstract class IFoodRepository extends IBaseRepository {
   Future<FoodType?> addTypeFood(FoodType foodModel);
   Future<List<FoodType>?> getTypeFood();
   Future<FoodModel?> editFood(String foodId, FoodModel foodModel);
-  Future<void> deleteFood(String foodId);
+  Future<Map<String, dynamic>?> deleteFood(String foodId);
   Future<List<FoodModel>> getListFoodByKeyword({String keyword = '', String? typeId, int page = 0, int limit = LIMIT});
+  Future<List<FoodModel>> getListDataFoodType();
 }

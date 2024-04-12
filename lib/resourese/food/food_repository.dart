@@ -115,14 +115,15 @@ class FoodRepository extends IFoodRepository {
   }
 
   @override
-  Future<void> deleteFood(String foodId) async {
+  Future<Map<String, dynamic>?> deleteFood(String foodId) async {
     try {
-      await baseService.client.from(TABLE_NAME.FOOD).delete().eq('foodId', foodId);
-      // await baseService.client.from(TABLE_NAME.FOOD).delete().eq('foodId', foodId).single();
+      final response = await baseService.client.from(TABLE_NAME.FOOD).delete().match({'foodId': foodId}).select();
+
+      return response.first;
     } catch (error) {
       print(error);
       handleError(error);
-      rethrow;
+      return null;
     }
   }
 
@@ -146,6 +147,23 @@ class FoodRepository extends IFoodRepository {
     } catch (e) {
       handleError(e);
       rethrow;
+    }
+  }
+
+  @override
+  Future<List<FoodModel>> getListDataFoodType() async {
+    try {
+      final response = await baseService.client.from(TABLE_NAME.FOOD).select("*, typeId (*)");
+
+      final List<Map<String, dynamic>> data = response;
+
+      final List<FoodModel> foodList = data.map((json) => FoodModel.fromJson(json)).toList();
+
+      return foodList;
+    } catch (error) {
+      handleError(error);
+
+      return [];
     }
   }
 }

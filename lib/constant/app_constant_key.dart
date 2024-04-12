@@ -26,6 +26,7 @@ abstract class TABLE_NAME {
   static const ORDER_ITEM = 'order_item';
   static const PRINTER = 'printer';
   static const TABLE = 'table';
+  static const VOUCHER = 'voucher';
 }
 
 abstract class ERROR_CODE {

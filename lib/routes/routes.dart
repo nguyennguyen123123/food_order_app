@@ -23,4 +23,7 @@ abstract class Routes {
   static const TABLE = '/table';
   static const ADDTABLE = '/add_table';
   static const EDITTABLE = '/edit_table';
+  static const VOUCHER = '/voucher';
+  static const ADDVOUCHER = '/add_voucher';
+  static const EDITVOUCHER = '/edit_voucher';
 }
