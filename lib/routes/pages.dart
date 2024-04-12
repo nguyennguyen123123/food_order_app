@@ -35,6 +35,11 @@ import 'package:food_delivery_app/screen/table/table_binding.dart';
 import 'package:food_delivery_app/screen/table/table_page.dart';
 import 'package:food_delivery_app/screen/table/view/add_table_view.dart';
 import 'package:food_delivery_app/screen/table/view/edit_table_view.dart';
+import 'package:food_delivery_app/screen/voucher/edit/edit_voucher_binding.dart';
+import 'package:food_delivery_app/screen/voucher/view/add_voucher_view.dart';
+import 'package:food_delivery_app/screen/voucher/view/edit_voucher_view.dart';
+import 'package:food_delivery_app/screen/voucher/voucher_binding.dart';
+import 'package:food_delivery_app/screen/voucher/voucher_pages.dart';
 import 'package:get/get.dart';
 
 part 'routes.dart';
@@ -145,6 +150,20 @@ abstract class AppPages {
       name: Routes.EDITTABLE,
       page: () => EditTableView(),
       binding: EditTableBinding(),
+    ),
+    GetPage(
+      name: Routes.VOUCHER,
+      page: () => VoucherPages(),
+      binding: VoucherBinding(),
+    ),
+    GetPage(
+      name: Routes.ADDVOUCHER,
+      page: () => AddVoucherView(),
+    ),
+    GetPage(
+      name: Routes.EDITVOUCHER,
+      page: () => EditVoucherView(),
+      binding: EditVoucherBinding(),
     ),
   ];
 }
