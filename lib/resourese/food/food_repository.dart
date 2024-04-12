@@ -115,14 +115,15 @@ class FoodRepository extends IFoodRepository {
   }
 
   @override
-  Future<void> deleteFood(String foodId) async {
+  Future<Map<String, dynamic>?> deleteFood(String foodId) async {
     try {
-      await baseService.client.from(TABLE_NAME.FOOD).delete().eq('foodId', foodId);
-      // await baseService.client.from(TABLE_NAME.FOOD).delete().eq('foodId', foodId).single();
+      final response = await baseService.client.from(TABLE_NAME.FOOD).delete().match({'foodId': foodId}).select();
+
+      return response.first;
     } catch (error) {
       print(error);
       handleError(error);
-      rethrow;
+      return null;
     }
   }
 

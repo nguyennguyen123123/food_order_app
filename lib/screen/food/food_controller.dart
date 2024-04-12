@@ -6,7 +6,7 @@ import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
-import 'package:food_delivery_app/widgets/loading.dart';
+import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -130,10 +130,18 @@ class FoodController extends GetxController {
   }
 
   Future<void> deleteFood(String foodId, int index) async {
-    excute(() async {
-      await foodRepository.deleteFood(foodId);
-      foodList.update((val) => val?.removeAt(index));
-    });
+    try {
+      final delete = await foodRepository.deleteFood(foodId);
+      if (delete != null) {
+        foodList.update((val) => val?.removeAt(index));
+        DialogUtils.showSuccessDialog(content: "delete_successful".tr);
+      } else {
+        DialogUtils.showInfoErrorDialog(content: "delete_failed".tr);
+      }
+    } catch (error) {
+      print(error);
+      DialogUtils.showInfoErrorDialog(content: "delete_failed".tr);
+    }
   }
 
   void addTypeFood() async {

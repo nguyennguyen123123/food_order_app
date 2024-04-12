@@ -61,5 +61,7 @@ const Map<String, String> enUS = {
   "select_table_number": "Select table number",
   "no_data_available": "No data available",
   "view_all": "View All",
-  "list_of_dishes": "List of dishes"
+  "list_of_dishes": "List of dishes",
+  "delete_successful": "Delete successful",
+  "delete_failed": "Delete failed"
 };
