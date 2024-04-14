@@ -25,7 +25,7 @@ class PrimaryButton extends StatelessWidget {
         onPressed: isDisable ? null : onPressed,
         child: child,
         style: FilledButton.styleFrom(
-          backgroundColor: isDisable ? appTheme.background700Color : backgroundColor,
+          backgroundColor: isDisable ? appTheme.background700Color : backgroundColor ?? appTheme.primaryColor,
           minimumSize: Size.zero,
           padding: contentPadding ?? EdgeInsets.zero,
           shape: RoundedRectangleBorder(

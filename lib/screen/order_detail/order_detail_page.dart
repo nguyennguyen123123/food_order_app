@@ -63,6 +63,16 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
             itemBuilder: (context, index) => _buildOrderItem(partyOrder.orderItems![index]),
             separatorBuilder: (context, index) => SizedBox(height: 6.h),
             itemCount: partyOrder.orderItems?.length ?? 0),
+        SizedBox(height: 6.h),
+        if (partyOrder.voucherPrice != null) ...[
+          Text('Áp dụng mã giảm giá: Giảm ${Utils.getCurrency((partyOrder.voucherPrice ?? 0).toInt())}')
+        ],
+        Row(
+          children: [
+            Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
+            Text(Utils.getCurrency(partyOrder.priceInVoucher.toInt()))
+          ],
+        )
       ],
     );
   }

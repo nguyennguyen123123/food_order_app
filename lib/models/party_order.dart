@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:food_delivery_app/models/order_item.dart';
+import 'package:food_delivery_app/models/voucher.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'party_order.g.dart';
@@ -22,6 +23,8 @@ class PartyOrder {
   String? createdAt;
   @JsonKey(name: 'party_number')
   int? partyNumber;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Voucher? voucher;
   PartyOrder({
     this.partyOrderId,
     this.orderItems,
@@ -31,6 +34,7 @@ class PartyOrder {
     this.orderId,
     this.createdAt,
     this.partyNumber,
+    this.voucher,
   });
 
   factory PartyOrder.fromJson(Map<String, dynamic> json) => _$PartyOrderFromJson(json);
@@ -46,6 +50,7 @@ class PartyOrder {
     String? orderId,
     String? createdAt,
     int? partyNumber,
+    Voucher? voucher,
   }) {
     return PartyOrder(
       partyOrderId: partyOrderId ?? this.partyOrderId,
@@ -56,6 +61,7 @@ class PartyOrder {
       orderId: orderId ?? this.orderId,
       createdAt: createdAt ?? this.createdAt,
       partyNumber: partyNumber ?? this.partyNumber,
+      voucher: voucher ?? this.voucher,
     );
   }
 }
@@ -66,6 +72,20 @@ extension PartyOrderExtension on PartyOrder {
     for (final item in (orderItems ?? <OrderItem>[])) {
       total += item.quantity * (item.food?.price ?? 0);
     }
+    if (voucher != null) {
+      if (voucher?.discountType == DiscountType.amount) {
+        total -= voucher?.discountValue ?? 0;
+      } else {
+        total = total * ((voucher?.discountValue ?? 100) / 100);
+      }
+    }
     return total;
+  }
+
+  double get priceInVoucher {
+    if (voucherPrice != null) {
+      return (total ?? 0) - (voucherPrice ?? 0);
+    }
+    return total ?? 0;
   }
 }

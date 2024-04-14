@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
+import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
@@ -82,6 +83,18 @@ class CartController extends GetxController {
     });
   }
 
+  void updatePartyVoucher(int partyIndex, Voucher voucher) {
+    cartService.partyOrders.update((val) {
+      val?[partyIndex].voucher = voucher;
+    });
+  }
+
+  void clearVoucherParty(int partyIndex) {
+    cartService.partyOrders.update((val) {
+      val?[partyIndex].voucher = null;
+    });
+  }
+
   Future<void> onPlaceOrder() async {
     isValidateForm.value = true;
 
@@ -93,6 +106,7 @@ class CartController extends GetxController {
       final result = await orderRepository.onPlaceOrder(
         cartService.items.value,
         cartService.partyOrders.value,
+        voucher: cartService.currentVoucher.value,
         tableNumber: (selectedValue.value?.tableNumber ?? 0).toString(),
       );
       if (result != null) {

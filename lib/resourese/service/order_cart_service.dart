@@ -1,10 +1,12 @@
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
+import 'package:food_delivery_app/models/voucher.dart';
 import 'package:get/get.dart';
 
 class OrderCartService extends GetxService {
   final items = Rx<List<OrderItem>>([]);
   final partyOrders = Rx<List<PartyOrder>>([]);
+  final currentVoucher = Rx<Voucher?>(null);
 
   void onAddOrderItem(OrderItem orderItem) {
     final index = items.value
@@ -32,5 +34,27 @@ class OrderCartService extends GetxService {
       }
     }
     items.value = listOrder;
+  }
+
+  void onAddVoucher(Voucher voucher) {
+    currentVoucher.value = voucher;
+  }
+
+  int get totalCartPrice {
+    var total = 0.0;
+    for (final food in items.value) {
+      total += food.quantity * (food.food?.price ?? 0);
+    }
+    for (final party in partyOrders.value) {
+      total += party.totalPrice;
+    }
+    if (currentVoucher.value != null) {
+      if (currentVoucher.value?.discountType == DiscountType.amount) {
+        total -= currentVoucher.value?.discountValue ?? 0;
+      } else {
+        total = total * ((currentVoucher.value?.discountValue ?? 100) / 100);
+      }
+    }
+    return total.toInt();
   }
 }

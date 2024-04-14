@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CuponClipper extends CustomClipper<Path> {
+class CouponClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();

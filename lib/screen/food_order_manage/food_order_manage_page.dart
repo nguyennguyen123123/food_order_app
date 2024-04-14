@@ -53,7 +53,7 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
 
   Widget _buildFoodOrderItem(int index, FoodOrder item) {
     final isPartyOrder = item.orderType == ORDER_TYPE.PARTY;
-    final partyOrderNormal = item.partyOrders?.firstWhere((value) => value.partyNumber == null);
+    // final partyOrderNormal = item.partyOrders?.firstWhere((value) => value.partyNumber == null);
     final partyOrder = item.partyOrders?.where((value) => value.partyNumber != null).toList() ?? [];
     final numberOfParty = isPartyOrder ? partyOrder.length : 0;
     return GestureDetector(
@@ -87,7 +87,7 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
                     // SizedBox(height: 8.h),
                     itemData(title: 'table_number'.tr, data: item.tableNumber ?? ''),
                     SizedBox(height: 4.h),
-                    itemData(title: 'price'.tr, data: Utils.getCurrency(item.total?.toInt())),
+                    itemData(title: 'price'.tr, data: Utils.getCurrency(item.totalPrice)),
                     SizedBox(height: 4.h),
                     itemData(
                         title: 'time'.tr,

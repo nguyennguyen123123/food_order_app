@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
+import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/screen/cart/cart_controller.dart';
 import 'package:food_delivery_app/screen/cart/widget/add_item_party_dialog.dart';
 import 'package:food_delivery_app/screen/cart/widget/edit_reason_bottom_sheet.dart';
+import 'package:food_delivery_app/screen/cart/widget/select_voucher_bts.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
@@ -22,13 +24,7 @@ class CartPage extends GetWidget<CartController> {
   Widget build(BuildContext context) {
     return Obx(() {
       final foods = controller.cartService.items.value;
-      var total = 0.0;
-      for (final food in foods) {
-        total += food.quantity * (food.food?.price ?? 0);
-      }
-      for (final party in controller.partyOrders) {
-        total += party.totalPrice;
-      }
+      final total = controller.cartService.totalCartPrice;
       final hasOrderInCart = (foods.isEmpty && controller.partyOrders.isEmpty) ||
           (foods.isEmpty &&
               controller.partyOrders.isNotEmpty &&
@@ -63,7 +59,6 @@ class CartPage extends GetWidget<CartController> {
                                     ? Center(child: CircularProgressIndicator())
                                     : itemSelectTable(),
                               ),
-                              if (controller.isValidateForm.value && controller.selectedValue.value == null) ...[],
                               GestureDetector(
                                 onTap: () => controller.onCreateNewPartyOrder(),
                                 child: Container(
@@ -89,29 +84,39 @@ class CartPage extends GetWidget<CartController> {
                             : Container(
                                 padding: padding(all: 12),
                                 decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
-                                child: Row(
+                                child: Column(
                                   children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text("total".tr, style: StyleThemeData.bold18()),
-                                          SizedBox(height: 8.h),
-                                          Text(Utils.getCurrency(total.toInt()), style: StyleThemeData.regular17())
-                                        ],
-                                      ),
+                                    _buildVoucherField(
+                                      controller.cartService.currentVoucher.value,
+                                      updateVoucher: controller.cartService.onAddVoucher,
+                                      clearVoucher: () => controller.cartService.currentVoucher.value = null,
                                     ),
-                                    PrimaryButton(
-                                      onPressed: controller.onPlaceOrder,
-                                      contentPadding: padding(horizontal: 18, vertical: 12),
-                                      radius: BorderRadius.circular(100),
-                                      isDisable: controller.selectedValue.value == null,
-                                      backgroundColor: appTheme.primaryColor,
-                                      borderColor: appTheme.primaryColor,
-                                      child: Text(
-                                        'confirm'.tr,
-                                        style: StyleThemeData.bold18(color: appTheme.whiteText, height: 0),
-                                      ),
+                                    Divider(),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("total".tr, style: StyleThemeData.bold18()),
+                                              SizedBox(height: 8.h),
+                                              Text(Utils.getCurrency(total.toInt()), style: StyleThemeData.regular17())
+                                            ],
+                                          ),
+                                        ),
+                                        PrimaryButton(
+                                          onPressed: controller.onPlaceOrder,
+                                          contentPadding: padding(horizontal: 18, vertical: 12),
+                                          radius: BorderRadius.circular(100),
+                                          isDisable: controller.selectedValue.value == null,
+                                          backgroundColor: appTheme.primaryColor,
+                                          borderColor: appTheme.primaryColor,
+                                          child: Text(
+                                            'confirm'.tr,
+                                            style: StyleThemeData.bold18(color: appTheme.whiteText, height: 0),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -130,6 +135,44 @@ class CartPage extends GetWidget<CartController> {
         ],
       );
     });
+  }
+
+  Widget _buildVoucherField(
+    Voucher? voucher, {
+    required void Function(Voucher) updateVoucher,
+    required VoidCallback clearVoucher,
+  }) {
+    if (voucher == null) {
+      return Row(
+        children: [
+          Expanded(child: Text('Áp dụng voucher', style: StyleThemeData.bold18())),
+          PrimaryButton(
+              onPressed: () async {
+                final result = await DialogUtils.showBTSView(SelectVoucherBTS());
+                if (result != null && result is Voucher) {
+                  updateVoucher(result);
+                }
+              },
+              contentPadding: padding(all: 12),
+              radius: BorderRadius.circular(1000),
+              child: Text(
+                'Chọn',
+                style: StyleThemeData.bold14(color: appTheme.whiteText),
+              ))
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          Expanded(child: Text("Mã voucher: ${voucher.code}")),
+          if (voucher.discountType == DiscountType.amount)
+            Text('Giảm ${Utils.getCurrency(voucher.discountValue)}')
+          else
+            Text('Giảm ${voucher.discountValue} %'),
+          GestureDetector(onTap: clearVoucher, child: Icon(Icons.clear))
+        ],
+      );
+    }
   }
 
   Widget _buildListOrderItem(List<OrderItem> foods) {
@@ -211,6 +254,13 @@ class CartPage extends GetWidget<CartController> {
                   ),
               separatorBuilder: (context, index) => SizedBox(height: 4.h),
               itemCount: partyOrder.orderItems?.length ?? 0),
+          SizedBox(height: 8.h),
+          if (partyOrder.orderItems?.isNotEmpty == true)
+            _buildVoucherField(
+              partyOrder.voucher,
+              updateVoucher: (voucher) => controller.updatePartyVoucher(partyIndex, voucher),
+              clearVoucher: () => controller.clearVoucherParty(partyIndex),
+            ),
           SizedBox(height: 8.h),
           Row(
             children: [

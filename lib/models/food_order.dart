@@ -75,3 +75,16 @@ class FoodOrder {
     );
   }
 }
+
+extension FoodOrderExtension on FoodOrder {
+  int get totalPrice {
+    if (partyOrders?.isEmpty ?? true) {
+      return 0;
+    }
+    var total = 0.0;
+    for (final order in partyOrders!) {
+      total += order.priceInVoucher;
+    }
+    return total.toInt();
+  }
+}

@@ -2,9 +2,11 @@ import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
+import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
+import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class OrderRepository extends IOrderRepository {
@@ -15,13 +17,13 @@ class OrderRepository extends IOrderRepository {
 
   @override
   Future<FoodOrder?> onPlaceOrder(List<OrderItem> orderItems, List<PartyOrder> partyOrders,
-      {required String tableNumber}) async {
+      {required String tableNumber, Voucher? voucher}) async {
     try {
       if (orderItems.isEmpty && partyOrders.isEmpty) {
         throw Exception();
       }
       final orders = <PartyOrder>[
-        PartyOrder(orderItems: orderItems),
+        PartyOrder(orderItems: orderItems, voucher: voucher),
         ...partyOrders,
       ];
 
@@ -53,9 +55,7 @@ class OrderRepository extends IOrderRepository {
       //       .from(TABLE_NAME.FOOD_ORDER_ITEM)
       //       .insert({"food_order_id": orderId, "order_item_id": e.orderItemId ?? ''});
       // }).toList());
-      if (partyOrders.length > 0) {
-        await _uploadPartyOrderItem(orders, orderId);
-      }
+      await _uploadPartyOrderItem(orders, orderId);
       return order.first;
     } catch (e) {
       handleError(e);
@@ -84,6 +84,9 @@ class OrderRepository extends IOrderRepository {
         total: party.totalPrice,
         orderStatus: ORDER_STATUS.CREATED,
       );
+      if (newParty.voucher != null) {
+        newParty.voucherPrice = Utils.calculateVoucherPrice(newParty.voucher, party.totalPrice);
+      }
       await baseService.client.from(TABLE_NAME.PARTY_ORDER).insert(newParty.toJson());
 
       final orderItems = party.orderItems ?? <OrderItem>[];
