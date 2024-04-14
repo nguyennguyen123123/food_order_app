@@ -9,6 +9,7 @@ class PrimaryButton extends StatelessWidget {
       this.radius,
       this.borderColor,
       this.backgroundColor,
+      this.isDisable = false,
       this.contentPadding})
       : super(key: key);
   final Function() onPressed;
@@ -17,18 +18,19 @@ class PrimaryButton extends StatelessWidget {
   final Color? borderColor;
   final Color? backgroundColor;
   final EdgeInsets? contentPadding;
+  final bool isDisable;
   @override
   Widget build(BuildContext context) {
     return FilledButton(
-        onPressed: onPressed,
+        onPressed: isDisable ? null : onPressed,
         child: child,
         style: FilledButton.styleFrom(
-          backgroundColor: backgroundColor,
+          backgroundColor: isDisable ? appTheme.background700Color : backgroundColor ?? appTheme.primaryColor,
           minimumSize: Size.zero,
           padding: contentPadding ?? EdgeInsets.zero,
           shape: RoundedRectangleBorder(
               borderRadius: radius ?? BorderRadius.circular(4),
-              side: BorderSide(color: borderColor ?? appTheme.primaryColor)),
+              side: BorderSide(color: isDisable ? appTheme.background700Color : borderColor ?? appTheme.primaryColor)),
         ));
   }
 }

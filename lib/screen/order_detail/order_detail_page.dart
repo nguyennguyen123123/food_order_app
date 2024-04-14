@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
+import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/screen/order_detail/order_detail_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
@@ -34,15 +35,45 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
           SizedBox(height: 4.h),
           itemData(title: 'table_number'.tr, data: order.tableNumber ?? ''),
           SizedBox(height: 4.h),
-          itemData(title: 'total'.tr, data: Utils.getCurrency(order.total?.toInt())),
+          itemData(title: 'total'.tr, data: Utils.getCurrency(order.total)),
           SizedBox(height: 4.h),
           itemData(
               title: 'time'.tr,
               data: DateFormat("yyyy/MM/dd HH:mm").format(DateTime.tryParse(order.createdAt ?? '') ?? DateTime.now())),
           SizedBox(height: 8.h),
-          ...?order.orderItems?.map(_buildOrderItem)
+          // ...?order.orderItems?.map(_buildOrderItem)
+          ...?order.partyOrders?.map(_buildPartyOrder)
         ],
       ),
+    );
+  }
+
+  Widget _buildPartyOrder(PartyOrder partyOrder) {
+    final number = partyOrder.partyNumber;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (number != null) ...[
+          Text('party number: $number', style: StyleThemeData.bold18()),
+          SizedBox(height: 8.h),
+        ],
+        ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => _buildOrderItem(partyOrder.orderItems![index]),
+            separatorBuilder: (context, index) => SizedBox(height: 6.h),
+            itemCount: partyOrder.orderItems?.length ?? 0),
+        SizedBox(height: 6.h),
+        if (partyOrder.voucherPrice != null) ...[
+          Text('Áp dụng mã giảm giá: Giảm ${Utils.getCurrency((partyOrder.voucherPrice ?? 0))}')
+        ],
+        Row(
+          children: [
+            Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
+            Text(Utils.getCurrency(partyOrder.priceInVoucher))
+          ],
+        )
+      ],
     );
   }
 
@@ -69,9 +100,9 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
             children: [
               itemData(title: 'food'.tr, data: item.food?.name ?? ''),
               SizedBox(height: 8.h),
-              itemData(title: 'quantity'.tr, data: (item.quantity ?? 1).toString()),
+              itemData(title: 'quantity'.tr, data: (item.quantity).toString()),
               SizedBox(height: 4.h),
-              itemData(title: 'total'.tr, data: Utils.getCurrency((item.quantity ?? 1) * (item.food?.price ?? 0))),
+              itemData(title: 'total'.tr, data: Utils.getCurrency((item.quantity) * (item.food?.price ?? 0))),
             ],
           ))
         ],
@@ -83,9 +114,9 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('$title :', style: StyleThemeData.bold18(height: 0)),
+        Text('$title :', style: StyleThemeData.bold18()),
         SizedBox(width: 4.w),
-        Expanded(child: Text(data, style: StyleThemeData.bold14(height: 0))),
+        Expanded(child: Text(data, style: StyleThemeData.bold18())),
       ],
     );
   }

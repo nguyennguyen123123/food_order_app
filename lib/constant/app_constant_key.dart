@@ -28,6 +28,9 @@ abstract class TABLE_NAME {
   static const TABLE = 'table';
   static const VOUCHER = 'voucher';
   static const CHECKINOUT = 'check_in_out';
+  static const PARTY_ORDER = 'party_order';
+  static const PARTY_ORDER_ITEM = 'party_order_item';
+  static const ORDER_WITH_PARTY = 'order_with_party';
 }
 
 abstract class ERROR_CODE {
@@ -62,4 +65,9 @@ abstract class USER_ROLE {
 abstract class ORDER_STATUS {
   static const CREATED = 'CREATED';
   static const DONE = 'DONE';
+}
+
+abstract class ORDER_TYPE {
+  static const NORMAL = 'NORMAL';
+  static const PARTY = 'PARTY';
 }

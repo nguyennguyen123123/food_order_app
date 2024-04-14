@@ -37,7 +37,7 @@ class EditVoucherController extends GetxController {
       Voucher voucher = Voucher(
         voucherId: voucherId,
         code: voucherParametar?.code,
-        discountValue: int.tryParse(discountValueController.text.replaceAll(',', '')),
+        discountValue: double.tryParse(discountValueController.text.replaceAll(',', '')),
         discountType: DiscountType.percentage,
         name: nameController.text,
         expiryDate: DateTime.now().toString(),

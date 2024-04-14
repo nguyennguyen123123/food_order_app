@@ -14,7 +14,7 @@ class Voucher {
   String? code;
   String? name;
   @JsonKey(name: 'discount_value')
-  int? discountValue;
+  double? discountValue;
   @JsonKey(name: 'discount_type')
   DiscountType? discountType;
   @JsonKey(name: 'expiry_date')

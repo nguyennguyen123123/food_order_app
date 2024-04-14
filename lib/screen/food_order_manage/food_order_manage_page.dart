@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/food_order_manage/food_order_manage_controller.dart';
 import 'package:food_delivery_app/screen/order_detail/order_detail_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
-import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/list_vertical_item.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -53,6 +52,10 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
   }
 
   Widget _buildFoodOrderItem(int index, FoodOrder item) {
+    final isPartyOrder = item.orderType == ORDER_TYPE.PARTY;
+    // final partyOrderNormal = item.partyOrders?.firstWhere((value) => value.partyNumber == null);
+    final partyOrder = item.partyOrders?.where((value) => value.partyNumber != null).toList() ?? [];
+    final numberOfParty = isPartyOrder ? partyOrder.length : 0;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => Get.toNamed(Routes.ORDER_DETAIL, arguments: OrderDetailParameter(foodOrder: item)),
@@ -63,28 +66,28 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
           SizedBox(height: 8.h),
           Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: item.orderItems?.first.food?.image ?? '',
-                  fit: BoxFit.cover,
-                  width: 80.w,
-                  height: 80.w,
-                  errorWidget: (context, url, error) {
-                    return Image.asset(ImagesAssets.noUrlImage);
-                  },
-                ),
-              ),
-              SizedBox(width: 12.w),
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(8),
+              //   child: CachedNetworkImage(
+              //     imageUrl: item.orderItems?.first.food?.image ?? '',
+              //     fit: BoxFit.cover,
+              //     width: 80.w,
+              //     height: 80.w,
+              //     errorWidget: (context, url, error) {
+              //       return Image.asset(ImagesAssets.noUrlImage);
+              //     },
+              //   ),
+              // ),
+              // SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    itemData(title: 'food'.tr, data: item.orderItems?.first.food?.name ?? ''),
-                    SizedBox(height: 8.h),
+                    // itemData(title: 'food'.tr, data: item.orderItems?.first.food?.name ?? ''),
+                    // SizedBox(height: 8.h),
                     itemData(title: 'table_number'.tr, data: item.tableNumber ?? ''),
                     SizedBox(height: 4.h),
-                    itemData(title: 'price'.tr, data: Utils.getCurrency(item.total?.toInt())),
+                    itemData(title: 'price'.tr, data: Utils.getCurrency(item.totalPrice)),
                     SizedBox(height: 4.h),
                     itemData(
                         title: 'time'.tr,
@@ -95,6 +98,10 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
               ),
             ],
           ),
+          if (isPartyOrder) ...[
+            SizedBox(height: 6.h),
+            Center(child: Text('Số lượng đơn hàng party: $numberOfParty', style: StyleThemeData.regular16()))
+          ]
         ],
       ),
     );
