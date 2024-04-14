@@ -23,12 +23,17 @@ part 'account.g.dart';
 class Account {
   @JsonKey(name: 'created_at')
   String? createdAt;
-  String? email; 
+  String? email;
   String? role;
   String? name;
   String? gender;
   @JsonKey(name: 'user_id')
   String? userId;
+  @JsonKey(name: 'check_in_time')
+  String? checkInTime;
+  @JsonKey(name: 'number_of_order')
+  int? numberOfOrder;
+
   Account({
     this.createdAt,
     this.email,
@@ -36,6 +41,8 @@ class Account {
     this.name,
     this.gender,
     this.userId,
+    this.checkInTime,
+    this.numberOfOrder,
   });
 
   Map<String, dynamic> toMap() => _$AccountToJson(this);
@@ -49,6 +56,8 @@ class Account {
     String? name,
     String? gender,
     String? userId,
+    String? checkInTime,
+    int? numberOfOrder,
   }) {
     return Account(
       createdAt: createdAt ?? this.createdAt,
@@ -57,6 +66,8 @@ class Account {
       name: name ?? this.name,
       gender: gender ?? this.gender,
       userId: userId ?? this.userId,
+      checkInTime: checkInTime ?? this.checkInTime,
+      numberOfOrder: numberOfOrder ?? this.numberOfOrder,
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:food_delivery_app/constant/app_config.dart';
 import 'package:food_delivery_app/resourese/auth_repository/auth_repository.dart';
 import 'package:food_delivery_app/resourese/auth_repository/iauth_repository.dart';
+import 'package:food_delivery_app/resourese/check_in_out/check_in_out_repository.dart';
+import 'package:food_delivery_app/resourese/check_in_out/icheck_in_out_repository.dart';
 import 'package:food_delivery_app/resourese/food/food_repository.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
@@ -48,5 +50,6 @@ class AppService {
     Get.put<IPrinterRepository>(PrinterRepository(baseService: Get.find()));
     Get.put<ITableRepository>(TableRepository(baseService: Get.find()));
     Get.put<IVoucherRepository>(VoucherRepository(baseService: Get.find()));
+    Get.put<ICheckInOutRepository>(CheckInOutRepository(baseService: Get.find()));
   }
 }

@@ -12,4 +12,5 @@ class IconAssets {
   static String adminIcon = '${_basePath}admin.svg';
   static String searchIcon = '${_basePath}search.svg';
   static String shoppingCartIcon = '${_basePath}shopping_cart.svg';
+  static String timetableIcon = '${_basePath}timetable.svg';
 }

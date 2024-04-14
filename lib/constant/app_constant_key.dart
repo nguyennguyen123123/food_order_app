@@ -27,6 +27,7 @@ abstract class TABLE_NAME {
   static const PRINTER = 'printer';
   static const TABLE = 'table';
   static const VOUCHER = 'voucher';
+  static const CHECKINOUT = 'check_in_out';
 }
 
 abstract class ERROR_CODE {
