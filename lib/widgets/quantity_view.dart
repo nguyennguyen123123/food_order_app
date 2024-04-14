@@ -4,11 +4,13 @@ import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class QuantityView extends StatefulWidget {
-  const QuantityView({Key? key, this.updateQuantity, this.canUpdate = true, this.quantity = 1}) : super(key: key);
+  const QuantityView({Key? key, this.updateQuantity, this.checkUpdateValue, this.canUpdate = true, this.quantity = 1})
+      : super(key: key);
 
   final int quantity;
   final void Function(int quantity)? updateQuantity;
   final bool canUpdate;
+  final bool Function(int quantity)? checkUpdateValue;
 
   @override
   State<QuantityView> createState() => _QuantityViewState();
@@ -62,8 +64,11 @@ class _QuantityViewState extends State<QuantityView> {
                 ),
                 GestureDetector(
                     onTap: () {
-                      quantityNotifier.value += 1;
-                      widget.updateQuantity?.call(quantityNotifier.value);
+                      final newQuantity = quantityNotifier.value + 1;
+                      if (widget.checkUpdateValue?.call(newQuantity) ?? true) {
+                        quantityNotifier.value = newQuantity;
+                        widget.updateQuantity?.call(quantityNotifier.value);
+                      }
                     },
                     child: Icon(Icons.add)),
               ],

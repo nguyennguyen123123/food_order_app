@@ -12,15 +12,22 @@ class OrderItem {
   FoodModel? food;
   @JsonKey(name: 'food_id', includeFromJson: false, includeToJson: true)
   String? foodId;
-  int? quantity;
+  @JsonKey(defaultValue: 1)
+  int quantity;
   String? note;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int orignalQuantity;
+  @JsonKey(name: 'sort_order')
+  int? sortOder;
 
   OrderItem({
     this.orderItemId,
     this.food,
     this.foodId,
-    this.quantity,
+    this.quantity = 1,
     this.note,
+    this.orignalQuantity = 1,
+    this.sortOder,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => _$OrderItemFromJson(json);
@@ -28,16 +35,22 @@ class OrderItem {
   Map<String, dynamic> toJson() => _$OrderItemToJson(this);
 
   OrderItem copyWith({
+    String? orderItemId,
     FoodModel? food,
     String? foodId,
     int? quantity,
     String? note,
+    int? orignalQuantity,
+    int? sortOder,
   }) {
     return OrderItem(
+      orderItemId: orderItemId ?? this.orderItemId,
       food: food ?? this.food,
       foodId: foodId ?? this.foodId,
       quantity: quantity ?? this.quantity,
       note: note ?? this.note,
+      orignalQuantity: orignalQuantity ?? this.orignalQuantity,
+      sortOder: sortOder ?? this.sortOder,
     );
   }
 }

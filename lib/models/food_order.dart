@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/models/order_item.dart';
+import 'package:food_delivery_app/models/party_order.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'food_order.g.dart';
@@ -9,7 +10,7 @@ part 'food_order.g.dart';
 class FoodOrder {
   @JsonKey(name: 'order_id')
   String? orderId;
-  @JsonKey(name: 'food_order_item', includeFromJson: false, includeToJson: false)
+  @JsonKey(name: 'food_order_item', includeFromJson: true, includeToJson: false)
   List<OrderItem>? orderItems;
   @JsonKey(name: 'voucher_price')
   double? voucherPrice;
@@ -24,6 +25,10 @@ class FoodOrder {
   String? orderStatus;
   @JsonKey(name: 'created_at', includeToJson: false)
   String? createdAt;
+  @JsonKey(name: 'party_orders', includeFromJson: false, includeToJson: false)
+  List<PartyOrder>? partyOrders;
+  @JsonKey(name: 'order_type')
+  String? orderType;
   FoodOrder({
     this.orderId,
     this.orderItems,
@@ -34,9 +39,39 @@ class FoodOrder {
     this.userOrderId,
     this.orderStatus,
     this.createdAt,
+    this.partyOrders,
+    this.orderType,
   });
 
   factory FoodOrder.fromJson(Map<String, dynamic> json) => _$FoodOrderFromJson(json);
 
   Map<String, dynamic> toJson() => _$FoodOrderToJson(this);
+
+  FoodOrder copyWith({
+    String? orderId,
+    List<OrderItem>? orderItems,
+    double? voucherPrice,
+    String? tableNumber,
+    double? total,
+    Account? userOrder,
+    String? userOrderId,
+    String? orderStatus,
+    String? createdAt,
+    List<PartyOrder>? partyOrders,
+    String? orderType,
+  }) {
+    return FoodOrder(
+      orderId: orderId ?? this.orderId,
+      orderItems: orderItems ?? this.orderItems,
+      voucherPrice: voucherPrice ?? this.voucherPrice,
+      tableNumber: tableNumber ?? this.tableNumber,
+      total: total ?? this.total,
+      userOrder: userOrder ?? this.userOrder,
+      userOrderId: userOrderId ?? this.userOrderId,
+      orderStatus: orderStatus ?? this.orderStatus,
+      createdAt: createdAt ?? this.createdAt,
+      partyOrders: partyOrders ?? this.partyOrders,
+      orderType: orderType ?? this.orderType,
+    );
+  }
 }

@@ -10,7 +10,8 @@ Voucher _$VoucherFromJson(Map<String, dynamic> json) => Voucher(
       voucherId: json['voucher_id'] as String?,
       code: json['code'] as String?,
       discountValue: json['discount_value'] as int?,
-      discountType: $enumDecodeNullable(_$DiscountTypeEnumMap, json['discount_type']),
+      discountType:
+          $enumDecodeNullable(_$DiscountTypeEnumMap, json['discount_type']),
       name: json['name'] as String?,
       expiryDate: json['expiry_date'] as String?,
       createdAt: json['created_at'] as String?,

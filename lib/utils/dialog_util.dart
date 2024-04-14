@@ -7,20 +7,34 @@ import 'package:get/get.dart';
 
 class DialogUtils {
   static showDialogView(Widget view) {
-    return showDialog(context: Get.context!, useRootNavigator: false, builder: (context) => Dialog(child: view));
+    return showDialog(
+      context: Get.context!,
+      useRootNavigator: false,
+      builder: (context) => Dialog(
+        backgroundColor: appTheme.whiteText,
+        child: view,
+      ),
+    );
   }
 
-  static showBTSView(Widget view) {
+  static showBTSView(Widget view, {bool isWrap = false}) {
     return showModalBottomSheet(
       context: Get.context!,
-      constraints: BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * .75),
+      constraints: !isWrap ? BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * .75) : null,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
-      builder: (context) => Container(
-        height: Get.height * .75,
-        constraints: BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * .75),
-        padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
-        child: Padding(padding: padding(all: 12), child: view),
-      ),
+      builder: (context) => isWrap
+          ? Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
+              child: Wrap(
+                children: [view],
+              ),
+            )
+          : Container(
+              height: !isWrap ? Get.height * .75 : null,
+              constraints: !isWrap ? BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * .75) : null,
+              padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
+              child: Padding(padding: padding(all: 12), child: view),
+            ),
     );
   }
 
@@ -44,7 +58,9 @@ class DialogUtils {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(padding: padding(horizontal: 16, top: 16), child: Text(title, style: StyleThemeData.bold16())),
+              Padding(
+                  padding: padding(horizontal: 16, top: 16),
+                  child: Text(title, textAlign: TextAlign.center, style: StyleThemeData.bold16())),
               if (description != null) ...[
                 SizedBox(height: 16.h),
                 Text(description, style: StyleThemeData.regular16()),

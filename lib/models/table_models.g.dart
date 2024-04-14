@@ -14,7 +14,8 @@ TableModels _$TableModelsFromJson(Map<String, dynamic> json) => TableModels(
       createdAt: json['created_at'] as String?,
     );
 
-Map<String, dynamic> _$TableModelsToJson(TableModels instance) => <String, dynamic>{
+Map<String, dynamic> _$TableModelsToJson(TableModels instance) =>
+    <String, dynamic>{
       'table_id': instance.tableId,
       'table_number': instance.tableNumber,
       'number_of_order': instance.numberOfOrder,

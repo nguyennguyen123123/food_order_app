@@ -13,7 +13,9 @@ FoodModel _$FoodModelFromJson(Map<String, dynamic> json) => FoodModel(
       price: json['price'] as int?,
       image: json['image'] as String?,
       createdAt: json['created_at'] as String?,
-      foodType: json['typeId'] == null ? null : FoodType.fromJson(json['typeId'] as Map<String, dynamic>),
+      foodType: json['typeId'] == null
+          ? null
+          : FoodType.fromJson(json['typeId'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$FoodModelToJson(FoodModel instance) => <String, dynamic>{
