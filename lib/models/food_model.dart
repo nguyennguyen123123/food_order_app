@@ -24,7 +24,7 @@ class FoodModel {
   final String? foodId;
   final String? name;
   final String? description;
-  final int? price;
+  final double? price;
   final String? image;
   @JsonKey(includeToJson: true, includeFromJson: false)
   final String? typeId;

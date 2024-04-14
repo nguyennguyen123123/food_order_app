@@ -51,7 +51,7 @@ class HomePage extends GetWidget<HomeController> {
               ),
             ),
             Obx(() {
-              if (controller.foodList.isEmpty) {
+              if (controller.foods.value == null) {
                 return Center(child: CircularProgressIndicator());
               }
 

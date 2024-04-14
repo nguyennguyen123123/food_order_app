@@ -55,7 +55,7 @@ class VoucherItem extends StatelessWidget {
                         )
                       else
                         Text(
-                          Utils.getCurrency(voucher.discountValue?.toInt()),
+                          Utils.getCurrency(voucher.discountValue),
                           style: StyleThemeData.bold24(height: 0),
                         ),
                       // Spacer(),

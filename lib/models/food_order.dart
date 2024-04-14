@@ -77,7 +77,7 @@ class FoodOrder {
 }
 
 extension FoodOrderExtension on FoodOrder {
-  int get totalPrice {
+  double get totalPrice {
     if (partyOrders?.isEmpty ?? true) {
       return 0;
     }
@@ -85,6 +85,6 @@ extension FoodOrderExtension on FoodOrder {
     for (final order in partyOrders!) {
       total += order.priceInVoucher;
     }
-    return total.toInt();
+    return total;
   }
 }

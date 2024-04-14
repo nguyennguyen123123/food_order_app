@@ -78,7 +78,7 @@ class EditFoodController extends GetxController {
         foodId: foodId,
         name: nameController.text,
         description: desController.text,
-        price: int.tryParse(priceController.text.replaceAll(',', '')),
+        price: double.tryParse(priceController.text.replaceAll(',', '')),
         typeId:
             selectedFoodType.value?.typeId != null ? selectedFoodType.value?.typeId : editFoodModel?.foodType?.typeId,
         image: pickedImageNotifier.value?.path != null ? url : editFoodModel?.image,

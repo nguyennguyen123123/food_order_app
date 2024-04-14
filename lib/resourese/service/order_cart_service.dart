@@ -40,7 +40,7 @@ class OrderCartService extends GetxService {
     currentVoucher.value = voucher;
   }
 
-  int get totalCartPrice {
+  double get totalCartPrice {
     var total = 0.0;
     for (final food in items.value) {
       total += food.quantity * (food.food?.price ?? 0);
@@ -55,6 +55,6 @@ class OrderCartService extends GetxService {
         total = total * ((currentVoucher.value?.discountValue ?? 100) / 100);
       }
     }
-    return total.toInt();
+    return total;
   }
 }

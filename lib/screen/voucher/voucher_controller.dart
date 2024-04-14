@@ -63,7 +63,7 @@ class VoucherController extends GetxController {
       Voucher voucher = Voucher(
         voucherId: getUuid(),
         code: randomString,
-        discountValue: int.tryParse(discountValueController.text.replaceAll(',', '')),
+        discountValue: double.tryParse(discountValueController.text.replaceAll(',', '')),
         discountType: DiscountType.amount,
         name: nameController.text,
         expiryDate: DateTime.now().toString(),

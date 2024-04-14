@@ -17,13 +17,10 @@ class HomeController extends GetxController {
   final foods = Rx<List<FoodModel>?>(null);
   final printer = Rx<List<Printer>?>(null);
 
-  RxList<FoodModel> foodList = <FoodModel>[].obs;
-
   @override
   void onInit() async {
     super.onInit();
     onGetFood();
-    getListDataFoodType();
   }
 
   Future<void> onGetFood() async {
@@ -41,18 +38,11 @@ class HomeController extends GetxController {
     printer.value = result as List<Printer>;
   }
 
-  Future<void> getListDataFoodType() async {
-    final result = await foodRepository.getListDataFoodType();
-
-    foodList.value = result;
-
-    print(result.first);
-  }
-
   Map<String, List<FoodModel>> groupFoodByType() {
+    if (foods.value?.isEmpty == true) return {};
     Map<String, List<FoodModel>> groupedFood = {};
 
-    for (var food in foodList) {
+    for (var food in foods.value!) {
       final typeId = food.foodType?.typeId;
       if (!groupedFood.containsKey(typeId)) {
         groupedFood[typeId ?? ''] = [];

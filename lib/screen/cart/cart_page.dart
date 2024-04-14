@@ -100,7 +100,8 @@ class CartPage extends GetWidget<CartController> {
                                             children: [
                                               Text("total".tr, style: StyleThemeData.bold18()),
                                               SizedBox(height: 8.h),
-                                              Text(Utils.getCurrency(total.toInt()), style: StyleThemeData.regular17())
+                                              Text(Utils.getCurrency(total.toDouble()),
+                                                  style: StyleThemeData.regular17())
                                             ],
                                           ),
                                         ),
@@ -265,7 +266,7 @@ class CartPage extends GetWidget<CartController> {
           Row(
             children: [
               Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
-              Text(Utils.getCurrency(partyOrder.totalPrice.toInt()))
+              Text(Utils.getCurrency(partyOrder.totalPrice))
             ],
           )
         ],

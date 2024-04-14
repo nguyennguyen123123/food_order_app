@@ -35,7 +35,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
           SizedBox(height: 4.h),
           itemData(title: 'table_number'.tr, data: order.tableNumber ?? ''),
           SizedBox(height: 4.h),
-          itemData(title: 'total'.tr, data: Utils.getCurrency(order.total?.toInt())),
+          itemData(title: 'total'.tr, data: Utils.getCurrency(order.total)),
           SizedBox(height: 4.h),
           itemData(
               title: 'time'.tr,
@@ -65,12 +65,12 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
             itemCount: partyOrder.orderItems?.length ?? 0),
         SizedBox(height: 6.h),
         if (partyOrder.voucherPrice != null) ...[
-          Text('Áp dụng mã giảm giá: Giảm ${Utils.getCurrency((partyOrder.voucherPrice ?? 0).toInt())}')
+          Text('Áp dụng mã giảm giá: Giảm ${Utils.getCurrency((partyOrder.voucherPrice ?? 0))}')
         ],
         Row(
           children: [
             Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
-            Text(Utils.getCurrency(partyOrder.priceInVoucher.toInt()))
+            Text(Utils.getCurrency(partyOrder.priceInVoucher))
           ],
         )
       ],
