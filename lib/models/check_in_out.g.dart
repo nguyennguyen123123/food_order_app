@@ -8,10 +8,10 @@ part of 'check_in_out.dart';
 
 CheckInOut _$CheckInOutFromJson(Map<String, dynamic> json) => CheckInOut(
       id: json['id'] as int?,
-      userId: json['user_id'] as String?,
       checkInTime: json['check_in_time'] as String?,
       checkOutTime: json['check_out_time'] as String?,
       totalOrders: json['total_orders'] as int?,
+      users: json['user_id'] == null ? null : Account.fromJson(json['user_id'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CheckInOutToJson(CheckInOut instance) => <String, dynamic>{
