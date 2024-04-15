@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/screen/voucher/edit/edit_voucher_controller.dart';
@@ -38,14 +39,21 @@ class EditVoucherView extends GetWidget<EditVoucherController> {
                 textInputType: TextInputType.text,
               ),
               SizedBox(height: 12.h),
-              EditTextFieldCustom(
-                controller: controller.discountValueController,
-                hintText: 'Nhập giá trị giảm giá',
-                label: 'Giá trị giảm giá',
-                suffix: Icon(Icons.description),
-                textInputType: TextInputType.number,
-                numberFormat: NumericTextFormatter(),
-              ),
+              Obx(() {
+                final inputFormatter = controller.selectedType.value == DiscountType.percentage
+                    ? FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
+                    : FilteringTextInputFormatter.digitsOnly;
+
+                return EditTextFieldCustom(
+                  controller: controller.discountValueController,
+                  hintText: 'Nhập giá trị giảm giá',
+                  label: 'Giá trị giảm giá',
+                  suffix: Icon(Icons.description),
+                  textInputType: TextInputType.number,
+                  numberFormat: NumericTextFormatter(),
+                  inputFormatter: inputFormatter,
+                );
+              }),
               SizedBox(height: 12.h),
               Align(alignment: Alignment.centerLeft, child: Text('Đơn vị', style: StyleThemeData.bold14())),
               SizedBox(height: 4.h),
@@ -63,6 +71,7 @@ class EditVoucherView extends GetWidget<EditVoucherController> {
                       value: controller.selectedType.value,
                       onChanged: (DiscountType? newValue) {
                         controller.selectedType.value = newValue!;
+                        controller.discountValueController.clear();
                       },
                       items: DiscountType.values.map((type) {
                         return DropdownMenuItem<DiscountType>(
