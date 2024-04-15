@@ -22,19 +22,25 @@ class DialogUtils {
       context: Get.context!,
       constraints: !isWrap ? BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * .75) : null,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
-      builder: (context) => isWrap
-          ? Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
-              child: Wrap(
-                children: [view],
-              ),
-            )
-          : Container(
-              height: !isWrap ? Get.height * .75 : null,
-              constraints: !isWrap ? BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * .75) : null,
-              padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
-              child: Padding(padding: padding(all: 12), child: view),
+      builder: (context) {
+        final isKeyboardShow = MediaQuery.of(Get.context!).viewInsets.bottom > 0;
+        if (isWrap) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
+            child: Wrap(
+              children: [view],
             ),
+          );
+        }
+        return Container(
+          height: !isWrap ? Get.height * (.75 + (isKeyboardShow ? .15 : 0)) : null,
+          constraints: !isWrap
+              ? BoxConstraints(maxWidth: double.infinity, maxHeight: Get.height * (.75 + (isKeyboardShow ? .15 : 0)))
+              : null,
+          padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
+          child: Padding(padding: padding(all: 12), child: view),
+        );
+      },
     );
   }
 

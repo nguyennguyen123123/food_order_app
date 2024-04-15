@@ -102,6 +102,12 @@ class CartController extends GetxController {
     });
   }
 
+  void onRemovePartyOrder(int partyIndex) {
+    cartService.partyOrders.update((val) {
+      val?.removeAt(partyIndex);
+    });
+  }
+
   Future<void> onPlaceOrder() async {
     if (accountService.myAccount?.role == USER_ROLE.STAFF && accountService.myAccount?.checkInTime == null) {
       DialogUtils.showInfoErrorDialog(content: 'Bạn chưa checkin nên không thể lên đơn');

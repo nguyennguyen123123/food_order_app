@@ -239,6 +239,15 @@ class CartPage extends GetWidget<CartController> {
                       controller.cartService.onAddItemToPartyOrder(partyIndex, result);
                     }
                   },
+                  child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
+              GestureDetector(
+                  onTap: () async {
+                    final result =
+                        await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa party $partyIndex khỏi đơn không?');
+                    if (result == true) {
+                      controller.onRemovePartyOrder(partyIndex);
+                    }
+                  },
                   child: Icon(Icons.add, size: 32.w, color: appTheme.blackColor))
             ],
           ),
