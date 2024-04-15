@@ -51,14 +51,16 @@ class VoucherRepository extends IVoucherRepository {
   }
 
   @override
-  Future<List<Voucher>?> getVoucher() async {
+  Future<List<Voucher>> getVoucher({int page = 0, int limit = LIMIT}) async {
     try {
-      final response = await baseService.client
-          .from(TABLE_NAME.VOUCHER)
-          .select()
+      final data = baseService.client.from(TABLE_NAME.VOUCHER).select();
+
+      final response = await data
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
           .withConverter((data) => data.map((e) => Voucher.fromJson(e)).toList());
 
-      return response.toList();
+      return response;
     } catch (error) {
       handleError(error);
       rethrow;

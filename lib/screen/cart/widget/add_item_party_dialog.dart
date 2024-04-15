@@ -90,7 +90,7 @@ class _AddItemPartyDialogState extends State<AddItemPartyDialog> {
   }
 
   Widget _buildOrderItem(int index, OrderItem orderItem, List<OrderItem> items) {
-    final quantity = orderItem.quantity;
+    // final quantity = orderItem.quantity;
     final food = orderItem.food;
 
     final isSelected = indexSelected.contains(index);

@@ -1,3 +1,4 @@
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/models/check_in_out.dart';
 import 'package:food_delivery_app/resourese/check_in_out/icheck_in_out_repository.dart';
@@ -17,24 +18,51 @@ class CheckInOutController extends GetxController {
   var isLoadingCheckIn = false.obs;
   var isLoadingCheckOut = false.obs;
 
-  var listCheckInOut = <CheckInOut>[].obs;
+  var listCheckInOut = Rx<List<CheckInOut>?>([]);
+  var account = Account().obs;
 
-  Account? get myAccount => accountService.myAccount;
+  int page = 0;
+  int limit = LIMIT;
 
   @override
   void onInit() {
     super.onInit();
-    getListCheckInOut();
+    getProfile();
+    onRefresh();
   }
 
-  Future<void> getListCheckInOut() async {
-    final result = await checkInOutRepository.getListCheckInOut();
-
-    if (result != null) {
-      listCheckInOut.assignAll(result);
-    } else {
-      listCheckInOut.clear();
+  void getProfile() async {
+    Account? data = await profileRepository.getProfile();
+    if (data != null) {
+      account.value = data;
     }
+  }
+
+  Future<void> onRefresh() async {
+    final user = await profileRepository.getProfile();
+
+    page = 0;
+    listCheckInOut.value = null;
+
+    final result =
+        await checkInOutRepository.getListCheckInOut(user?.role == USER_ROLE.ADMIN, page: page, limit: limit);
+
+    listCheckInOut.value = result;
+  }
+
+  Future<bool> onLoadMoreCheckInOut() async {
+    final user = await profileRepository.getProfile();
+
+    final length = (listCheckInOut.value ?? []).length;
+    if (length < LIMIT * (page + 1)) return false;
+    page += 1;
+
+    final result =
+        await checkInOutRepository.getListCheckInOut(user?.role == USER_ROLE.ADMIN, page: page, limit: limit);
+
+    listCheckInOut.update((val) => val?.addAll(result));
+    if (result.length < limit) return false;
+    return true;
   }
 
   Future<void> checkInUser() async {
@@ -49,13 +77,13 @@ class CheckInOutController extends GetxController {
           accountService.account.value = data;
         }
 
-        DialogUtils.showSuccessDialog(content: "Check In thành công".tr);
+        DialogUtils.showSuccessDialog(content: "check_in_successful".tr);
       }
 
       isLoadingCheckIn(false);
     } catch (error) {
       print(error);
-      DialogUtils.showInfoErrorDialog(content: "Check In thất bại".tr);
+      DialogUtils.showInfoErrorDialog(content: "check_in_failed".tr);
     } finally {
       isLoadingCheckIn(false);
     }
@@ -68,18 +96,16 @@ class CheckInOutController extends GetxController {
       final result = await checkInOutRepository.checkOutUser();
 
       if (result != null) {
-        final data = await profileRepository.getProfile();
-        if (data != null) {
-          accountService.account.value = data;
-        }
+        getProfile();
+        onRefresh();
 
-        DialogUtils.showSuccessDialog(content: "Check Out thành công".tr);
+        DialogUtils.showSuccessDialog(content: "check_out_successful".tr);
       }
 
       isLoadingCheckOut(false);
     } catch (error) {
       print(error);
-      DialogUtils.showInfoErrorDialog(content: "Check Out thất bại".tr);
+      DialogUtils.showInfoErrorDialog(content: "check_out_failed".tr);
     } finally {
       isLoadingCheckOut(false);
     }

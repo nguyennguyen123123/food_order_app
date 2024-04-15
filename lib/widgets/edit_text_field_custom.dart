@@ -32,6 +32,7 @@ class EditTextFieldCustom extends StatelessWidget {
     this.textInputAction,
     this.enabled,
     this.numberFormat,
+    this.inputFormatter,
   }) : super(key: key);
 
   final String label;
@@ -59,6 +60,7 @@ class EditTextFieldCustom extends StatelessWidget {
   final bool isObscure;
   final bool? enabled;
   final TextInputFormatter? numberFormat;
+  final TextInputFormatter? inputFormatter;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +106,7 @@ class EditTextFieldCustom extends StatelessWidget {
             formatter: [
               if (maxLength != null) LengthLimitingTextInputFormatter(maxLength),
               if (numberFormat != null) numberFormat!,
+              if (inputFormatter != null) inputFormatter!,
             ],
             enabled: enabled,
             suffix: suffix ??

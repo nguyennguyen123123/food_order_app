@@ -16,7 +16,7 @@ class PrinterPages extends GetWidget<PrinterController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: appTheme.transparentColor,
-        title: Text('Quản lý máy in', style: StyleThemeData.bold18(height: 0)),
+        title: Text('printer_management'.tr, style: StyleThemeData.bold18(height: 0)),
         actions: [
           IconButton(
             onPressed: () {
@@ -55,7 +55,7 @@ class PrinterPages extends GetWidget<PrinterController> {
           children: [
             itemData(title: 'Ip', data: printer.ip.toString()),
             SizedBox(height: 8.h),
-            itemData(title: 'Tên', data: printer.name.toString()),
+            itemData(title: 'name'.tr, data: printer.name.toString()),
             SizedBox(height: 8.h),
             itemData(title: 'Port', data: printer.port.toString()),
             SizedBox(height: 8.h),
@@ -78,7 +78,7 @@ class PrinterPages extends GetWidget<PrinterController> {
                         child: controller.isLoadingDelete.isTrue
                             ? Container(width: 16.w, height: 16.h, child: CircularProgressIndicator())
                             : Text(
-                                'Xóa', 
+                                'delete'.tr,
                                 style: StyleThemeData.bold14(color: appTheme.errorColor, height: 0),
                               ),
                       ),

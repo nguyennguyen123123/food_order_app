@@ -4,9 +4,11 @@ import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/voucher/voucher_controller.dart';
 import 'package:food_delivery_app/screen/voucher/voucher_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/widgets/load_more_delegate_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:food_delivery_app/widgets/voucher_item.dart';
 import 'package:get/get.dart';
+import 'package:loadmore/loadmore.dart';
 
 class VoucherPages extends GetWidget<VoucherController> {
   @override
@@ -20,7 +22,7 @@ class VoucherPages extends GetWidget<VoucherController> {
         title: Row(
           children: [
             IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back)),
-            Text('Voucher', style: StyleThemeData.bold18(height: 0)),
+            Text('voucher'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
         actions: [
@@ -28,24 +30,39 @@ class VoucherPages extends GetWidget<VoucherController> {
           SizedBox(width: 12.w),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: padding(all: 12),
-          child: Obx(
-            () => Column(
-              children: controller.voucherList.map((voucher) {
-                print(voucher.discountType);
-                return GestureDetector(
-                  onLongPressStart: (ontap) => Get.toNamed(
-                    Routes.EDITVOUCHER,
-                    arguments: VoucherParameter(voucher: voucher),
-                  ),
-                  child: Padding(padding: padding(vertical: 12), child: VoucherItem(voucher: voucher)),
-                );
-              }).toList(),
+      body: Column(
+        children: [
+          Obx(
+            () => Expanded(
+              child: controller.voucherList.value == null
+                  ? Center(child: CircularProgressIndicator())
+                  : Padding(
+                      padding: padding(horizontal: 12),
+                      child: RefreshIndicator(
+                        onRefresh: controller.onRefresh,
+                        child: LoadMore(
+                          delegate: LoadMoreDelegateCustom(),
+                          onLoadMore: controller.onLoadMoreVoucher,
+                          child: ListView.separated(
+                            itemCount: controller.voucherList.value!.length,
+                            separatorBuilder: (context, index) => SizedBox(height: 8.h),
+                            itemBuilder: (context, index) => GestureDetector(
+                              onLongPressStart: (ontap) => Get.toNamed(
+                                Routes.EDITVOUCHER,
+                                arguments: VoucherParameter(voucher: controller.voucherList.value![index]),
+                              ),
+                              child: Padding(
+                                padding: padding(vertical: 12),
+                                child: VoucherItem(voucher: controller.voucherList.value![index]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

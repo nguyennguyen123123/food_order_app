@@ -38,7 +38,7 @@ class EditFoodController extends GetxController {
 
   var foodTypeList = <FoodType>[].obs;
 
-  var selectedFoodType = Rx<FoodType?>(null);
+  var selectedFoodType = Rx<FoodType?>(null); 
 
   final ValueNotifier<File?> pickedImageNotifier = ValueNotifier<File?>(null);
   final ImagePicker imagePicker = ImagePicker();

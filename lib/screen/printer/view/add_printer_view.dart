@@ -17,7 +17,7 @@ class AddPrinterView extends GetWidget<PrinterController> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: appTheme.transparentColor,
-          title: Text('Thêm máy in', style: StyleThemeData.bold18(height: 0)),
+          title: Text('add_printer'.tr, style: StyleThemeData.bold18(height: 0)),
         ),
         body: Padding(
           padding: padding(all: 16),
@@ -25,7 +25,7 @@ class AddPrinterView extends GetWidget<PrinterController> {
             children: [
               EditTextFieldCustom(
                 controller: controller.ipController,
-                hintText: 'Nhập ip',
+                hintText: 'enter_ip'.tr,
                 label: 'IP',
                 suffix: Icon(Icons.title),
                 textInputType: TextInputType.number,
@@ -34,15 +34,15 @@ class AddPrinterView extends GetWidget<PrinterController> {
               SizedBox(height: 12.h),
               EditTextFieldCustom(
                 controller: controller.nameControler,
-                hintText: 'Nhập tên',
-                label: 'Tên',
+                hintText: 'enter_name'.tr,
+                label: 'name'.tr,
                 suffix: Icon(Icons.description),
                 textInputType: TextInputType.text,
               ),
               SizedBox(height: 12.h),
               EditTextFieldCustom(
                 controller: controller.portController,
-                hintText: 'Nhập port',
+                hintText: 'enter_port'.tr,
                 label: 'Port',
                 suffix: Icon(Icons.price_change),
                 textInputType: TextInputType.number,
@@ -52,7 +52,7 @@ class AddPrinterView extends GetWidget<PrinterController> {
                 () => ConfirmationButtonWidget(
                   isLoading: controller.isLoadingAdd.isTrue,
                   onTap: controller.addPrinter,
-                  text: 'Xác nhận',
+                  text: 'confirm'.tr,
                 ),
               ),
             ],

@@ -31,11 +31,7 @@ class PrinterController extends GetxController {
 
     // printer.value = result as List<Printer>;
 
-    if (result != null) {
-      printer.assignAll(result);
-    } else {
-      printer.clear();
-    }
+    printer.assignAll(result);
   }
 
   void addPrinter() async {
