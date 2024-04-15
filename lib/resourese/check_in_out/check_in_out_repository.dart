@@ -18,6 +18,7 @@ class CheckInOutRepository extends ICheckInOutRepository {
       final result = await baseService.client.from(TABLE_NAME.ACCOUNT).upsert({
         'user_id': userId,
         'check_in_time': DateTime.now().toUtc().toIso8601String(),
+        'number_of_order': 0,
       }).select();
 
       return result.first;

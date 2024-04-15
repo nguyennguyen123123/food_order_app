@@ -25,16 +25,16 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
       body: Column(
         children: [
           Obx(
-            () => controller.account.value.role == USER_ROLE.STAFF
+            () => controller.myAccount?.role == USER_ROLE.STAFF
                 ? Padding(
                     padding: padding(horizontal: 16),
                     child: Row(
                       children: [
                         Flexible(
                           child: Opacity(
-                            opacity: controller.account.value.checkInTime != null ? 0.5 : 1,
+                            opacity: controller.myAccount?.checkInTime != null ? 0.5 : 1,
                             child: InkWell(
-                              onTap: controller.account.value.checkInTime != null ? null : controller.checkInUser,
+                              onTap: controller.myAccount?.checkInTime != null ? null : controller.checkInUser,
                               child: Container(
                                 width: Get.size.width.w,
                                 height: 40.h,
@@ -59,9 +59,9 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                         SizedBox(width: 12.w),
                         Flexible(
                           child: Opacity(
-                            opacity: controller.account.value.checkInTime == null ? 0.5 : 1,
+                            opacity: controller.myAccount?.checkInTime == null ? 0.5 : 1,
                             child: InkWell(
-                              onTap: controller.account.value.checkInTime == null ? null : controller.checkOutUser,
+                              onTap: controller.myAccount?.checkInTime == null ? null : controller.checkOutUser,
                               child: Container(
                                 width: Get.size.width.w,
                                 height: 40.h,

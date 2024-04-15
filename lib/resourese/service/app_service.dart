@@ -15,6 +15,7 @@ import 'package:food_delivery_app/resourese/profile/profile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
 import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
+import 'package:food_delivery_app/resourese/service/printer_service.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/resourese/table/table_repository.dart';
@@ -42,12 +43,18 @@ class AppService {
     Get.put<BaseService>(server);
 
     Get.put<OrderCartService>(OrderCartService());
-    Get.put(AccountService(storageService: Get.find(), baseService: Get.find()));
+    Get.put<IPrinterRepository>(PrinterRepository(baseService: Get.find()));
+    Get.put<PrinterService>(PrinterService(printerRepository: Get.find()));
+    Get.put(AccountService(
+        storageService: Get.find(),
+        baseService: Get.find(),
+        printerService: Get.find(),
+        profileRepository: Get.find()));
     Get.put<IAuthRepository>(AuthRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IFoodRepository>(FoodRepository(baseService: Get.find()));
-    Get.put<IProfileRepository>(ProfileRepository(baseService: Get.find()));
-    Get.put<IOrderRepository>(OrderRepository(baseService: Get.find(), accountService: Get.find()));
-    Get.put<IPrinterRepository>(PrinterRepository(baseService: Get.find()));
+    Get.put<IProfileRepository>(ProfileRepository(baseService: Get.find(), accountService: Get.find()));
+    Get.put<IOrderRepository>(
+        OrderRepository(baseService: Get.find(), accountService: Get.find(), profileRepository: Get.find()));
     Get.put<ITableRepository>(TableRepository(baseService: Get.find()));
     Get.put<IVoucherRepository>(VoucherRepository(baseService: Get.find()));
     Get.put<ICheckInOutRepository>(CheckInOutRepository(baseService: Get.find()));

@@ -7,16 +7,7 @@ class HomeMainBinding implements Bindings {
   @override
   void dependencies() {
     Get.put(MainController());
-    Get.put(
-      HomeController(
-        foodRepository: Get.find(),
-        printerRepository: Get.find(),
-        cartService: Get.find(),
-      ),
-    );
-    Get.put(ProfileController(
-      profileRepository: Get.find(),
-      accountService: Get.find(),
-    ));
+    Get.put(HomeController(foodRepository: Get.find(), cartService: Get.find()));
+    Get.put(ProfileController(profileRepository: Get.find(), accountService: Get.find()));
   }
 }
