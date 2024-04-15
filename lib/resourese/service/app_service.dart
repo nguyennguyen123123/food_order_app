@@ -42,9 +42,10 @@ class AppService {
 
     Get.put<BaseService>(server);
 
-    Get.put<OrderCartService>(OrderCartService());
     Get.put<IPrinterRepository>(PrinterRepository(baseService: Get.find()));
     Get.put<PrinterService>(PrinterService(printerRepository: Get.find()));
+    Get.put<OrderCartService>(OrderCartService());
+    Get.put<IProfileRepository>(ProfileRepository(baseService: Get.find()));
     Get.put(AccountService(
         storageService: Get.find(),
         baseService: Get.find(),
@@ -52,7 +53,6 @@ class AppService {
         profileRepository: Get.find()));
     Get.put<IAuthRepository>(AuthRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IFoodRepository>(FoodRepository(baseService: Get.find()));
-    Get.put<IProfileRepository>(ProfileRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IOrderRepository>(
         OrderRepository(baseService: Get.find(), accountService: Get.find(), profileRepository: Get.find()));
     Get.put<ITableRepository>(TableRepository(baseService: Get.find()));

@@ -70,6 +70,7 @@ class OrderRepository extends IOrderRepository {
       // }).toList());
       await _uploadPartyOrderItem(orders, orderId);
       await profileRepository.updateNumberOfOrder(bondNumber + 1);
+      accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber + 1);
       return order.first;
     } catch (e) {
       handleError(e);

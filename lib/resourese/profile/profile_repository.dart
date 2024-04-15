@@ -1,17 +1,14 @@
 import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
-import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileRepository extends IProfileRepository {
   final BaseService baseService;
-  final AccountService accountService;
 
   ProfileRepository({
     required this.baseService,
-    required this.accountService,
   });
 
   @override
@@ -68,6 +65,5 @@ class ProfileRepository extends IProfileRepository {
   @override
   Future<void> updateNumberOfOrder(int number) async {
     await baseService.client.from(TABLE_NAME.ACCOUNT).upsert({'number_of_order': number});
-    accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: number);
   }
 }
