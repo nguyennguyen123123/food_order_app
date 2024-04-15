@@ -4,6 +4,7 @@ import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
+import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
 import 'package:food_delivery_app/utils/utils.dart';
@@ -11,17 +12,28 @@ import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class OrderRepository extends IOrderRepository {
   final BaseService baseService;
+  final IProfileRepository profileRepository;
   final AccountService accountService;
 
-  OrderRepository({required this.baseService, required this.accountService});
+  OrderRepository({
+    required this.baseService,
+    required this.accountService,
+    required this.profileRepository,
+  });
 
   @override
-  Future<FoodOrder?> onPlaceOrder(List<OrderItem> orderItems, List<PartyOrder> partyOrders,
-      {required String tableNumber, Voucher? voucher}) async {
+  Future<FoodOrder?> onPlaceOrder(
+    List<OrderItem> orderItems,
+    List<PartyOrder> partyOrders, {
+    required String tableNumber,
+    Voucher? voucher,
+    int bondNumber = 1,
+  }) async {
     try {
       if (orderItems.isEmpty && partyOrders.isEmpty) {
         throw Exception();
       }
+      partyOrders.removeWhere((element) => (element.orderItems?.isEmpty ?? true) == true);
       final orders = <PartyOrder>[
         PartyOrder(orderItems: orderItems, voucher: voucher),
         ...partyOrders,
@@ -40,6 +52,7 @@ class OrderRepository extends IOrderRepository {
         total: total.toDouble(),
         orderStatus: ORDER_STATUS.CREATED,
         orderType: partyOrders.length > 1 ? ORDER_TYPE.PARTY : ORDER_TYPE.NORMAL,
+        bondNumber: bondNumber,
       );
 
       // foodOrder.orderItems = await Future.wait(orderItems.map(_uploadOrderItem));
@@ -56,6 +69,8 @@ class OrderRepository extends IOrderRepository {
       //       .insert({"food_order_id": orderId, "order_item_id": e.orderItemId ?? ''});
       // }).toList());
       await _uploadPartyOrderItem(orders, orderId);
+      await profileRepository.updateNumberOfOrder(bondNumber + 1);
+      accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber + 1);
       return order.first;
     } catch (e) {
       handleError(e);

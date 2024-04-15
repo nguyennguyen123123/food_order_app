@@ -166,4 +166,15 @@ class FoodRepository extends IFoodRepository {
       return [];
     }
   }
+
+  @override
+  Future<void> increaseNumberOrderOfFood(String foodId, int number) async {
+    try {
+      await baseService.client.from(TABLE_NAME.FOOD).update({'number_order': number}).eq('food_id', foodId);
+    } catch (error) {
+      print(error);
+      handleError(error);
+      return null;
+    }
+  }
 }

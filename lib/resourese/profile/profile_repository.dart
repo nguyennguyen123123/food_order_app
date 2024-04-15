@@ -7,7 +7,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ProfileRepository extends IProfileRepository {
   final BaseService baseService;
 
-  ProfileRepository({required this.baseService});
+  ProfileRepository({
+    required this.baseService,
+  });
 
   @override
   Future<void> signOut() async {
@@ -58,5 +60,10 @@ class ProfileRepository extends IProfileRepository {
       print(error);
       return null;
     }
+  }
+
+  @override
+  Future<void> updateNumberOfOrder(int number) async {
+    await baseService.client.from(TABLE_NAME.ACCOUNT).upsert({'number_of_order': number});
   }
 }

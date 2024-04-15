@@ -9,6 +9,7 @@ class CartBinding implements Bindings {
         cartService: Get.find(),
         orderRepository: Get.find(),
         tableRepository: Get.find(),
+        accountService: Get.find(),
       ),
     );
   }

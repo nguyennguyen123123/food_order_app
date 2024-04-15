@@ -3,14 +3,17 @@ import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/models/check_in_out.dart';
 import 'package:food_delivery_app/resourese/check_in_out/icheck_in_out_repository.dart';
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
+import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:get/get.dart';
 
 class CheckInOutController extends GetxController {
   final ICheckInOutRepository checkInOutRepository;
   final IProfileRepository profileRepository;
+  final AccountService accountService;
 
-  CheckInOutController({required this.checkInOutRepository, required this.profileRepository});
+  CheckInOutController(
+      {required this.checkInOutRepository, required this.profileRepository, required this.accountService});
 
   var isLoadingCheckIn = false.obs;
   var isLoadingCheckOut = false.obs;
@@ -69,7 +72,10 @@ class CheckInOutController extends GetxController {
       final result = await checkInOutRepository.checkInUser();
 
       if (result != null) {
-        getProfile();
+        final data = await profileRepository.getProfile();
+        if (data != null) {
+          accountService.account.value = data;
+        }
 
         DialogUtils.showSuccessDialog(content: "check_in_successful".tr);
       }

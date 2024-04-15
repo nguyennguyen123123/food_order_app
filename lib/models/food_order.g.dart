@@ -21,6 +21,7 @@ FoodOrder _$FoodOrderFromJson(Map<String, dynamic> json) => FoodOrder(
       orderStatus: json['order_status'] as String?,
       createdAt: json['created_at'] as String?,
       orderType: json['order_type'] as String?,
+      bondNumber: json['bond_number'] as int?,
     );
 
 Map<String, dynamic> _$FoodOrderToJson(FoodOrder instance) => <String, dynamic>{
@@ -31,4 +32,5 @@ Map<String, dynamic> _$FoodOrderToJson(FoodOrder instance) => <String, dynamic>{
       'user_order_id': instance.userOrderId,
       'order_status': instance.orderStatus,
       'order_type': instance.orderType,
+      'bond_number': instance.bondNumber,
     };

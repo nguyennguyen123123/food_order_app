@@ -23,14 +23,14 @@ class PrinterRepository extends IPrinterRepository {
   }
 
   @override
-  Future<List<Printer>?> getPrinter() async {
+  Future<List<Printer>> getPrinter() async {
     try {
       final response = await baseService.client
           .from(TABLE_NAME.PRINTER)
           .select()
           .withConverter((data) => data.map((e) => Printer.fromJson(e)).toList());
 
-      return response.toList();
+      return response;
     } catch (error) {
       handleError(error);
       rethrow;

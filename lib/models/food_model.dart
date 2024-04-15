@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 /*
  * Copyright (c) 2021 Akshay Jadhav <jadhavakshay0701@gmail.com>
  *
@@ -32,6 +33,8 @@ class FoodModel {
   String? createdAt;
   @JsonKey(includeToJson: false, includeFromJson: true, name: 'typeId')
   FoodType? foodType;
+  @JsonKey(name: 'number_order', includeToJson: false)
+  int? numberOrder;
 
   FoodModel({
     this.foodId,
@@ -42,6 +45,7 @@ class FoodModel {
     this.typeId,
     this.createdAt,
     this.foodType,
+    this.numberOrder,
   });
 
   Map<String, dynamic> toJson() => _$FoodModelToJson(this);
@@ -49,4 +53,28 @@ class FoodModel {
   Map toMap(FoodModel food) => _$FoodModelToJson(this);
 
   factory FoodModel.fromJson(Map<String, dynamic> json) => _$FoodModelFromJson(json);
+
+  FoodModel copyWith({
+    String? foodId,
+    String? name,
+    String? description,
+    double? price,
+    String? image,
+    String? typeId,
+    String? createdAt,
+    FoodType? foodType,
+    int? numberOrder,
+  }) {
+    return FoodModel(
+      foodId: foodId ?? this.foodId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      image: image ?? this.image,
+      typeId: typeId ?? this.typeId,
+      createdAt: createdAt ?? this.createdAt,
+      foodType: foodType ?? this.foodType,
+      numberOrder: numberOrder ?? this.numberOrder,
+    );
+  }
 }

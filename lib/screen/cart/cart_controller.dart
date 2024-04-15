@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
+import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
@@ -13,8 +15,13 @@ class CartController extends GetxController {
   final OrderCartService cartService;
   final IOrderRepository orderRepository;
   final ITableRepository tableRepository;
+  final AccountService accountService;
 
-  CartController({required this.cartService, required this.orderRepository, required this.tableRepository});
+  CartController(
+      {required this.cartService,
+      required this.orderRepository,
+      required this.tableRepository,
+      required this.accountService});
 
   final isLoading = false.obs;
   final isValidateForm = false.obs;
@@ -96,6 +103,11 @@ class CartController extends GetxController {
   }
 
   Future<void> onPlaceOrder() async {
+    if (accountService.myAccount?.role == USER_ROLE.STAFF && accountService.myAccount?.checkInTime == null) {
+      DialogUtils.showInfoErrorDialog(content: 'Bạn chưa checkin nên không thể lên đơn');
+      return;
+    }
+
     isValidateForm.value = true;
 
     if (selectedValue.value?.tableNumber == null) return;
@@ -108,6 +120,7 @@ class CartController extends GetxController {
         cartService.partyOrders.value,
         voucher: cartService.currentVoucher.value,
         tableNumber: (selectedValue.value?.tableNumber ?? 0).toString(),
+        bondNumber: (accountService.myAccount?.numberOfOrder ?? 0) + 1,
       );
       if (result != null) {
         cartService.items.value = [];

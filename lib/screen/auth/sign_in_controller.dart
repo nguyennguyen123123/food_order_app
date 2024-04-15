@@ -22,7 +22,11 @@ class SignInController extends GetxController {
     try {
       showLoading();
       final result = await authRepository.login(emailController.text, passwordController.text);
-      accountService.account.value = await authRepository.getAccountById(result?.id ?? '');
+      final account = await authRepository.getAccountById(result?.id ?? '');
+      if (account == null) {
+        throw Exception();
+      }
+      await accountService.login(account);
       dissmissLoading();
       Get.toNamed(Routes.MAIN);
     } catch (e) {

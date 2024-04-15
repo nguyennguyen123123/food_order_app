@@ -7,6 +7,7 @@ class CheckInOutBinding implements Bindings {
     Get.put(CheckInOutController(
       profileRepository: Get.find(),
       checkInOutRepository: Get.find(),
+      accountService: Get.find(),
     ));
   }
 }
