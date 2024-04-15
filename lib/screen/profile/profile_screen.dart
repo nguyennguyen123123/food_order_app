@@ -83,6 +83,12 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     text: 'account'.tr,
                     icons: IconAssets.editIcon,
                   ),
+                  SizedBox(height: 8.h),
+                  newMethod(
+                    onTap: () => Get.toNamed(Routes.CHECKINOUT),
+                    text: 'Checking'.tr,
+                    icons: IconAssets.timetableIcon,
+                  ),
                 ],
               ),
             ),

@@ -4,6 +4,8 @@ import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
 import 'package:food_delivery_app/screen/cart/cart_binding.dart';
 import 'package:food_delivery_app/screen/cart/cart_page.dart';
+import 'package:food_delivery_app/screen/check_in_out/check_in_out_binding.dart';
+import 'package:food_delivery_app/screen/check_in_out/check_in_out_pages.dart';
 import 'package:food_delivery_app/screen/food/edit_food/edit_food_binding.dart';
 import 'package:food_delivery_app/screen/food/edit_food/edit_food_view.dart';
 import 'package:food_delivery_app/screen/food/food_binding.dart';
@@ -164,6 +166,11 @@ abstract class AppPages {
       name: Routes.EDITVOUCHER,
       page: () => EditVoucherView(),
       binding: EditVoucherBinding(),
+    ),
+    GetPage(
+      name: Routes.CHECKINOUT,
+      page: () => CheckInOutPages(),
+      binding: CheckInOutBinding(),
     ),
   ];
 }
