@@ -109,7 +109,7 @@ class EditFoodView extends GetWidget<EditFoodController> {
                 SizedBox(height: 4.h),
                 Obx(
                   () => Container(
-                    width: MediaQuery.of(context).size.width.w,
+                    width: Get.size.width.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: appTheme.blackColor, width: 1),

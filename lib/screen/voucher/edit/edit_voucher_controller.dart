@@ -20,11 +20,14 @@ class EditVoucherController extends GetxController {
   var isLoadingAdd = false.obs;
   var isLoadingDelete = false.obs;
 
+  var selectedType = Rx<DiscountType>(DiscountType.percentage);
+
   @override
   void onInit() {
     super.onInit();
     nameController = TextEditingController(text: voucherParametar?.name.toString());
     discountValueController = TextEditingController(text: voucherParametar?.discountValue.toString());
+    selectedType.value = voucherParametar?.discountType as DiscountType;
   }
 
   void editVoucher() async {
@@ -38,7 +41,7 @@ class EditVoucherController extends GetxController {
         voucherId: voucherId,
         code: voucherParametar?.code,
         discountValue: double.tryParse(discountValueController.text.replaceAll(',', '')),
-        discountType: DiscountType.percentage,
+        discountType: selectedType.value,
         name: nameController.text,
         expiryDate: DateTime.now().toString(),
         createdAt: voucherParametar?.createdAt,

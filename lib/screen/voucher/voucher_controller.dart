@@ -20,6 +20,8 @@ class VoucherController extends GetxController {
 
   var voucherList = Rx<List<Voucher>?>([]);
 
+  final selectedType = Rx<DiscountType>(DiscountType.percentage);
+
   int page = 0;
   int limit = LIMIT;
 
@@ -67,16 +69,6 @@ class VoucherController extends GetxController {
     return true;
   }
 
-  // void getListVoucher() async {
-  //   final result = await voucherepository.getVoucher();
-
-  //   if (result != null) {
-  //     voucherList.assignAll(result);
-  //   } else {
-  //     voucherList.clear();
-  //   }
-  // }
-
   void addVoucher() async {
     if (nameController.text.isEmpty || discountValueController.text.isEmpty) return;
 
@@ -89,7 +81,7 @@ class VoucherController extends GetxController {
         voucherId: getUuid(),
         code: randomString,
         discountValue: double.tryParse(discountValueController.text.replaceAll(',', '')),
-        discountType: DiscountType.amount,
+        discountType: selectedType.value,
         name: nameController.text,
         expiryDate: DateTime.now().toString(),
         createdAt: DateTime.now().toString(),
