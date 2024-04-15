@@ -20,7 +20,7 @@ class TablePage extends GetWidget<TableControlller> {
         title: Row(
           children: [
             IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back, color: appTheme.blackText)),
-            Text('Danh sách số bàn', style: StyleThemeData.bold18(height: 0)),
+            Text('table_list'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
         actions: [

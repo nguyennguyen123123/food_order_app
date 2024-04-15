@@ -22,7 +22,7 @@ class AddVoucherView extends GetWidget<VoucherController> {
         title: Row(
           children: [
             IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back)),
-            Text('Add Voucher', style: StyleThemeData.bold18(height: 0)),
+            Text('add_voucher'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
       ),
@@ -32,8 +32,8 @@ class AddVoucherView extends GetWidget<VoucherController> {
           children: [
             EditTextFieldCustom(
               controller: controller.nameController,
-              hintText: 'Nhập tên mã giảm giá',
-              label: 'Tên mã giảm giá',
+              hintText: 'enter_voucher_name'.tr,
+              label: 'voucher_name'.tr,
               suffix: Icon(Icons.title),
               textInputType: TextInputType.text,
             ),
@@ -45,8 +45,8 @@ class AddVoucherView extends GetWidget<VoucherController> {
                   
               return EditTextFieldCustom(
                 controller: controller.discountValueController,
-                hintText: 'Nhập giá trị giảm giá',
-                label: 'Giá trị giảm giá',
+                hintText: 'enter_discount_value'.tr,
+                label: 'discount_value'.tr,
                 suffix: Icon(Icons.description),
                 textInputType: TextInputType.number,
                 numberFormat: NumericTextFormatter(),
@@ -54,7 +54,7 @@ class AddVoucherView extends GetWidget<VoucherController> {
               );
             }),
             SizedBox(height: 12.h),
-            Align(alignment: Alignment.centerLeft, child: Text('Đơn vị', style: StyleThemeData.bold14())),
+            Align(alignment: Alignment.centerLeft, child: Text('unit'.tr, style: StyleThemeData.bold14())),
             SizedBox(height: 4.h),
             Obx(
               () => Container(
@@ -66,7 +66,7 @@ class AddVoucherView extends GetWidget<VoucherController> {
                 padding: padding(horizontal: 8),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<DiscountType>(
-                    hint: Text('Chọn đơn vị', style: StyleThemeData.regular16()),
+                    hint: Text('select_unit'.tr, style: StyleThemeData.regular16()),
                     value: controller.selectedType.value,
                     onChanged: (DiscountType? newValue) {
                       controller.selectedType.value = newValue!;
@@ -99,9 +99,9 @@ class AddVoucherView extends GetWidget<VoucherController> {
   String _getDisplayText(DiscountType type) {
     switch (type) {
       case DiscountType.percentage:
-        return 'Phần trăm';
+        return 'percentage'.tr;
       case DiscountType.amount:
-        return 'Giá tiền';
+        return 'amount'.tr;
     }
   }
 }

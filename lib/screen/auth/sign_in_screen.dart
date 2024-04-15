@@ -26,8 +26,8 @@ class SignInScreen extends GetWidget<SignInController> {
               valueListenable: controller.obscurePasswordNotifier,
               builder: (context, isObscure, chhild) => EditTextFieldCustom(
                 controller: controller.passwordController,
-                hintText: 'Mật khẩu',
-                label: 'Mật khẩu',
+                hintText: 'password'.tr,
+                label: 'password'.tr,
                 suffix: GestureDetector(
                     onTap: () => controller.obscurePasswordNotifier.value = !controller.obscurePasswordNotifier.value,
                     child: Icon(controller.obscurePasswordNotifier.value ? Icons.visibility : Icons.visibility_off)),
@@ -39,7 +39,7 @@ class SignInScreen extends GetWidget<SignInController> {
             ConfirmationButtonWidget(
               isLoading: false,
               onTap: controller.onSubmit,
-              text: 'Đăng nhập',
+              text: 'login'.tr,
             ),
           ],
         ),

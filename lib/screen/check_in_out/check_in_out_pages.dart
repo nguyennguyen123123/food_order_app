@@ -135,7 +135,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
         children: [
           Row(
             children: [
-              Text('Người dùng: ', style: StyleThemeData.bold18()),
+              Text('user'.tr + ': ', style: StyleThemeData.bold18()),
               Text(data.users?.name ?? '', style: StyleThemeData.bold14()),
             ],
           ),
@@ -178,7 +178,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
           Divider(color: appTheme.blackText),
           Row(
             children: [
-              Text('Tổng số đơn: ', style: StyleThemeData.bold16()),
+              Text('total_order'.tr + ': ', style: StyleThemeData.bold16()),
               Text(data.totalOrders.toString(), style: StyleThemeData.bold14()),
             ],
           ),

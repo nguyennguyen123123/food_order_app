@@ -71,13 +71,13 @@ class CheckInOutController extends GetxController {
       if (result != null) {
         getProfile();
 
-        DialogUtils.showSuccessDialog(content: "Check In thành công".tr);
+        DialogUtils.showSuccessDialog(content: "check_in_successful".tr);
       }
 
       isLoadingCheckIn(false);
     } catch (error) {
       print(error);
-      DialogUtils.showInfoErrorDialog(content: "Check In thất bại".tr);
+      DialogUtils.showInfoErrorDialog(content: "check_in_failed".tr);
     } finally {
       isLoadingCheckIn(false);
     }
@@ -93,13 +93,13 @@ class CheckInOutController extends GetxController {
         getProfile();
         onRefresh();
 
-        DialogUtils.showSuccessDialog(content: "Check Out thành công".tr);
+        DialogUtils.showSuccessDialog(content: "check_out_successful".tr);
       }
 
       isLoadingCheckOut(false);
     } catch (error) {
       print(error);
-      DialogUtils.showInfoErrorDialog(content: "Check Out thất bại".tr);
+      DialogUtils.showInfoErrorDialog(content: "check_out_failed".tr);
     } finally {
       isLoadingCheckOut(false);
     }

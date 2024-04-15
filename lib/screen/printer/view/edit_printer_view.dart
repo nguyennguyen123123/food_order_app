@@ -17,7 +17,7 @@ class EditPrinterView extends GetWidget<EditPrinterController> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: appTheme.transparentColor,
-          title: Text('Chỉnh sửa máy in', style: StyleThemeData.bold18(height: 0)),
+          title: Text('edit_printer'.tr, style: StyleThemeData.bold18(height: 0)),
         ),
         body: Padding(
           padding: padding(all: 16),
@@ -25,7 +25,7 @@ class EditPrinterView extends GetWidget<EditPrinterController> {
             children: [
               EditTextFieldCustom(
                 controller: controller.ipController,
-                hintText: 'Nhập ip',
+                hintText: 'enter_ip'.tr,
                 label: 'IP',
                 suffix: Icon(Icons.title),
                 textInputType: TextInputType.number,
@@ -34,15 +34,15 @@ class EditPrinterView extends GetWidget<EditPrinterController> {
               SizedBox(height: 12.h),
               EditTextFieldCustom(
                 controller: controller.nameControler,
-                hintText: 'Nhập tên',
-                label: 'Tên',
+                hintText: 'enter_name'.tr,
+                label: 'name'.tr,
                 suffix: Icon(Icons.description),
                 textInputType: TextInputType.text,
               ),
               SizedBox(height: 12.h),
               EditTextFieldCustom(
                 controller: controller.portController,
-                hintText: 'Nhập port',
+                hintText: 'enter_port'.tr,
                 label: 'Port',
                 suffix: Icon(Icons.price_change),
                 textInputType: TextInputType.number,
@@ -53,7 +53,7 @@ class EditPrinterView extends GetWidget<EditPrinterController> {
                 () => ConfirmationButtonWidget(
                   isLoading: controller.isLoading.isTrue,
                   onTap: controller.editPrinter,
-                  text: 'Chỉnh sửa',
+                  text: 'edit'.tr,
                 ),
               ),
             ],

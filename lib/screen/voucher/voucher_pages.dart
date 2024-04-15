@@ -22,7 +22,7 @@ class VoucherPages extends GetWidget<VoucherController> {
         title: Row(
           children: [
             IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back)),
-            Text('Voucher', style: StyleThemeData.bold18(height: 0)),
+            Text('voucher'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
         actions: [

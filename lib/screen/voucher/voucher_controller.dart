@@ -96,15 +96,15 @@ class VoucherController extends GetxController {
 
         Get.back();
         clear();
-        DialogUtils.showSuccessDialog(content: "Thêm voucher thành công".tr);
+        DialogUtils.showSuccessDialog(content: "add_voucher_successful".tr);
       } else {
-        DialogUtils.showInfoErrorDialog(content: "Thêm voucher thất bại".tr);
+        DialogUtils.showInfoErrorDialog(content: "add_voucher_failed".tr);
       }
 
       isLoadingAdd(false);
     } catch (error) {
       print(error);
-      DialogUtils.showInfoErrorDialog(content: "Thêm voucher thất bại".tr);
+      DialogUtils.showInfoErrorDialog(content: "add_voucher_failed".tr);
     } finally {
       isLoadingAdd(false);
     }
