@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/voucher/ivoucher_repository.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
@@ -17,12 +18,15 @@ class VoucherController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController discountValueController = TextEditingController();
 
-  var voucherList = <Voucher>[].obs;
+  var voucherList = Rx<List<Voucher>?>([]);
+
+  int page = 0;
+  int limit = LIMIT;
 
   @override
   void onInit() {
     super.onInit();
-    getListVoucher();
+    onRefresh();
   }
 
   void clear() {
@@ -42,15 +46,36 @@ class VoucherController extends GetxController {
     return result.toUpperCase();
   }
 
-  void getListVoucher() async {
-    final result = await voucherepository.getVoucher();
+  Future<void> onRefresh() async {
+    page = 0;
+    voucherList.value = null;
 
-    if (result != null) {
-      voucherList.assignAll(result);
-    } else {
-      voucherList.clear();
-    }
+    final result = await voucherepository.getVoucher(page: page, limit: limit);
+
+    voucherList.value = result;
   }
+
+  Future<bool> onLoadMoreVoucher() async {
+    final length = (voucherList.value ?? []).length;
+    if (length < LIMIT * (page + 1)) return false;
+    page += 1;
+
+    final result = await voucherepository.getVoucher(page: page, limit: limit);
+
+    voucherList.update((val) => val?.addAll(result));
+    if (result.length < limit) return false;
+    return true;
+  }
+
+  // void getListVoucher() async {
+  //   final result = await voucherepository.getVoucher();
+
+  //   if (result != null) {
+  //     voucherList.assignAll(result);
+  //   } else {
+  //     voucherList.clear();
+  //   }
+  // }
 
   void addVoucher() async {
     if (nameController.text.isEmpty || discountValueController.text.isEmpty) return;
@@ -73,9 +98,9 @@ class VoucherController extends GetxController {
       final result = await voucherepository.addVoucher(voucher);
 
       if (result != null) {
-        final voucher = Voucher.fromJson(result);
+        final newVoucher = Voucher.fromJson(result);
 
-        voucherList.add(voucher);
+        voucherList.value = [...voucherList.value ?? [], newVoucher];
 
         Get.back();
         clear();
@@ -94,9 +119,11 @@ class VoucherController extends GetxController {
   }
 
   void updateTable(Voucher updatedVoucher) {
-    final index = voucherList.indexWhere((voucher) => voucher.voucherId == updatedVoucher.voucherId);
-    if (index != -1) {
-      voucherList[index] = updatedVoucher;
+    final index = voucherList.value?.indexWhere((voucher) => voucher.voucherId == updatedVoucher.voucherId);
+    if (index != -1 && voucherList.value != null) {
+      final newList = List<Voucher>.from(voucherList.value!);
+      newList[index!] = updatedVoucher;
+      voucherList.value = newList;
     }
   }
 

@@ -71,7 +71,13 @@ class EditVoucherController extends GetxController {
 
       final delete = await voucherepository.deleteVoucher(voucherId);
       if (delete != null) {
-        Get.find<VoucherController>().voucherList.removeWhere((voucher) => voucher.voucherId == voucherId);
+        // Get.find<VoucherController>().voucherList.value?.removeWhere((voucher) => voucher.voucherId == voucherId);
+        Get.find<VoucherController>().voucherList.value = Get.find<VoucherController>()
+            .voucherList
+            .value
+            ?.where((voucher) => voucher.voucherId != voucherId)
+            .toList();
+
         Get.back();
         DialogUtils.showSuccessDialog(content: "delete_successful".tr);
       } else {

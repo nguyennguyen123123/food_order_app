@@ -99,8 +99,6 @@ class CheckInOutRepository extends ICheckInOutRepository {
       } else {
         final dataUser = baseService.client.from(TABLE_NAME.CHECKINOUT).select("*, user_id (*)").eq('user_id', userId);
 
-        print(dataUser);
-
         final response = await dataUser
             .limit(limit)
             .range(page * limit, (page + 1) * limit)
