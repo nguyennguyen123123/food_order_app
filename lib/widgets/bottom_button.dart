@@ -6,9 +6,14 @@ import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
 class BottomButton extends StatelessWidget {
-  const BottomButton({required this.onConfirm, Key? key}) : super(key: key);
+  const BottomButton({
+    required this.onConfirm,
+    Key? key,
+    this.isDisableConfirm = true,
+  }) : super(key: key);
 
   final VoidCallback onConfirm;
+  final bool isDisableConfirm;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +28,7 @@ class BottomButton extends StatelessWidget {
         Expanded(
           child: PrimaryButton(
             onPressed: onConfirm,
+            isDisable: isDisableConfirm,
             child: Text('confirm'.tr, style: StyleThemeData.bold18(color: appTheme.whiteText)),
             contentPadding: padding(vertical: 6),
             backgroundColor: appTheme.primaryColor,

@@ -69,7 +69,7 @@ class OrderRepository extends IOrderRepository {
       //       .insert({"food_order_id": orderId, "order_item_id": e.orderItemId ?? ''});
       // }).toList());
       await _uploadPartyOrderItem(orders, orderId);
-      await profileRepository.updateNumberOfOrder(bondNumber + 1);
+      await profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1);
       accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber + 1);
       return order.first;
     } catch (e) {
@@ -91,10 +91,10 @@ class OrderRepository extends IOrderRepository {
 
   Future<void> _uploadPartyOrderItem(List<PartyOrder> partyOrders, String orderId) async {
     await Future.wait(partyOrders.map((party) async {
-      final id = getUuid();
+      final partyId = getUuid();
 
       final newParty = party.copyWith(
-        partyOrderId: id,
+        partyOrderId: partyId,
         orderId: orderId,
         total: party.totalPrice,
         orderStatus: ORDER_STATUS.CREATED,
@@ -106,29 +106,37 @@ class OrderRepository extends IOrderRepository {
 
       final orderItems = party.orderItems ?? <OrderItem>[];
       await Future.wait(orderItems.map((item) async {
-        final newItem = await _uploadOrderItem(item);
+        final newItem = await _uploadOrderItem(item.copyWith(partyOderId: partyId));
         await baseService.client
             .from(TABLE_NAME.PARTY_ORDER_ITEM)
-            .insert({'party_order_id': id, 'order_item_id': newItem.orderItemId});
+            .insert({'party_order_id': partyId, 'order_item_id': newItem.orderItemId});
       }));
-      await baseService.client.from(TABLE_NAME.ORDER_WITH_PARTY).insert({'order_id': orderId, 'party_order_id': id});
+      await baseService.client
+          .from(TABLE_NAME.ORDER_WITH_PARTY)
+          .insert({'order_id': orderId, 'party_order_id': partyId});
     }));
   }
 
 // food_id (*, typeId (*))
   @override
-  Future<List<FoodOrder>> getListFoodOrders({int page = 0, int limit = LIMIT}) async {
+  Future<List<FoodOrder>> getListFoodOrders(
+      {int page = 0, int limit = LIMIT, String? orderStatus, String? userOrderId}) async {
     try {
       const queryOrder = 'order_item!inner (*, food_id:food!inner(*, typeId(*))))';
-      final orders = baseService.client.from(TABLE_NAME.FOOD_ORDER).select('''
+      var query = baseService.client.from(TABLE_NAME.FOOD_ORDER).select('''
         *,
         user_order_id(*),
         ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder))),
         ${TABLE_NAME.FOOD_ORDER_ITEM}!inner(*, $queryOrder),
         ''');
 //         ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder))),
-
-      final response = await orders
+      if (orderStatus != null) {
+        query = query.eq('order_status', orderStatus);
+      }
+      if (userOrderId != null) {
+        query = query.eq('user_order_id', userOrderId);
+      }
+      final response = await query
           .limit(limit)
           .range(page * limit, (page + 1) * limit)
           .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
@@ -138,5 +146,14 @@ class OrderRepository extends IOrderRepository {
       handleError(e);
     }
     return [];
+  }
+
+  @override
+  Future<void> onDeleteOrder(FoodOrder foodOrder) async {
+    try {
+      await baseService.client.from(TABLE_NAME.FOOD_ORDER).delete().eq('order_id', foodOrder.orderId ?? '');
+    } catch (e) {
+      print(e);
+    }
   }
 }

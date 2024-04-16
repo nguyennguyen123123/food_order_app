@@ -176,32 +176,6 @@ class CartPage extends GetWidget<CartController> {
     }
   }
 
-  Widget _buildListOrderItem(List<OrderItem> foods) {
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: padding(all: 12),
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => _buildCartItem(
-        index,
-        foods[index],
-        updateQuantity: controller.updateQuantityCart,
-        removeCartItem: () => controller.removeItemInOrder(index),
-        updateNote: (note) => controller.updateCartItemNote(index, note),
-      ),
-      separatorBuilder: (context, index) => SizedBox(height: 8.h),
-      itemCount: foods.length,
-    );
-  }
-
-  Widget _buildListPartyOrder() {
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => _buildPartyOrderItem(index),
-        separatorBuilder: (context, index) => SizedBox(height: 8.h),
-        itemCount: controller.partyOrders.length);
-  }
-
   Widget _buildEmptyCart() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -234,18 +208,18 @@ class CartPage extends GetWidget<CartController> {
               Expanded(child: Text('Party $partyIndex', style: StyleThemeData.bold18())),
               GestureDetector(
                   onTap: () async {
-                    final result = await DialogUtils.showDialogView(AddItemPartyDialog());
-                    if (result != null && result is List<OrderItem>) {
-                      controller.cartService.onAddItemToPartyOrder(partyIndex, result);
+                    final result =
+                        await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa party $partyIndex khỏi đơn không?');
+                    if (result == true) {
+                      controller.onRemovePartyOrder(partyIndex);
                     }
                   },
                   child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
               GestureDetector(
                   onTap: () async {
-                    final result =
-                        await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa party $partyIndex khỏi đơn không?');
-                    if (result == true) {
-                      controller.onRemovePartyOrder(partyIndex);
+                    final result = await DialogUtils.showDialogView(AddItemPartyDialog());
+                    if (result != null && result is List<OrderItem>) {
+                      controller.cartService.onAddItemToPartyOrder(partyIndex, result);
                     }
                   },
                   child: Icon(Icons.add, size: 32.w, color: appTheme.blackColor))
@@ -281,6 +255,32 @@ class CartPage extends GetWidget<CartController> {
         ],
       ),
     );
+  }
+
+  Widget _buildListOrderItem(List<OrderItem> foods) {
+    return ListView.separated(
+      shrinkWrap: true,
+      padding: padding(all: 12),
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) => _buildCartItem(
+        index,
+        foods[index],
+        updateQuantity: controller.updateQuantityCart,
+        removeCartItem: () => controller.removeItemInOrder(index),
+        updateNote: (note) => controller.updateCartItemNote(index, note),
+      ),
+      separatorBuilder: (context, index) => SizedBox(height: 8.h),
+      itemCount: foods.length,
+    );
+  }
+
+  Widget _buildListPartyOrder() {
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => _buildPartyOrderItem(index),
+        separatorBuilder: (context, index) => SizedBox(height: 8.h),
+        itemCount: controller.partyOrders.length);
   }
 
   Container itemSelectTable() {
@@ -376,7 +376,7 @@ class CartPage extends GetWidget<CartController> {
                     updateNote(result);
                   }
                 },
-                child: Icon(Icons.edit))
+                child: Icon(Icons.edit)),
           ],
         )
       ],

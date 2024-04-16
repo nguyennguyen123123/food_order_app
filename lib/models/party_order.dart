@@ -79,6 +79,9 @@ extension PartyOrderExtension on PartyOrder {
         total = total * ((voucher?.discountValue ?? 100) / 100);
       }
     }
+    if (voucherPrice != null) {
+      total -= (voucherPrice ?? 0);
+    }
     return total;
   }
 

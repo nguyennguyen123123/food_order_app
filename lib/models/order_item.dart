@@ -19,6 +19,8 @@ class OrderItem {
   int orignalQuantity;
   @JsonKey(name: 'sort_order')
   int? sortOder;
+  @JsonKey(name: 'party_order_id', includeFromJson: false, includeToJson: true)
+  String? partyOderId;
 
   OrderItem({
     this.orderItemId,
@@ -28,6 +30,7 @@ class OrderItem {
     this.note,
     this.orignalQuantity = 1,
     this.sortOder,
+    this.partyOderId,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => _$OrderItemFromJson(json);
@@ -42,6 +45,7 @@ class OrderItem {
     String? note,
     int? orignalQuantity,
     int? sortOder,
+    String? partyOderId,
   }) {
     return OrderItem(
       orderItemId: orderItemId ?? this.orderItemId,
@@ -51,6 +55,7 @@ class OrderItem {
       note: note ?? this.note,
       orignalQuantity: orignalQuantity ?? this.orignalQuantity,
       sortOder: sortOder ?? this.sortOder,
+      partyOderId: partyOderId ?? this.partyOderId,
     );
   }
 }

@@ -27,4 +27,5 @@ abstract class Routes {
   static const ADDVOUCHER = '/add_voucher';
   static const EDITVOUCHER = '/edit_voucher';
   static const CHECKINOUT = '/check_in_out';
+  static const HISTORY_ORDER = '/history-order';
 }

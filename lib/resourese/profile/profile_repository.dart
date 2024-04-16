@@ -63,7 +63,7 @@ class ProfileRepository extends IProfileRepository {
   }
 
   @override
-  Future<void> updateNumberOfOrder(int number) async {
-    await baseService.client.from(TABLE_NAME.ACCOUNT).upsert({'number_of_order': number});
+  Future<void> updateNumberOfOrder(String userId, int number) async {
+    await baseService.client.from(TABLE_NAME.ACCOUNT).update({'number_of_order': number}).eq('user_id', userId);
   }
 }
