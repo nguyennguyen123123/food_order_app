@@ -5,17 +5,16 @@ import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/screen/cart/cart_controller.dart';
-import 'package:food_delivery_app/screen/cart/widget/add_item_party_dialog.dart';
-import 'package:food_delivery_app/screen/cart/widget/edit_reason_bottom_sheet.dart';
-import 'package:food_delivery_app/screen/cart/widget/select_voucher_bts.dart';
+import 'package:food_delivery_app/screen/cart/dialog/add_item_party_dialog.dart';
+import 'package:food_delivery_app/screen/cart/dialog/select_voucher_bts.dart';
+import 'package:food_delivery_app/screen/cart/widget/cart_item_view.dart';
+import 'package:food_delivery_app/screen/cart/widget/empty_cart.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/utils/utils.dart';
-import 'package:food_delivery_app/widgets/custom_network_image.dart';
 import 'package:food_delivery_app/widgets/image_asset_custom.dart';
 import 'package:food_delivery_app/widgets/primary_button.dart';
-import 'package:food_delivery_app/widgets/quantity_view.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
@@ -40,7 +39,7 @@ class CartPage extends GetWidget<CartController> {
                 leading: IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back_ios, size: 24)),
               ),
               body: hasOrderInCart
-                  ? _buildEmptyCart()
+                  ? EmptyCart()
                   : Column(
                       children: [
                         Expanded(
@@ -75,7 +74,18 @@ class CartPage extends GetWidget<CartController> {
                               ),
                               _buildListPartyOrder(),
                               if (controller.partyOrders.length > 0) Divider(height: 1, color: appTheme.borderColor),
-                              _buildListOrderItem(foods),
+                              _buildListOrderItem(
+                                foods,
+                                numerGangs: controller.cartService.numberOfGang.value,
+                                itemBuilder: (index, item, {int? gangIndex}) => CartItemView(
+                                  item,
+                                  updateQuantity: (quantity) => controller.updateQuantityCart(item, quantity),
+                                  removeCartItem: () => controller.removeItemInOrder(item),
+                                  updateNote: (note) => controller.updateCartItemNote(item, note),
+                                ),
+                                onCreateGang: controller.cartService.onCreateNewGang,
+                                onRemoveGang: controller.cartService.onRemoveGang,
+                              ),
                             ],
                           ),
                         ),
@@ -176,26 +186,6 @@ class CartPage extends GetWidget<CartController> {
     }
   }
 
-  Widget _buildEmptyCart() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(child: ImageAssetCustom(imagePath: ImagesAssets.emptyCart, size: 200)),
-        SizedBox(height: 12.h),
-        PrimaryButton(
-          contentPadding: padding(all: 12),
-          backgroundColor: appTheme.primaryColor,
-          borderColor: appTheme.primaryColor,
-          onPressed: Get.back,
-          child: Text(
-            'select_food'.tr,
-            style: StyleThemeData.regular14(color: appTheme.whiteText),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildPartyOrderItem(int partyIndex) {
     final partyOrder = controller.partyOrders[partyIndex];
     return Padding(
@@ -217,7 +207,8 @@ class CartPage extends GetWidget<CartController> {
                   child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
               GestureDetector(
                   onTap: () async {
-                    final result = await DialogUtils.showDialogView(AddItemPartyDialog());
+                    final result = await DialogUtils.showDialogView(
+                        AddItemPartyDialog(orderItems: controller.cartService.items.value));
                     if (result != null && result is List<OrderItem>) {
                       controller.cartService.onAddItemToPartyOrder(partyIndex, result);
                     }
@@ -226,18 +217,30 @@ class CartPage extends GetWidget<CartController> {
             ],
           ),
           SizedBox(height: 8.h),
-          ListView.separated(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, i) => _buildCartItem(
-                    i,
-                    partyOrder.orderItems![i],
-                    updateQuantity: (i, quantity) => controller.updateQuantityPartyItem(partyIndex, i, quantity),
-                    removeCartItem: () => controller.removeItemInPartyOrder(partyIndex, i),
-                    updateNote: (note) => controller.updatePartyCartItemNote(partyIndex, i, note),
-                  ),
-              separatorBuilder: (context, index) => SizedBox(height: 4.h),
-              itemCount: partyOrder.orderItems?.length ?? 0),
+          _buildListOrderItem(
+            partyOrder.orderItems ?? [],
+            partyIndex: partyIndex,
+            itemBuilder: (index, item, {gangIndex}) => CartItemView(
+              item,
+              updateQuantity: (quantity) => controller.updateQuantityPartyItem(partyIndex, item, quantity),
+              removeCartItem: () => controller.removeItemInPartyOrder(partyIndex, item),
+              updateNote: (note) => controller.updatePartyCartItemNote(partyIndex, item, note),
+            ),
+            onCreateGang: () => controller.onPartyCreateGang(partyIndex),
+            onRemoveGang: (gangIndex) => controller.cartService.onRemoveGangInParty(partyIndex, gangIndex),
+            numerGangs: partyOrder.numberOfGangs,
+          ),
+          // ListView.separated(
+          //     shrinkWrap: true,
+          //     physics: NeverScrollableScrollPhysics(),
+          //     itemBuilder: (context, i) => CartItemView(
+          //           partyOrder.orderItems![i],
+          //           updateQuantity: (quantity) => controller.updateQuantityPartyItem(partyIndex, i, quantity),
+          //           removeCartItem: () => controller.removeItemInPartyOrder(partyIndex, i),
+          //           updateNote: (note) => controller.updatePartyCartItemNote(partyIndex, i, note),
+          //         ),
+          //     separatorBuilder: (context, index) => SizedBox(height: 4.h),
+          //     itemCount: partyOrder.orderItems?.length ?? 0),
           SizedBox(height: 8.h),
           if (partyOrder.orderItems?.isNotEmpty == true)
             _buildVoucherField(
@@ -257,33 +260,111 @@ class CartPage extends GetWidget<CartController> {
     );
   }
 
-  Widget _buildListOrderItem(List<OrderItem> foods) {
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: padding(all: 12),
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => _buildCartItem(
-        index,
-        foods[index],
-        updateQuantity: controller.updateQuantityCart,
-        removeCartItem: () => controller.removeItemInOrder(index),
-        updateNote: (note) => controller.updateCartItemNote(index, note),
-      ),
-      separatorBuilder: (context, index) => SizedBox(height: 8.h),
-      itemCount: foods.length,
+  Widget _buildListOrderItem(
+    List<OrderItem> foods, {
+    int? partyIndex,
+    EdgeInsets? paddingView,
+    required Widget Function(int index, OrderItem item, {int? gangIndex}) itemBuilder,
+    int numerGangs = 0,
+    VoidCallback? onCreateGang,
+    required void Function(int gangIndex) onRemoveGang,
+  }) {
+    final orderItemNoGang = foods.where((element) => element.sortOder == null).toList();
+
+    return Column(
+      children: [
+        ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: paddingView ?? padding(all: 12),
+            itemBuilder: (context, index) => itemBuilder(index, orderItemNoGang[index]),
+            separatorBuilder: (context, index) => SizedBox(height: 6.h),
+            itemCount: orderItemNoGang.length),
+        _buildGangView(onCreateGang: onCreateGang),
+        if (numerGangs > 0) ...[
+          ...List.generate(numerGangs, (index) {
+            final orderItemInGang = foods.where((element) => element.sortOder == index).toList();
+            return Column(
+              children: [
+                _buildGangView(
+                  gangIndex: index,
+                  onRemoveGang: onRemoveGang,
+                  onAddItemToGang: () async {
+                    final result = await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
+                    if (result != null && result is List<OrderItem>) {
+                      controller.updateOrderItemInCart(index, result, partyIndex: partyIndex);
+                    }
+                  },
+                ),
+                if (orderItemInGang.isNotEmpty)
+                  ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: paddingView ?? padding(all: 12),
+                      itemBuilder: (context, i) => itemBuilder(i, orderItemInGang[i], gangIndex: index),
+                      separatorBuilder: (context, index) => SizedBox(height: 6.h),
+                      itemCount: orderItemInGang.length),
+              ],
+            );
+          })
+        ],
+      ],
     );
   }
 
   Widget _buildListPartyOrder() {
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => _buildPartyOrderItem(index),
-        separatorBuilder: (context, index) => SizedBox(height: 8.h),
-        itemCount: controller.partyOrders.length);
+    return Obx(
+      () => ListView.separated(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) => _buildPartyOrderItem(index),
+          separatorBuilder: (context, index) => SizedBox(height: 8.h),
+          itemCount: controller.partyOrders.length),
+    );
   }
 
-  Container itemSelectTable() {
+  Widget _buildGangView({
+    int? gangIndex,
+    VoidCallback? onCreateGang,
+    VoidCallback? onAddItemToGang,
+    void Function(int gangIndex)? onRemoveGang,
+  }) {
+    if (gangIndex != null) {
+      return Container(
+        color: appTheme.backgroundContainer,
+        padding: padding(all: 12),
+        child: Row(
+          children: [
+            Expanded(child: Text('Gang ${gangIndex + 1}', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+            GestureDetector(
+                onTap: onAddItemToGang,
+                behavior: HitTestBehavior.opaque,
+                child: Icon(Icons.add, color: appTheme.blackColor, size: 24)),
+            GestureDetector(
+                onTap: () => onRemoveGang?.call(gangIndex),
+                behavior: HitTestBehavior.opaque,
+                child: Icon(Icons.delete, color: appTheme.errorColor, size: 24))
+          ],
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: onCreateGang,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        color: appTheme.backgroundContainer,
+        padding: padding(all: 12),
+        child: Row(
+          children: [
+            Expanded(child: Text('Tạo Gang', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+            ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget itemSelectTable() {
     return Container(
       padding: padding(all: 4),
       decoration: BoxDecoration(
@@ -328,58 +409,6 @@ class CartPage extends GetWidget<CartController> {
           },
         ),
       ),
-    );
-  }
-
-  Widget _buildCartItem(
-    int index,
-    OrderItem orderItem, {
-    required Function(int index, int quantity) updateQuantity,
-    required Function() removeCartItem,
-    required Function(String note) updateNote,
-  }) {
-    return Row(
-      children: [
-        CustomNetworkImage(url: orderItem.food?.image, size: 100),
-        SizedBox(width: 8.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(orderItem.food?.name ?? '', style: StyleThemeData.regular16()),
-              Text("type".tr + (orderItem.food?.foodType?.name ?? '')),
-              Text('price'.tr + ' ' + Utils.getCurrency(orderItem.food?.price ?? 0)),
-              Text('note_text'.tr + (orderItem.note ?? '')),
-              QuantityView(
-                quantity: orderItem.quantity,
-                updateQuantity: (value) => updateQuantity(index, value),
-              )
-            ],
-          ),
-        ),
-        Column(
-          children: [
-            GestureDetector(
-                onTap: () async {
-                  final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa món ăn này khỏi đơn không?');
-                  if (result == true) {
-                    removeCartItem();
-                  }
-                },
-                child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
-            SizedBox(height: 8.h),
-            GestureDetector(
-                onTap: () async {
-                  final result =
-                      await DialogUtils.showBTSView(EditReasonBottomSheet(reason: orderItem.note ?? ''), isWrap: true);
-                  if (result != null && result is String) {
-                    updateNote(result);
-                  }
-                },
-                child: Icon(Icons.edit)),
-          ],
-        )
-      ],
     );
   }
 }

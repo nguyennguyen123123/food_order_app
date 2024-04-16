@@ -3,6 +3,7 @@
 import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
+import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/resourese/service/printer_service.dart';
 import 'package:food_delivery_app/resourese/service/storage_service.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ class AccountService {
   final IProfileRepository profileRepository;
   final PrinterService printerService;
   final BaseService baseService;
+  final OrderCartService cartService;
   final account = Rx<Account?>(null);
 
   Account? get myAccount => account.value;
@@ -21,6 +23,7 @@ class AccountService {
     required this.baseService,
     required this.printerService,
     required this.profileRepository,
+    required this.cartService,
   });
 
   bool isLogin() {
@@ -39,6 +42,7 @@ class AccountService {
 
   Future<void> signOut() async {
     await profileRepository.signOut();
+    cartService.clearCart();
     printerService.clear();
   }
 }

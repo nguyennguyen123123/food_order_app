@@ -25,6 +25,8 @@ class PartyOrder {
   int? partyNumber;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Voucher? voucher;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int numberOfGangs;
   PartyOrder({
     this.partyOrderId,
     this.orderItems,
@@ -35,6 +37,7 @@ class PartyOrder {
     this.createdAt,
     this.partyNumber,
     this.voucher,
+    this.numberOfGangs = 0,
   });
 
   factory PartyOrder.fromJson(Map<String, dynamic> json) => _$PartyOrderFromJson(json);
@@ -51,6 +54,7 @@ class PartyOrder {
     String? createdAt,
     int? partyNumber,
     Voucher? voucher,
+    int? numberOfGangs,
   }) {
     return PartyOrder(
       partyOrderId: partyOrderId ?? this.partyOrderId,
@@ -62,6 +66,7 @@ class PartyOrder {
       createdAt: createdAt ?? this.createdAt,
       partyNumber: partyNumber ?? this.partyNumber,
       voucher: voucher ?? this.voucher,
+      numberOfGangs: numberOfGangs ?? this.numberOfGangs,
     );
   }
 }
