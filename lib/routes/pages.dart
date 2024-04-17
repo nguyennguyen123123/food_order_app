@@ -14,6 +14,8 @@ import 'package:food_delivery_app/screen/food/view/add_food_view.dart';
 import 'package:food_delivery_app/screen/food/view/add_type_food_view.dart';
 import 'package:food_delivery_app/screen/food_order_manage/food_order_manage_binding.dart';
 import 'package:food_delivery_app/screen/food_order_manage/food_order_manage_page.dart';
+import 'package:food_delivery_app/screen/history_order/history_order_binding.dart';
+import 'package:food_delivery_app/screen/history_order/history_order_page.dart';
 import 'package:food_delivery_app/screen/home/home_main.dart';
 import 'package:food_delivery_app/screen/home/home_main_binding.dart';
 import 'package:food_delivery_app/screen/language/language_screen.dart';
@@ -171,6 +173,11 @@ abstract class AppPages {
       name: Routes.CHECKINOUT,
       page: () => CheckInOutPages(),
       binding: CheckInOutBinding(),
+    ),
+    GetPage(
+      name: Routes.HISTORY_ORDER,
+      page: () => HistoryOrderPage(),
+      binding: HistoryOrderBinding(),
     ),
   ];
 }

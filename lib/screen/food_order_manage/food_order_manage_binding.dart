@@ -7,6 +7,7 @@ class FoodOrderManageBinding implements Bindings {
     Get.put(
       FoodOrderManageController(
         orderRepository: Get.find(),
+        accountService: Get.find(),
       ),
     );
   }

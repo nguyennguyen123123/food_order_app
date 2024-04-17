@@ -4,12 +4,19 @@ import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class QuantityView extends StatefulWidget {
-  const QuantityView({Key? key, this.updateQuantity, this.checkUpdateValue, this.canUpdate = true, this.quantity = 1})
-      : super(key: key);
+  const QuantityView({
+    Key? key,
+    this.updateQuantity,
+    this.checkUpdateValue,
+    this.canUpdate = true,
+    this.quantity = 1,
+    this.showTitle = true,
+  }) : super(key: key);
 
   final int quantity;
   final void Function(int quantity)? updateQuantity;
   final bool canUpdate;
+  final bool showTitle;
   final bool Function(int quantity)? checkUpdateValue;
 
   @override
@@ -29,7 +36,7 @@ class _QuantityViewState extends State<QuantityView> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text("Số lượng", style: StyleThemeData.regular12()),
+        if (widget.showTitle) Text("Số lượng", style: StyleThemeData.regular12()),
         SizedBox(width: 4.w),
         Container(
           decoration: BoxDecoration(

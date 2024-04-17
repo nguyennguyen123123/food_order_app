@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/constant/app_constant_key.dart';
+import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/models/voucher.dart';
@@ -54,39 +55,72 @@ class CartController extends GetxController {
     cartService.partyOrders.update((val) => val?.add(PartyOrder(partyNumber: number)));
   }
 
-  void updateQuantityCart(int index, int quantity) {
+  void updateQuantityCart(OrderItem item, int quantity) {
     cartService.items.update((val) {
-      val?[index].quantity = quantity;
+      final index =
+          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+              -1;
+      if (index != -1) {
+        val?[index].quantity = quantity;
+      }
     });
   }
 
-  void updateQuantityPartyItem(int partyIndex, int index, int quantity) {
+  void updateQuantityPartyItem(int partyIndex, OrderItem item, int quantity) {
     cartService.partyOrders.update((val) {
-      val?[partyIndex].orderItems?[index].quantity = quantity;
+      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+      final index =
+          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+      if (index != -1) {
+        items[index].quantity = quantity;
+        val?[partyIndex].orderItems = items;
+      }
     });
   }
 
-  void removeItemInOrder(int index) {
+  void removeItemInOrder(OrderItem item) {
     cartService.items.update((val) {
-      val?.removeAt(index);
+      final index =
+          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+              -1;
+      if (index != -1) {
+        val?.removeAt(index);
+      }
     });
   }
 
-  void removeItemInPartyOrder(int partyIndex, int index) {
+  void removeItemInPartyOrder(int partyIndex, OrderItem item) {
     cartService.partyOrders.update((val) {
-      val?[partyIndex].orderItems?.removeAt(index);
+      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+      final index =
+          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+      if (index != -1) {
+        items.removeAt(index);
+        val?[partyIndex].orderItems = items;
+      }
     });
   }
 
-  void updateCartItemNote(int index, String note) {
+  void updateCartItemNote(OrderItem item, String note) {
     cartService.items.update((val) {
-      val?[index].note = note;
+      final index =
+          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+              -1;
+      if (index != -1) {
+        val?[index].note = note;
+      }
     });
   }
 
-  void updatePartyCartItemNote(int partyIndex, int index, String note) {
+  void updatePartyCartItemNote(int partyIndex, OrderItem item, String note) {
     cartService.partyOrders.update((val) {
-      val?[partyIndex].orderItems?[index].note = note;
+      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+      final index =
+          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+      if (index != -1) {
+        items[index].note = note;
+        val?[partyIndex].orderItems = items;
+      }
     });
   }
 
@@ -99,6 +133,40 @@ class CartController extends GetxController {
   void clearVoucherParty(int partyIndex) {
     cartService.partyOrders.update((val) {
       val?[partyIndex].voucher = null;
+    });
+  }
+
+  void onRemovePartyOrder(int partyIndex) {
+    cartService.partyOrders.update((val) {
+      val?.removeAt(partyIndex);
+    });
+  }
+
+  void updateOrderItemInCart(int gangIndex, List<OrderItem> orderItems, {int? partyIndex}) {
+    if (partyIndex == null) {
+      final list = [...cartService.items.value];
+      for (final item in orderItems) {
+        final index = list.indexWhere((element) => element.foodId == item.foodId);
+        if (index != -1) {
+          list[index].sortOder = gangIndex;
+        }
+      }
+      cartService.items.value = list;
+    } else {
+      final list = [...(cartService.partyOrders.value[partyIndex].orderItems ?? <OrderItem>[])];
+      for (final item in orderItems) {
+        final index = list.indexWhere((element) => element.foodId == item.foodId);
+        if (index != -1) {
+          list[index].sortOder = gangIndex;
+        }
+      }
+      cartService.partyOrders.value[partyIndex].orderItems = list;
+    }
+  }
+
+  void onPartyCreateGang(int partyIndex) {
+    cartService.partyOrders.update((val) {
+      val?[partyIndex].numberOfGangs += 1;
     });
   }
 

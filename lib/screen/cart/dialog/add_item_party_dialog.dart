@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
-import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/custom_network_image.dart';
 import 'package:food_delivery_app/widgets/primary_button.dart';
@@ -10,15 +9,15 @@ import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
 class AddItemPartyDialog extends StatefulWidget {
-  const AddItemPartyDialog({Key? key}) : super(key: key);
+  const AddItemPartyDialog({required this.orderItems, Key? key}) : super(key: key);
+
+  final List<OrderItem> orderItems;
 
   @override
   State<AddItemPartyDialog> createState() => _AddItemPartyDialogState();
 }
 
 class _AddItemPartyDialogState extends State<AddItemPartyDialog> {
-  late final OrderCartService cartService = Get.find();
-
   final indexSelected = <int>[];
   final partyItems = ValueNotifier<List<OrderItem>>([]);
 
@@ -57,9 +56,9 @@ class _AddItemPartyDialogState extends State<AddItemPartyDialog> {
                 valueListenable: partyItems,
                 builder: (context, items, child) => ListView.separated(
                   padding: padding(all: 12),
-                  itemCount: cartService.items.value.length,
+                  itemCount: widget.orderItems.length,
                   separatorBuilder: (context, index) => SizedBox(height: 4.h),
-                  itemBuilder: (context, index) => _buildOrderItem(index, cartService.items.value[index], items),
+                  itemBuilder: (context, index) => _buildOrderItem(index, widget.orderItems[index], items),
                 ),
               ),
             ),

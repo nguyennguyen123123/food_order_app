@@ -7,6 +7,14 @@ class OrderCartService extends GetxService {
   final items = Rx<List<OrderItem>>([]);
   final partyOrders = Rx<List<PartyOrder>>([]);
   final currentVoucher = Rx<Voucher?>(null);
+  final numberOfGang = Rx<int>(0);
+
+  void clearCart() {
+    items.value = [];
+    partyOrders.value = [];
+    currentVoucher.value = null;
+    numberOfGang.value = 0;
+  }
 
   void onAddOrderItem(OrderItem orderItem) {
     final index = items.value
@@ -38,6 +46,49 @@ class OrderCartService extends GetxService {
 
   void onAddVoucher(Voucher voucher) {
     currentVoucher.value = voucher;
+  }
+
+  void onCreateNewGang() {
+    numberOfGang.value += 1;
+  }
+
+  void onRemoveGang(int gangIndex) {
+    numberOfGang.value -= 1;
+    final list = [...items.value];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].sortOder == gangIndex) {
+        list[i].sortOder = null;
+      } else if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
+        list[i].sortOder = (list[i].sortOder ?? 1) - 1;
+      }
+    }
+    items.value = list;
+  }
+
+  void onRemoveGangInParty(int partyIndex, int gangIndex) {
+    // partyOrders.update((val) {
+    //   final list = [...(val?[partyIndex].orderItems ?? <OrderItem>[])];
+    //   for (var i = 0; i < list.length; i++) {
+    //   if (list[i].sortOder == gangIndex) {
+    //     list[i].sortOder = null;
+    //   } else if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
+    //     list[i].sortOder = (list[i].sortOder ?? 1) - 1;
+    //   }
+    // }
+
+    // });
+    final list = [...(partyOrders.value[partyIndex].orderItems ?? <OrderItem>[])];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].sortOder == gangIndex) {
+        list[i].sortOder = null;
+      } else if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
+        list[i].sortOder = (list[i].sortOder ?? 1) - 1;
+      }
+    }
+    partyOrders.value[partyIndex] = partyOrders.value[partyIndex].copyWith(
+      numberOfGangs: partyOrders.value[partyIndex].numberOfGangs - 1,
+      orderItems: list,
+    );
   }
 
   double get totalCartPrice {

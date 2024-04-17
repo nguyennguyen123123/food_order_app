@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/constant/translations/localization_service.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/routes/pages.dart';
@@ -107,14 +108,24 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     style: StyleThemeData.regular16(),
                   ),
                   SizedBox(height: 8.h),
-                  newMethod(
-                    onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
-                    text: "order_management".tr,
-                    icons: IconAssets.cancelIcon,
-                  ),
-                  const Divider(thickness: 1),
-                  newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.adminIcon),
-                  const Divider(thickness: 1),
+                  if (controller.accountService.myAccount?.role == USER_ROLE.STAFF) ...[
+                    newMethod(
+                      onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
+                      text: "order_management".tr,
+                      icons: IconAssets.cancelIcon,
+                    ),
+                    SizedBox(height: 8.h)
+                  ],
+                  if (controller.accountService.myAccount?.role == USER_ROLE.ADMIN) ...[
+                    newMethod(
+                      onTap: () => Get.toNamed(Routes.HISTORY_ORDER),
+                      text: "Lịch sử đơn hàng".tr,
+                      icons: IconAssets.cancelIcon,
+                    ),
+                    const Divider(thickness: 1),
+                    newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.adminIcon),
+                    const Divider(thickness: 1)
+                  ],
                   newMethod(
                     onTap: () {
                       Get.toNamed(Routes.LANGUAGE);

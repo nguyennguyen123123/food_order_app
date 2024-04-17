@@ -3,7 +3,7 @@ import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/routes/pages.dart';
-import 'package:food_delivery_app/screen/food_order_manage/food_order_manage_controller.dart';
+import 'package:food_delivery_app/screen/history_order/history_order_controller.dart';
 import 'package:food_delivery_app/screen/order_detail/order_detail_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/utils.dart';
@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loadmore/loadmore.dart';
 
-class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
+class HistoryOrderPage extends GetWidget<HistoryOrderController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +25,7 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
         title: Row(
           children: [
             IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
-            Text('Danh sách đơn hàng đang làm'.tr, style: StyleThemeData.bold18(height: 0)),
+            Text('order_list'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
       ),
@@ -58,7 +58,7 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
     final numberOfParty = isPartyOrder ? partyOrder.length : 0;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => Get.toNamed(Routes.ORDER_DETAIL, arguments: OrderDetailParameter(foodOrder: item, canEdit: true)),
+      onTap: () => Get.toNamed(Routes.ORDER_DETAIL, arguments: OrderDetailParameter(foodOrder: item)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -50,7 +50,8 @@ class AppService {
         storageService: Get.find(),
         baseService: Get.find(),
         printerService: Get.find(),
-        profileRepository: Get.find()));
+        profileRepository: Get.find(),
+        cartService: Get.find()));
     Get.put<IAuthRepository>(AuthRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IFoodRepository>(FoodRepository(baseService: Get.find()));
     Get.put<IOrderRepository>(
