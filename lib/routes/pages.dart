@@ -29,6 +29,8 @@ import 'package:food_delivery_app/screen/printer/printe_pages.dart';
 import 'package:food_delivery_app/screen/printer/printer_binding.dart';
 import 'package:food_delivery_app/screen/printer/view/add_printer_view.dart';
 import 'package:food_delivery_app/screen/printer/view/edit_printer_view.dart';
+import 'package:food_delivery_app/screen/product/product_details_binding.dart';
+import 'package:food_delivery_app/screen/product/product_details_screen.dart';
 import 'package:food_delivery_app/screen/profile/view/my_account_view.dart';
 import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
@@ -178,6 +180,11 @@ abstract class AppPages {
       name: Routes.HISTORY_ORDER,
       page: () => HistoryOrderPage(),
       binding: HistoryOrderBinding(),
+    ),
+    GetPage(
+      name: Routes.PRODUCTDETAILS,
+      page: () => ProductDetailsScreen(),
+      binding: ProductDetailsBinding(),
     ),
   ];
 }
