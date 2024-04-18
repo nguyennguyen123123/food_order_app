@@ -195,36 +195,40 @@ class HomePage extends GetWidget<HomeController> {
             ),
           ),
         ),
-        Obx(
-          () => Padding(
-            padding: padding(left: 10),
-            child: IconButton(
-              onPressed: () => Get.toNamed(Routes.CART),
-              icon: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  SvgPicture.asset(IconAssets.shoppingCartIcon),
-                  if (controller.cartService.items.value.isNotEmpty)
-                    Positioned(
-                      top: -12,
-                      right: -10,
-                      child: Container(
-                        padding: padding(all: 4),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: appTheme.errorColor,
-                        ),
-                        child: Text(
-                          controller.cartService.items.value.length.toString(),
-                          style: StyleThemeData.regular14(height: 0, color: appTheme.whiteText),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
+        IconButton(
+          onPressed: () => Get.toNamed(Routes.TYPEDETAIL),
+          icon: SvgPicture.asset(IconAssets.pieChartIcon, width: 24.w, color: appTheme.appColor),
         ),
+        // Obx(
+        //   () => Padding(
+        //     padding: padding(left: 10),
+        //     child: IconButton(
+        //       onPressed: () => Get.toNamed(Routes.CART),
+        //       icon: Stack(
+        //         clipBehavior: Clip.none,
+        //         children: [
+        //           SvgPicture.asset(IconAssets.shoppingCartIcon),
+        //           if (controller.cartService.items.value.isNotEmpty)
+        //             Positioned(
+        //               top: -12,
+        //               right: -10,
+        //               child: Container(
+        //                 padding: padding(all: 4),
+        //                 decoration: BoxDecoration(
+        //                   shape: BoxShape.circle,
+        //                   color: appTheme.errorColor,
+        //                 ),
+        //                 child: Text(
+        //                   controller.cartService.items.value.length.toString(),
+        //                   style: StyleThemeData.regular14(height: 0, color: appTheme.whiteText),
+        //                 ),
+        //               ),
+        //             ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

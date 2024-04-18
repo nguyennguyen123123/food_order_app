@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
+import 'package:food_delivery_app/screen/home/main_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/widgets/image_asset_custom.dart';
@@ -12,6 +13,8 @@ class EmptyCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mainController = Get.find<MainController>();
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -21,7 +24,7 @@ class EmptyCart extends StatelessWidget {
           contentPadding: padding(all: 12),
           backgroundColor: appTheme.primaryColor,
           borderColor: appTheme.primaryColor,
-          onPressed: Get.back,
+          onPressed: () => mainController.goToTab(0),
           child: Text(
             'select_food'.tr,
             style: StyleThemeData.regular14(color: appTheme.whiteText),

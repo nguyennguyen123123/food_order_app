@@ -29,4 +29,5 @@ abstract class Routes {
   static const CHECKINOUT = '/check_in_out';
   static const HISTORY_ORDER = '/history-order';
   static const PRODUCTDETAILS = '/product-detail';
+  static const TYPEDETAIL = '/type-detail';
 }

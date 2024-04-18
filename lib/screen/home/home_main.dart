@@ -27,10 +27,34 @@ class HomeMain extends GetWidget<MainController> {
             decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
             child: Obx(
               () => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _bottomAppBarItem(context, icon: IconAssets.homeIcon, page: 0, label: 'Trang chủ'),
-                  _bottomAppBarItem(context, icon: IconAssets.settingsIcon, page: 1, label: 'Hồ sơ'),
+                  _bottomAppBarItem(
+                    context,
+                    icon: IconAssets.shoppingCartIcon,
+                    page: 1,
+                    label: 'Giỏ hàng',
+                    widget: (controller.cartService.items.value.isNotEmpty)
+                        ? Positioned(
+                            top: -12,
+                            right: -10,
+                            child: Container(
+                              padding: padding(all: 4),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: appTheme.errorColor,
+                              ),
+                              child: Text(
+                                controller.cartService.items.value.length.toString(),
+                                style: StyleThemeData.regular14(height: 0, color: appTheme.whiteText),
+                              ),
+                            ),
+                          )
+                        : null,
+                  ),
+                  _bottomAppBarItem(context, icon: IconAssets.cancelIcon, page: 2, label: 'Bàn'),
+                  _bottomAppBarItem(context, icon: IconAssets.settingsIcon, page: 3, label: 'Hồ sơ'),
                 ],
               ),
             ),
@@ -46,6 +70,7 @@ class HomeMain extends GetWidget<MainController> {
     required int page,
     required String label,
     Widget? avatar,
+    Widget? widget,
   }) {
     return ZoomTapAnimation(
       onTap: () => controller.goToTab(page),
@@ -54,11 +79,18 @@ class HomeMain extends GetWidget<MainController> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            avatar ??
-                SvgPicture.asset(
-                  icon,
-                  color: controller.currentPage == page ? appTheme.appColor : appTheme.textDesColor,
-                ),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                avatar ??
+                    SvgPicture.asset(
+                      icon,
+                      color: controller.currentPage == page ? appTheme.appColor : appTheme.textDesColor,
+                      width: 24.w,
+                    ),
+                widget ?? Container(),
+              ],
+            ),
             SizedBox(height: 4.h),
             Text(
               label,
