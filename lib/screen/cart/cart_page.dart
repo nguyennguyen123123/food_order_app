@@ -36,7 +36,8 @@ class CartPage extends GetWidget<CartController> {
               appBar: AppBar(
                 title: Text("place_order_title".tr, style: StyleThemeData.bold18()),
                 centerTitle: true,
-                leading: IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back_ios, size: 24)),
+                // leading: IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back_ios, size: 24)),
+                automaticallyImplyLeading: false,
               ),
               body: hasOrderInCart
                   ? EmptyCart()
