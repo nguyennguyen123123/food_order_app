@@ -6,4 +6,5 @@ abstract class ITableRepository extends IBaseRepository {
   Future<List<TableModels>?> getTable();
   Future<TableModels?> editTable(String tableId, TableModels tableModels);
   Future<Map<String, dynamic>?> deleteTable(String tableId);
+  Future<List<TableModels>> getListTableInOrder();
 }

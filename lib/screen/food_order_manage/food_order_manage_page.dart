@@ -4,7 +4,7 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/food_order_manage/food_order_manage_controller.dart';
-import 'package:food_delivery_app/screen/order_detail/order_detail_parameter.dart';
+import 'package:food_delivery_app/screen/order_detail/view/order_detail_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/list_vertical_item.dart';

@@ -16,7 +16,7 @@ class TableControlller extends GetxController {
 
   var isLoadingAdd = false.obs;
   var isLoadingDelete = false.obs;
-  var tableList = <TableModels>[].obs;
+  var tableList = Rx<List<TableModels>?>(null);
 
   void clear() {
     tableNumberController.clear();
@@ -31,13 +31,8 @@ class TableControlller extends GetxController {
   }
 
   void getListTable() async {
-    final result = await tableRepository.getTable();
-
-    if (result != null) {
-      tableList.assignAll(result);
-    } else {
-      tableList.clear();
-    }
+    tableList.value = null;
+    tableList.value = await tableRepository.getListTableInOrder();
   }
 
   void addTable() async {
@@ -61,7 +56,7 @@ class TableControlller extends GetxController {
       if (result != null) {
         final table = TableModels.fromJson(result);
 
-        tableList.add(table);
+        tableList.value?.add(table);
         Get.back();
         clear();
         DialogUtils.showSuccessDialog(content: "successfully_added_new_table".tr);
@@ -82,7 +77,7 @@ class TableControlller extends GetxController {
 
       final delete = await tableRepository.deleteTable(tableId);
       if (delete != null) {
-        tableList.removeWhere((table) => table.tableId == tableId);
+        tableList.value?.removeWhere((table) => table.tableId == tableId);
         Get.back();
         DialogUtils.showSuccessDialog(content: "table_deleted_successfully".tr);
       } else {
@@ -96,9 +91,9 @@ class TableControlller extends GetxController {
   }
 
   void updateTable(TableModels updatedTable) {
-    final index = tableList.indexWhere((table) => table.tableId == updatedTable.tableId);
+    final index = tableList.value?.indexWhere((table) => table.tableId == updatedTable.tableId) ?? -1;
     if (index != -1) {
-      tableList[index] = updatedTable;
+      tableList.value![index] = updatedTable;
     }
   }
 

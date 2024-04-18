@@ -1,16 +1,16 @@
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
-import 'package:food_delivery_app/screen/order_detail/order_detail_parameter.dart';
+import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
-class OrderDetailController extends GetxController {
-  final OrderDetailParameter parameter;
+class EditOrderDetailController extends GetxController {
+  final EditOrderDetailParameter parameter;
   final IOrderRepository orderRepository;
   late Rx<FoodOrder> foodOrder;
 
-  OrderDetailController({
+  EditOrderDetailController({
     required this.parameter,
     required this.orderRepository,
   });

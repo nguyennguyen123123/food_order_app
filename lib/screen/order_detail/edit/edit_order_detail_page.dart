@@ -4,7 +4,7 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/screen/order_detail/bottom_sheet/order_add_food_bts.dart';
-import 'package:food_delivery_app/screen/order_detail/order_detail_controller.dart';
+import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
@@ -15,7 +15,7 @@ import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class OrderDetailPage extends GetWidget<OrderDetailController> {
+class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,15 +28,23 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
           children: [
             IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
             Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
-            if (controller.parameter.canEdit)
-              GestureDetector(
-                  onTap: () async {
-                    final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa đơn này không?');
-                    if (result == true) {
-                      controller.onDeleteOrder();
-                    }
-                  },
-                  child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
+            GestureDetector(
+                onTap: () async {
+                  final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn chuyển đơn này sang bàn nào?');
+                  if (result == true) {
+                    controller.onDeleteOrder();
+                  }
+                },
+                child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
+            SizedBox(width: 12.w),
+            GestureDetector(
+                onTap: () async {
+                  final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa đơn này không?');
+                  if (result == true) {
+                    controller.onDeleteOrder();
+                  }
+                },
+                child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
           ],
         ),
       ),
@@ -63,12 +71,8 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
 
   Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder) {
     final number = partyOrder.partyNumber;
-    late double total;
-    if (controller.parameter.canEdit) {
-      total = partyOrder.totalPrice;
-    } else {
-      total = partyOrder.priceInVoucher;
-    }
+    final total = partyOrder.totalPrice;
+
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
     final maxGang = orderItems.fold<int?>(null, (a, b) {
       if (b.sortOder == null) {
@@ -87,15 +91,14 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
           Row(
             children: [
               Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
-              if (controller.parameter.canEdit)
-                GestureDetector(
-                    onTap: () async {
-                      final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
-                      if (result != null) {
-                        controller.addFoodToPartyOrder(partyIndex, result);
-                      }
-                    },
-                    child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
+              GestureDetector(
+                  onTap: () async {
+                    final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
+                    if (result != null) {
+                      controller.addFoodToPartyOrder(partyIndex, result);
+                    }
+                  },
+                  child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
             ],
           ),
           SizedBox(height: 8.h),
@@ -171,33 +174,27 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
             children: [
               itemData(title: 'food'.tr, data: item.food?.name ?? ''),
               SizedBox(height: 8.h),
-              if (controller.parameter.canEdit) ...[
-                itemData(
-                    title: 'quantity'.tr,
-                    content: NormalQuantityView(
-                      canUpdate: true,
-                      quantity: item.quantity,
-                      showTitle: false,
-                      updateQuantity: (quantity) => controller.updateQuantityList(partyIndex, item, quantity),
-                    )),
-                SizedBox(height: 4.h)
-              ] else ...[
-                itemData(title: 'quantity'.tr, data: (item.quantity).toString()),
-                SizedBox(height: 4.h)
-              ],
+              itemData(
+                  title: 'quantity'.tr,
+                  content: NormalQuantityView(
+                    canUpdate: true,
+                    quantity: item.quantity,
+                    showTitle: false,
+                    updateQuantity: (quantity) => controller.updateQuantityList(partyIndex, item, quantity),
+                  )),
+              SizedBox(height: 4.h),
               itemData(title: 'total'.tr, data: Utils.getCurrency((item.quantity) * (item.food?.price ?? 0))),
             ],
           )),
-          if (controller.parameter.canEdit)
-            GestureDetector(
-                onTap: () async {
-                  final result =
-                      await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa món ăn khỏi party $partyIndex không?');
-                  if (result == true) {
-                    controller.onRemoveItem(partyIndex, item);
-                  }
-                },
-                child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
+          GestureDetector(
+              onTap: () async {
+                final result =
+                    await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa món ăn khỏi party $partyIndex không?');
+                if (result == true) {
+                  controller.onRemoveItem(partyIndex, item);
+                }
+              },
+              child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
         ],
       ),
     );
