@@ -7,7 +7,7 @@ class OrderCartService extends GetxService {
   final items = Rx<List<OrderItem>>([]);
   final partyOrders = Rx<List<PartyOrder>>([]);
   final currentVoucher = Rx<Voucher?>(null);
-  final numberOfGang = Rx<int>(0);
+  final numberOfGang = Rx<int>(1);
 
   void clearCart() {
     items.value = [];
@@ -89,6 +89,7 @@ class OrderCartService extends GetxService {
       numberOfGangs: partyOrders.value[partyIndex].numberOfGangs - 1,
       orderItems: list,
     );
+    partyOrders.refresh();
   }
 
   double get totalCartPrice {

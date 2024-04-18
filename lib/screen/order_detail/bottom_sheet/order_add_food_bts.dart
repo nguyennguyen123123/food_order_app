@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
-import 'package:food_delivery_app/screen/cart/dialog/edit_reason_bottom_sheet.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
-import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/bottom_button.dart';
 import 'package:food_delivery_app/widgets/custom_network_image.dart';
 import 'package:food_delivery_app/widgets/quantity_view.dart';
@@ -23,11 +21,10 @@ class _OrderAddFoodBTSState extends State<OrderAddFoodBTS> {
   late final IFoodRepository foodRepository = Get.find();
 
   final foods = Rx<List<FoodModel>?>(null);
-  final isCurrentFood = Rx<String?>(null);
+  final selectedFoods = Rx<List<OrderItem>>([]);
   final isLoading = false.obs;
   String keyword = '';
   final searchNode = FocusNode();
-  int quantity = 1;
 
   @override
   void initState() {
@@ -38,7 +35,7 @@ class _OrderAddFoodBTSState extends State<OrderAddFoodBTS> {
   @override
   void dispose() {
     foods.close();
-    isCurrentFood.close();
+    selectedFoods.close();
     isLoading.close();
     searchNode.dispose();
     super.dispose();
@@ -51,7 +48,7 @@ class _OrderAddFoodBTSState extends State<OrderAddFoodBTS> {
 
   Future<void> onRefresh() async {
     isLoading.value = true;
-    isCurrentFood.value = '';
+    selectedFoods.value = [];
     foods.value = await foodRepository.getListFoodByKeyword(keyword: keyword);
     isLoading.value = false;
   }
@@ -79,18 +76,9 @@ class _OrderAddFoodBTSState extends State<OrderAddFoodBTS> {
         })),
         Obx(
           () => BottomButton(
-              isDisableConfirm: isCurrentFood.value?.isEmpty ?? true,
+              isDisableConfirm: selectedFoods.value.isEmpty,
               onConfirm: () async {
-                if ((isCurrentFood.value?.isNotEmpty ?? false) == true) {
-                  final food = foods.value?.firstWhereOrNull((element) => element.foodId == isCurrentFood.value);
-                  final result = await DialogUtils.showBTSView(EditReasonBottomSheet(), isWrap: true);
-                  Get.back(
-                      result: OrderItem(
-                          food: food,
-                          foodId: food?.foodId,
-                          quantity: quantity,
-                          note: result != null ? result as String? ?? '' : ''));
-                }
+                Get.back(result: selectedFoods.value);
               }),
         )
       ],
@@ -99,14 +87,18 @@ class _OrderAddFoodBTSState extends State<OrderAddFoodBTS> {
 
   Widget _buildFoodItem(int index, FoodModel foodModel) {
     return Obx(() {
-      final isCurrent = isCurrentFood.value == foodModel.foodId;
+      final foodIndex = selectedFoods.value.indexWhere((element) => element.foodId == foodModel.foodId);
+      final isCurrent = foodIndex != -1;
       void onUpdateCurrentFood(bool res) {
         searchNode.unfocus();
-        if (res) {
-          quantity = 1;
-          isCurrentFood.value = foodModel.foodId;
+        if (foodIndex == -1) {
+          selectedFoods.update((val) {
+            val?.add(OrderItem(food: foodModel, foodId: foodModel.foodId, quantity: 1));
+          });
         } else {
-          isCurrentFood.value = '';
+          selectedFoods.update((val) {
+            val?.removeWhere((e) => e.foodId == foodModel.foodId);
+          });
         }
       }
 
@@ -123,7 +115,9 @@ class _OrderAddFoodBTSState extends State<OrderAddFoodBTS> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(foodModel.name ?? '', style: StyleThemeData.bold16()),
-                if (isCurrent) ...[QuantityView(updateQuantity: (quantity) => this.quantity = quantity)]
+                if (isCurrent) ...[
+                  QuantityView(updateQuantity: (quantity) => selectedFoods.value[foodIndex].quantity = quantity)
+                ]
               ],
             ))
           ],

@@ -82,6 +82,8 @@ class CartPage extends GetWidget<CartController> {
                                   updateQuantity: (quantity) => controller.updateQuantityCart(item, quantity),
                                   removeCartItem: () => controller.removeItemInOrder(item),
                                   updateNote: (note) => controller.updateCartItemNote(item, note),
+                                  onRemoveGangIndex: () => controller.onRemoveGangIndexOfCartItem(item),
+                                  canDeleteGang: gangIndex != null,
                                 ),
                                 onCreateGang: controller.cartService.onCreateNewGang,
                                 onRemoveGang: controller.cartService.onRemoveGang,
@@ -195,11 +197,11 @@ class CartPage extends GetWidget<CartController> {
         children: [
           Row(
             children: [
-              Expanded(child: Text('Party $partyIndex', style: StyleThemeData.bold18())),
+              Expanded(child: Text('Party ${partyIndex + 1}', style: StyleThemeData.bold18())),
               GestureDetector(
                   onTap: () async {
-                    final result =
-                        await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa party $partyIndex khỏi đơn không?');
+                    final result = await DialogUtils.showYesNoDialog(
+                        title: 'Bạn muốn xóa party ${partyIndex + 1} khỏi đơn không?');
                     if (result == true) {
                       controller.onRemovePartyOrder(partyIndex);
                     }
@@ -225,22 +227,13 @@ class CartPage extends GetWidget<CartController> {
               updateQuantity: (quantity) => controller.updateQuantityPartyItem(partyIndex, item, quantity),
               removeCartItem: () => controller.removeItemInPartyOrder(partyIndex, item),
               updateNote: (note) => controller.updatePartyCartItemNote(partyIndex, item, note),
+              canDeleteGang: gangIndex != null,
+              onRemoveGangIndex: () => controller.onRemoveGangIndexOfPartyCartItem(partyIndex, item),
             ),
             onCreateGang: () => controller.onPartyCreateGang(partyIndex),
             onRemoveGang: (gangIndex) => controller.cartService.onRemoveGangInParty(partyIndex, gangIndex),
             numerGangs: partyOrder.numberOfGangs,
           ),
-          // ListView.separated(
-          //     shrinkWrap: true,
-          //     physics: NeverScrollableScrollPhysics(),
-          //     itemBuilder: (context, i) => CartItemView(
-          //           partyOrder.orderItems![i],
-          //           updateQuantity: (quantity) => controller.updateQuantityPartyItem(partyIndex, i, quantity),
-          //           removeCartItem: () => controller.removeItemInPartyOrder(partyIndex, i),
-          //           updateNote: (note) => controller.updatePartyCartItemNote(partyIndex, i, note),
-          //         ),
-          //     separatorBuilder: (context, index) => SizedBox(height: 4.h),
-          //     itemCount: partyOrder.orderItems?.length ?? 0),
           SizedBox(height: 8.h),
           if (partyOrder.orderItems?.isNotEmpty == true)
             _buildVoucherField(
@@ -280,7 +273,6 @@ class CartPage extends GetWidget<CartController> {
             itemBuilder: (context, index) => itemBuilder(index, orderItemNoGang[index]),
             separatorBuilder: (context, index) => SizedBox(height: 6.h),
             itemCount: orderItemNoGang.length),
-        _buildGangView(onCreateGang: onCreateGang),
         if (numerGangs > 0) ...[
           ...List.generate(numerGangs, (index) {
             final orderItemInGang = foods.where((element) => element.sortOder == index).toList();
@@ -306,7 +298,8 @@ class CartPage extends GetWidget<CartController> {
                       itemCount: orderItemInGang.length),
               ],
             );
-          })
+          }),
+          _buildGangView(onCreateGang: onCreateGang),
         ],
       ],
     );
@@ -340,10 +333,11 @@ class CartPage extends GetWidget<CartController> {
                 onTap: onAddItemToGang,
                 behavior: HitTestBehavior.opaque,
                 child: Icon(Icons.add, color: appTheme.blackColor, size: 24)),
-            GestureDetector(
-                onTap: () => onRemoveGang?.call(gangIndex),
-                behavior: HitTestBehavior.opaque,
-                child: Icon(Icons.delete, color: appTheme.errorColor, size: 24))
+            if (gangIndex > 0)
+              GestureDetector(
+                  onTap: () => onRemoveGang?.call(gangIndex),
+                  behavior: HitTestBehavior.opaque,
+                  child: Icon(Icons.delete, color: appTheme.errorColor, size: 24))
           ],
         ),
       );

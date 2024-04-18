@@ -21,31 +21,43 @@ class OrderDetailController extends GetxController {
     foodOrder = Rx(parameter.foodOrder);
   }
 
-  void updateQuantityList(int partyIndex, int itemIndex, int quantity) {
+  void updateQuantityList(int partyIndex, OrderItem item, int quantity) {
     foodOrder.update((val) {
-      val?.partyOrders?[partyIndex].orderItems?[itemIndex].quantity = quantity;
+      final index = val?.partyOrders?[partyIndex].orderItems
+              ?.indexWhere((element) => element.food?.foodId == item.food?.foodId) ??
+          -1;
+      if (index != -1) {
+        val?.partyOrders?[partyIndex].orderItems?[index].quantity = quantity;
+      }
     });
   }
 
-  void onRemoveItem(int partyIndex, int itemIndex) {
+  void onRemoveItem(int partyIndex, OrderItem item) {
     foodOrder.update((val) {
-      val?.partyOrders?[partyIndex].orderItems?.removeAt(itemIndex);
+      final index = val?.partyOrders?[partyIndex].orderItems
+              ?.indexWhere((element) => element.food?.foodId == item.food?.foodId) ??
+          -1;
+      if (index != -1) {
+        val?.partyOrders?[partyIndex].orderItems?.removeAt(index);
+      }
     });
   }
 
-  void addFoodToPartyOrder(int partyIndex, OrderItem orderItem) {
-    foodOrder.update((val) {
-      final orderIndex = val?.partyOrders?[partyIndex].orderItems
-              ?.indexWhere((element) => element.food?.foodId == orderItem.food?.foodId) ??
+  void addFoodToPartyOrder(int partyIndex, List<OrderItem> orderItems) {
+    final order = foodOrder.value;
+    for (final item in orderItems) {
+      final orderIndex = order.partyOrders?[partyIndex].orderItems
+              ?.indexWhere((element) => element.food?.foodId == item.food?.foodId) ??
           -1;
       if (orderIndex == -1) {
-        val?.partyOrders?[partyIndex].orderItems?.add(orderItem);
+        order.partyOrders?[partyIndex].orderItems?.add(item);
       } else {
-        final item = val?.partyOrders?[partyIndex].orderItems?[orderIndex];
-        val?.partyOrders?[partyIndex].orderItems?[orderIndex].quantity = (item?.quantity ?? 1) + orderItem.quantity;
+        final curItem = order.partyOrders?[partyIndex].orderItems?[orderIndex];
+        order.partyOrders?[partyIndex].orderItems?[orderIndex].quantity = (curItem?.quantity ?? 1) + item.quantity;
       }
-      ;
-    });
+    }
+    foodOrder.value = order;
+    foodOrder.refresh();
   }
 
   void onDeleteOrder() async {

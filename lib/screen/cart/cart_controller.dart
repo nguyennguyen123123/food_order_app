@@ -50,11 +50,13 @@ class CartController extends GetxController {
     super.onClose();
   }
 
+  /// Tạo thêm gang ở party order
   void onCreateNewPartyOrder() {
     final number = cartService.partyOrders.value.length + 1;
-    cartService.partyOrders.update((val) => val?.add(PartyOrder(partyNumber: number)));
+    cartService.partyOrders.update((val) => val?.add(PartyOrder(partyNumber: number, numberOfGangs: 1)));
   }
 
+  /// Cập nhật số lượng món ăn trong đơn hàng mà không thuộc party nào
   void updateQuantityCart(OrderItem item, int quantity) {
     cartService.items.update((val) {
       final index =
@@ -66,6 +68,7 @@ class CartController extends GetxController {
     });
   }
 
+  /// Cập nhật số lượng món ăn thuộc party trong đơn hàng
   void updateQuantityPartyItem(int partyIndex, OrderItem item, int quantity) {
     cartService.partyOrders.update((val) {
       final items = val?[partyIndex].orderItems ?? <OrderItem>[];
@@ -78,6 +81,7 @@ class CartController extends GetxController {
     });
   }
 
+  /// Xóa món ăn trong đơn hàng không thuộc party nào
   void removeItemInOrder(OrderItem item) {
     cartService.items.update((val) {
       final index =
@@ -89,6 +93,7 @@ class CartController extends GetxController {
     });
   }
 
+  /// Xóa món ăn của party trong đơn hàng
   void removeItemInPartyOrder(int partyIndex, OrderItem item) {
     cartService.partyOrders.update((val) {
       final items = val?[partyIndex].orderItems ?? <OrderItem>[];
@@ -101,6 +106,7 @@ class CartController extends GetxController {
     });
   }
 
+  /// Cập nhật note cho món ăn không thuộc party
   void updateCartItemNote(OrderItem item, String note) {
     cartService.items.update((val) {
       final index =
@@ -112,6 +118,7 @@ class CartController extends GetxController {
     });
   }
 
+  /// Cập nhật note cho món ăn trong party
   void updatePartyCartItemNote(int partyIndex, OrderItem item, String note) {
     cartService.partyOrders.update((val) {
       final items = val?[partyIndex].orderItems ?? <OrderItem>[];
@@ -124,24 +131,28 @@ class CartController extends GetxController {
     });
   }
 
+  /// Cập nhật voucher cho party
   void updatePartyVoucher(int partyIndex, Voucher voucher) {
     cartService.partyOrders.update((val) {
       val?[partyIndex].voucher = voucher;
     });
   }
 
+  /// Xóa voucher cho party
   void clearVoucherParty(int partyIndex) {
     cartService.partyOrders.update((val) {
       val?[partyIndex].voucher = null;
     });
   }
 
+  /// Xóa party
   void onRemovePartyOrder(int partyIndex) {
     cartService.partyOrders.update((val) {
       val?.removeAt(partyIndex);
     });
   }
 
+  /// Thêm mức độ ưu tiên lên món của món ăn trong party hoặc đơn hàng
   void updateOrderItemInCart(int gangIndex, List<OrderItem> orderItems, {int? partyIndex}) {
     if (partyIndex == null) {
       final list = [...cartService.items.value];
@@ -161,15 +172,41 @@ class CartController extends GetxController {
         }
       }
       cartService.partyOrders.value[partyIndex].orderItems = list;
+      cartService.partyOrders.refresh();
     }
   }
 
+  /// Tạo thêm gang trong party
   void onPartyCreateGang(int partyIndex) {
     cartService.partyOrders.update((val) {
       val?[partyIndex].numberOfGangs += 1;
     });
   }
 
+  void onRemoveGangIndexOfCartItem(OrderItem item) {
+    cartService.items.update((val) {
+      final index =
+          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+              -1;
+      if (index != -1) {
+        val?[index].sortOder = null;
+      }
+    });
+  }
+
+  void onRemoveGangIndexOfPartyCartItem(int partyIndex, OrderItem item) {
+    cartService.partyOrders.update((val) {
+      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+      final index =
+          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+      if (index != -1) {
+        items[index].sortOder = null;
+        val?[partyIndex].orderItems = items;
+      }
+    });
+  }
+
+  /// Lên đơn
   Future<void> onPlaceOrder() async {
     if (accountService.myAccount?.role == USER_ROLE.STAFF && accountService.myAccount?.checkInTime == null) {
       DialogUtils.showInfoErrorDialog(content: 'Bạn chưa checkin nên không thể lên đơn');
