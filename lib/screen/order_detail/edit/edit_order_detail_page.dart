@@ -28,14 +28,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
           children: [
             IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
             Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
-            GestureDetector(
-                onTap: () async {
-                  final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn chuyển đơn này sang bàn nào?');
-                  if (result == true) {
-                    controller.onDeleteOrder();
-                  }
-                },
-                child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
+            GestureDetector(onTap: () async {}, child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
             SizedBox(width: 12.w),
             GestureDetector(
                 onTap: () async {
