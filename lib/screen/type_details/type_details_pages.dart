@@ -47,11 +47,6 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
                 Obx(
                   () => controller.foodTypes.value == null
                       ? Center(child: CircularProgressIndicator())
-                      // : ListVerticalItem<FoodType>(
-                      //     items: controller.foodTypes.value!,
-                      //     lineItemCount: 3,
-                      //     itemBuilder: (index, item) => _buildFoodType(item),
-                      //   ),
                       : SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Padding(
