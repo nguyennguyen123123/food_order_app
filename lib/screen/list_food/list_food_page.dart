@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/models/food_model.dart';
+import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_controller.dart';
+import 'package:food_delivery_app/screen/product/product_details_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/icons_assets.dart';
 import 'package:food_delivery_app/widgets/food_view.dart';
@@ -45,7 +47,13 @@ class ListFoodPage extends GetWidget<ListFoodController> {
                               physics: AlwaysScrollableScrollPhysics(),
                               itemBuilder: (index, item) => Padding(
                                 padding: padding(vertical: 12),
-                                child: FoodView(foodModel: item, showAddBtn: true),
+                                child: InkWell(
+                                  onTap: () => Get.toNamed(
+                                    Routes.PRODUCTDETAILS,
+                                    arguments: ProductDetailsParameter(foodModel: item),
+                                  ),
+                                  child: FoodView(foodModel: item, showAddBtn: true),
+                                ),
                               ),
                             ),
                     ),

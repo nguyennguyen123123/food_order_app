@@ -5,6 +5,7 @@ import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/home/home_controller.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_parameter.dart';
+import 'package:food_delivery_app/screen/product/product_details_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/icons_assets.dart';
 import 'package:food_delivery_app/widgets/custom_avatar.dart';
@@ -33,10 +34,7 @@ class HomePage extends GetWidget<HomeController> {
                     ? Text("food_type".tr, style: StyleThemeData.bold18())
                     : controller.foodTypes.value!.isEmpty
                         ? SizedBox()
-                        : Text(
-                            "food_type".tr,
-                            style: StyleThemeData.bold18(),
-                          ),
+                        : Text("food_type".tr, style: StyleThemeData.bold18()),
               ),
             ),
             Obx(
@@ -95,11 +93,17 @@ class HomePage extends GetWidget<HomeController> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: foods
                                       .map(
-                                        (data) => Container(
-                                          width: 200.w,
-                                          height: Get.size.height / 3.h,
-                                          padding: padding(horizontal: 12, vertical: 12),
-                                          child: FoodView(foodModel: data, showAddBtn: true),
+                                        (data) => InkWell(
+                                          onTap: () => Get.toNamed(
+                                            Routes.PRODUCTDETAILS,
+                                            arguments: ProductDetailsParameter(foodModel: data),
+                                          ),
+                                          child: Container(
+                                            width: 200.w,
+                                            height: Get.size.height / 3.h,
+                                            padding: padding(horizontal: 12, vertical: 12),
+                                            child: FoodView(foodModel: data, showAddBtn: true),
+                                          ),
                                         ),
                                       )
                                       .toList(),

@@ -125,4 +125,6 @@ const Map<String, String> viVN = {
   "check_out_failed": "Check Out thất bại",
   "add_voucher_successful": "Thêm voucher thành công",
   "add_voucher_failed": "Thêm voucher thất bại",
+  "add_to_cart": "Thêm vào giỏ hàng",
+  "product_suggestions": "Gợi ý sản phẩm"
 };

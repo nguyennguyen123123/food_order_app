@@ -109,4 +109,6 @@ const Map<String, String> enUS = {
   "check_out_failed": "Check Out Failed",
   "add_voucher_successful": "Add Voucher Successful",
   "add_voucher_failed": "Add Voucher Failed",
+  "add_to_cart": "Add to Cart",
+  "product_suggestions": "Product Suggestions"
 };
