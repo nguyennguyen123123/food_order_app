@@ -8,9 +8,9 @@ class FoodType {
   String? name;
   String? description;
   String? image;
-  // @JsonKey(name: 'parent_type_id')
-  // String? parentTypeId;
-  // int? order;
+  @JsonKey(name: 'parent_type_id')
+  String? parentTypeId;
+  int? order;
   @JsonKey(name: 'created_at')
   String? createdAt;
 
@@ -19,8 +19,8 @@ class FoodType {
     this.name,
     this.description,
     this.image,
-    // this.parentTypeId,
-    // this.order,
+    this.parentTypeId,
+    this.order,
     this.createdAt,
   });
 
