@@ -14,6 +14,7 @@ PartyOrder _$PartyOrderFromJson(Map<String, dynamic> json) => PartyOrder(
       orderId: json['order_id'] as String?,
       createdAt: json['created_at'] as String?,
       partyNumber: json['party_number'] as int?,
+      voucherType: json['voucher_type'] as String?,
       orderItems: (json['party_order_item'] as List<dynamic>?)
           ?.map((e) => OrderItem.fromJson(e['order_item'] as Map<String, dynamic>))
           .toList(),
@@ -26,4 +27,5 @@ Map<String, dynamic> _$PartyOrderToJson(PartyOrder instance) => <String, dynamic
       'order_status': instance.orderStatus,
       'order_id': instance.orderId,
       'party_number': instance.partyNumber,
+      'voucher_type': instance.voucherType,
     };

@@ -2,23 +2,26 @@ import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
+import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
-import 'package:food_delivery_app/utils/utils.dart';
+import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class OrderRepository extends IOrderRepository {
   final BaseService baseService;
   final IProfileRepository profileRepository;
   final AccountService accountService;
+  final ITableRepository tableRepository;
 
   OrderRepository({
     required this.baseService,
     required this.accountService,
     required this.profileRepository,
+    required this.tableRepository,
   });
 
   @override
@@ -63,13 +66,13 @@ class OrderRepository extends IOrderRepository {
           .select("*, user_order_id(*)")
           .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
 
-      // await Future.wait((foodOrder.orderItems ?? []).map((e) async {
-      //   await baseService.client
-      //       .from(TABLE_NAME.FOOD_ORDER_ITEM)
-      //       .insert({"food_order_id": orderId, "order_item_id": e.orderItemId ?? ''});
-      // }).toList());
-      await _uploadPartyOrderItem(orders, orderId);
-      await profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1);
+      // await _uploadPartyOrderItem(orders, orderId);
+      Future.wait([
+        _uploadPartyOrderItem(orders, orderId),
+        profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1),
+        tableRepository.updateTableWithOrder(tableNumber, orderId: orderId),
+      ]);
+      // await profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1);
       accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber + 1);
       return order.first;
     } catch (e) {
@@ -99,9 +102,9 @@ class OrderRepository extends IOrderRepository {
         total: party.totalPrice,
         orderStatus: ORDER_STATUS.CREATED,
       );
-      if (newParty.voucher != null) {
-        newParty.voucherPrice = Utils.calculateVoucherPrice(newParty.voucher, party.totalPrice);
-      }
+      newParty.voucherPrice = newParty.voucher?.discountValue;
+      newParty.voucherType = newParty.voucher?.discountType?.toString();
+
       await baseService.client.from(TABLE_NAME.PARTY_ORDER).insert(newParty.toJson());
 
       final orderItems = party.orderItems ?? <OrderItem>[];
@@ -154,6 +157,23 @@ class OrderRepository extends IOrderRepository {
       await baseService.client.from(TABLE_NAME.FOOD_ORDER).delete().eq('order_id', foodOrder.orderId ?? '');
     } catch (e) {
       print(e);
+    }
+  }
+
+  @override
+  Future<bool> onChangeTableOfOrder(FoodOrder foodOrder, TableModels model) async {
+    try {
+      await Future.wait([
+        baseService.client
+            .from(TABLE_NAME.FOOD_ORDER)
+            .update({'table_number': model.tableNumber}).eq('order_id', foodOrder.orderId ?? ''),
+        tableRepository.updateTableWithOrder(foodOrder.tableNumber ?? ''),
+        tableRepository.updateTableWithOrder(model.tableNumber.toString(), orderId: foodOrder.orderId),
+      ]);
+      return true;
+    } catch (e) {
+      print(e);
+      rethrow;
     }
   }
 }

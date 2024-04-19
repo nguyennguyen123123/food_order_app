@@ -7,13 +7,26 @@ import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/custom_network_image.dart';
 import 'package:food_delivery_app/widgets/default_box_shadow.dart';
 import 'package:food_delivery_app/widgets/dialog_view/add_food_dialog.dart';
+import 'package:food_delivery_app/widgets/normal_quantity_view.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 
 class FoodView extends StatelessWidget {
-  const FoodView({required this.foodModel, this.showAddBtn = false, Key? key}) : super(key: key);
+  const FoodView({
+    required this.foodModel,
+    this.showAddBtn = false,
+    Key? key,
+    this.showChangeOnQuantity = false,
+    this.quantity = 0,
+    this.updateQuantity,
+    this.onAdd,
+  }) : super(key: key);
 
   final FoodModel foodModel;
   final bool showAddBtn;
+  final VoidCallback? onAdd;
+  final void Function(int)? updateQuantity;
+  final bool showChangeOnQuantity;
+  final int quantity;
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +67,26 @@ class FoodView extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (showAddBtn)
+                if (showAddBtn && !showChangeOnQuantity)
                   GestureDetector(
-                    onTap: () => DialogUtils.showBTSView(AddFoodBTS(foodModel: foodModel)),
+                    onTap: onAdd ?? () => DialogUtils.showBTSView(AddFoodBTS(foodModel: foodModel)),
                     child: Icon(Icons.add),
                   ),
+                if (showChangeOnQuantity) ...[
+                  if (quantity > 0) ...[
+                    NormalQuantityView(
+                      showTitle: false,
+                      updateQuantity: updateQuantity,
+                      quantity: quantity,
+                      canReduceToZero: true,
+                    )
+                  ] else ...[
+                    GestureDetector(
+                      onTap: onAdd ?? () => DialogUtils.showBTSView(AddFoodBTS(foodModel: foodModel)),
+                      child: Icon(Icons.add),
+                    ),
+                  ]
+                ]
               ],
             ),
           ),

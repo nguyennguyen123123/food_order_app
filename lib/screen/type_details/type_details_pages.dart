@@ -4,7 +4,6 @@ import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_parameter.dart';
-import 'package:food_delivery_app/screen/product/product_details_parameter.dart';
 import 'package:food_delivery_app/screen/type_details/type_details_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/custom_avatar.dart';
@@ -61,30 +60,41 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
                   child: Text("food".tr, style: StyleThemeData.bold18()),
                 ),
                 SizedBox(height: 12.h),
-                Obx(
-                  () => controller.foods.value == null
-                      ? Center(child: CircularProgressIndicator())
-                      : LoadMore(
-                          delegate: LoadMoreDelegateCustom(),
-                          onLoadMore: controller.onLoadMoreFoods,
-                          child: Padding(
-                            padding: padding(horizontal: 12),
-                            child: ListVerticalItem<FoodModel>(
-                              items: controller.foods.value!,
-                              itemBuilder: (index, item) => InkWell(
-                                onTap: () => Get.toNamed(
-                                  Routes.PRODUCTDETAILS,
-                                  arguments: ProductDetailsParameter(foodModel: item),
-                                ),
+                Obx(() {
+                  if (controller.foods.value == null) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return ValueListenableBuilder(
+                    valueListenable: controller.orderCartNotifier,
+                    builder: (context, _, __) => LoadMore(
+                      delegate: LoadMoreDelegateCustom(),
+                      onLoadMore: controller.onLoadMoreFoods,
+                      child: Padding(
+                        padding: padding(horizontal: 12),
+                        child: ListVerticalItem<FoodModel>(
+                            items: controller.foods.value!,
+                            itemBuilder: (index, item) {
+                              final listItems = controller.cartService.currentListItems;
+                              final currentOrderItem =
+                                  listItems.firstWhereOrNull((element) => element.food?.foodId == item.foodId);
+                              return InkWell(
                                 child: Padding(
                                   padding: padding(vertical: 12),
-                                  child: FoodView(foodModel: item, showAddBtn: true),
+                                  child: FoodView(
+                                    foodModel: item,
+                                    showAddBtn: true,
+                                    onAdd: () => controller.addItemToCart(item),
+                                    quantity: currentOrderItem?.quantity ?? 0,
+                                    showChangeOnQuantity: true,
+                                    updateQuantity: (quantity) => controller.updateQuantityCartItem(quantity, item),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
-                ),
+                              );
+                            }),
+                      ),
+                    ),
+                  );
+                }),
               ],
             ),
           ),

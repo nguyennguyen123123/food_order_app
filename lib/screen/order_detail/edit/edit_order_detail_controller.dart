@@ -1,7 +1,9 @@
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
+import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
+import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
@@ -58,6 +60,25 @@ class EditOrderDetailController extends GetxController {
     }
     foodOrder.value = order;
     foodOrder.refresh();
+  }
+
+  void onMoveOrderToOtherTable(TableModels tableModels) async {
+    showLoading();
+    try {
+      final result = await orderRepository.onChangeTableOfOrder(foodOrder.value, tableModels);
+      if (result) {
+        dissmissLoading();
+        await DialogUtils.showSuccessDialog(content: 'Đổi sang bàn ${tableModels.tableNumber} thành công');
+        final order = foodOrder.value.copyWith(tableNumber: tableModels.tableNumber.toString());
+        Get.back(result: order);
+      } else {
+        dissmissLoading();
+      }
+    } catch (e) {
+      DialogUtils.showSuccessDialog(content: 'Đổi bàn thất bại');
+      dissmissLoading();
+      print(e);
+    }
   }
 
   void onDeleteOrder() async {

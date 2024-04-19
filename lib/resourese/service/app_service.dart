@@ -54,9 +54,13 @@ class AppService {
         cartService: Get.find()));
     Get.put<IAuthRepository>(AuthRepository(baseService: Get.find(), accountService: Get.find()));
     Get.put<IFoodRepository>(FoodRepository(baseService: Get.find()));
-    Get.put<IOrderRepository>(
-        OrderRepository(baseService: Get.find(), accountService: Get.find(), profileRepository: Get.find()));
     Get.put<ITableRepository>(TableRepository(baseService: Get.find()));
+    Get.put<IOrderRepository>(OrderRepository(
+      baseService: Get.find(),
+      accountService: Get.find(),
+      profileRepository: Get.find(),
+      tableRepository: Get.find(),
+    ));
     Get.put<IVoucherRepository>(VoucherRepository(baseService: Get.find()));
     Get.put<ICheckInOutRepository>(CheckInOutRepository(baseService: Get.find()));
   }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
+import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/routes/pages.dart';
-import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
-import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -70,13 +69,7 @@ class TablePage extends GetWidget<TableControlller> {
 
   Widget itemTableView(TableModels table) {
     return InkWell(
-      onTap: () {
-        if (table.foodOrder == null) {
-          Get.toNamed(Routes.WAITER_CART, arguments: WaiterCartParameter(tableNumber: table.tableNumber ?? 1));
-        } else {
-          Get.toNamed(Routes.EDIT_ORDER, arguments: EditOrderDetailParameter(foodOrder: table.foodOrder!));
-        }
-      },
+      onTap: () => controller.navigateToOrderInTable(table),
       child: Container(
         padding: padding(all: 24),
         alignment: Alignment.center,
@@ -90,7 +83,7 @@ class TablePage extends GetWidget<TableControlller> {
             Text((table.tableNumber ?? 1).toString(),
                 style: StyleThemeData.regular16(height: 0), textAlign: TextAlign.center),
             if (table.foodOrder != null)
-              Text('Đơn hàng: ${table.foodOrder?.total?.toStringAsFixed(2)}', style: StyleThemeData.regular10())
+              Text('Đơn hàng: ${table.foodOrder?.totalPrice.toStringAsFixed(2)}', style: StyleThemeData.regular10())
           ],
         ),
       ),

@@ -13,6 +13,8 @@ class PartyOrder {
   List<OrderItem>? orderItems;
   @JsonKey(name: 'voucher_price')
   double? voucherPrice;
+  @JsonKey(name: 'voucher_type')
+  String? voucherType;
   @JsonKey(name: 'total_price')
   double? total;
   @JsonKey(name: 'order_status')
@@ -38,6 +40,7 @@ class PartyOrder {
     this.partyNumber,
     this.voucher,
     this.numberOfGangs = 0,
+    this.voucherType,
   });
 
   factory PartyOrder.fromJson(Map<String, dynamic> json) => _$PartyOrderFromJson(json);
@@ -95,5 +98,16 @@ extension PartyOrderExtension on PartyOrder {
       return (total ?? 0) - (voucherPrice ?? 0);
     }
     return total ?? 0;
+  }
+
+  double get orderPrice {
+    if (voucherType != null) {
+      if (voucherType == DiscountType.amount.toString()) {
+        return (total ?? 0) - (voucherPrice ?? 0);
+      } else {
+        return (total ?? 0) * ((voucherPrice ?? 100) / 100);
+      }
+    }
+    return (total ?? 0) - (voucherPrice ?? 0);
   }
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
+import 'package:food_delivery_app/routes/pages.dart';
+import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
+import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -33,6 +37,33 @@ class TableControlller extends GetxController {
   void getListTable() async {
     tableList.value = null;
     tableList.value = await tableRepository.getListTableInOrder();
+  }
+
+  void navigateToOrderInTable(TableModels table) async {
+    if (table.foodOrder == null) {
+      final result =
+          await Get.toNamed(Routes.WAITER_CART, arguments: WaiterCartParameter(tableNumber: table.tableNumber ?? 1));
+      if (result != null && result is FoodOrder) {
+        table.foodOrder = result;
+        tableList.update((val) {
+          final index = val?.indexWhere((element) => element.tableId == table.tableId) ?? -1;
+          if (index != -1) {
+            val?[index] = table;
+          }
+        });
+      }
+    } else {
+      final result =
+          await Get.toNamed(Routes.EDIT_ORDER, arguments: EditOrderDetailParameter(foodOrder: table.foodOrder!));
+      if (result != null && result is FoodOrder) {
+        final tables = tableList.value ?? <TableModels>[];
+        final index = tables.indexWhere((element) => element.tableNumber == table.tableNumber);
+        if (index != -1) {
+          tables[index] = tables[index].copyWith(foodOrder: result);
+        }
+        tableList.value = tables;
+      }
+    }
   }
 
   void addTable() async {

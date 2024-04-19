@@ -7,6 +7,7 @@ class TypeDetailsBinding implements Binding {
   void dependencies() {
     Get.put(TypeDetailsController(
       foodRepository: Get.find(),
+      cartService: Get.find(),
     ));
   }
 }

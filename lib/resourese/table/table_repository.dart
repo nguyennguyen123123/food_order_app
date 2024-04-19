@@ -76,17 +76,34 @@ class TableRepository extends ITableRepository {
   }
 
   @override
-  Future<List<TableModels>> getListTableInOrder() async {
+  Future<List<TableModels>> getListTableInOrder({int page = 0, int limit = LIMIT}) async {
     try {
       const queryOrder = 'order_item!inner (*, food_id:food!inner(*, typeId(*))))';
-      final response = await baseService.client.from(TABLE_NAME.TABLE).select('''
+      final response = await baseService.client
+          .from(TABLE_NAME.TABLE)
+          .select('''
           *, 
           order(*, 
           user_order_id(*),
           ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder)))),
-          ''').withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+          ''')
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
+          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
 
       return response.toList();
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateTableWithOrder(String tableNumber, {String? orderId}) async {
+    try {
+      await baseService.client
+          .from(TABLE_NAME.TABLE)
+          .upsert({'order': orderId}).eq('table_number', int.parse(tableNumber));
     } catch (error) {
       handleError(error);
       rethrow;

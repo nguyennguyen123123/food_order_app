@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
+import 'package:food_delivery_app/screen/order_detail/bottom_sheet/change_table_dialog.dart';
 import 'package:food_delivery_app/screen/order_detail/bottom_sheet/order_add_food_bts.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
@@ -28,7 +29,15 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
           children: [
             IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
             Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
-            GestureDetector(onTap: () async {}, child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
+            GestureDetector(
+                onTap: () async {
+                  final result = await DialogUtils.showDialogView(ChangeTableDialog(
+                      currentTable: int.tryParse(controller.foodOrder.value.tableNumber ?? '0') ?? 0));
+                  if (result != null) {
+                    controller.onMoveOrderToOtherTable(result);
+                  }
+                },
+                child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
             SizedBox(width: 12.w),
             GestureDetector(
                 onTap: () async {
