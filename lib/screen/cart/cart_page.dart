@@ -161,18 +161,19 @@ class CartPage extends GetWidget<CartController> {
         children: [
           Expanded(child: Text('Áp dụng voucher', style: StyleThemeData.bold18())),
           PrimaryButton(
-              onPressed: () async {
-                final result = await DialogUtils.showBTSView(SelectVoucherBTS());
-                if (result != null && result is Voucher) {
-                  updateVoucher(result);
-                }
-              },
-              contentPadding: padding(all: 12),
-              radius: BorderRadius.circular(1000),
-              child: Text(
-                'Chọn',
-                style: StyleThemeData.bold14(color: appTheme.whiteText),
-              ))
+            onPressed: () async {
+              final result = await DialogUtils.showBTSView(SelectVoucherBTS());
+              if (result != null && result is Voucher) {
+                updateVoucher(result);
+              }
+            },
+            contentPadding: padding(all: 12),
+            radius: BorderRadius.circular(1000),
+            child: Text(
+              'Chọn',
+              style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
+            ),
+          ),
         ],
       );
     } else {

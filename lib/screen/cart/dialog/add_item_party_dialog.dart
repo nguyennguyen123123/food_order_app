@@ -67,20 +67,30 @@ class _AddItemPartyDialogState extends State<AddItemPartyDialog> {
               child: Row(
                 children: [
                   Expanded(
-                      child: OutlinedButton(
-                    onPressed: Get.back,
-                    child: Text('cancel'.tr, style: StyleThemeData.bold18()),
-                  )),
+                    child: InkWell(
+                      onTap: Get.back,
+                      child: Container(
+                        padding: padding(vertical: 11),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(1000),
+                          border: Border.all(color: appTheme.primaryColor),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text('cancel'.tr, style: StyleThemeData.bold18(height: 0)),
+                      ),
+                    ),
+                  ),
                   SizedBox(width: 6.w),
                   Expanded(
-                      child: PrimaryButton(
-                    onPressed: () => Get.back(result: partyItems.value),
-                    contentPadding: padding(vertical: 8),
-                    radius: BorderRadius.circular(1000),
-                    borderColor: appTheme.primaryColor,
-                    backgroundColor: appTheme.primaryColor,
-                    child: Text('confirm'.tr, style: StyleThemeData.bold18(color: appTheme.whiteText)),
-                  ))
+                    child: PrimaryButton(
+                      onPressed: () => Get.back(result: partyItems.value),
+                      contentPadding: padding(vertical: 12),
+                      radius: BorderRadius.circular(1000),
+                      borderColor: appTheme.primaryColor,
+                      backgroundColor: appTheme.primaryColor,
+                      child: Text('confirm'.tr, style: StyleThemeData.bold18(color: appTheme.whiteText, height: 0)),
+                    ),
+                  ),
                 ],
               ),
             )
