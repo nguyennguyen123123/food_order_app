@@ -114,7 +114,7 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     text: "order_management".tr,
                     icons: IconAssets.cancelIcon,
                   ),
-                  SizedBox(height: 8.h),
+                  const Divider(thickness: 1),
                   // ],
                   if (controller.accountService.myAccount?.role == USER_ROLE.ADMIN) ...[
                     newMethod(
