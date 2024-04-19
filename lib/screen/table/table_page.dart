@@ -4,6 +4,8 @@ import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
+import 'package:food_delivery_app/screen/table/table_parameter.dart';
+import 'package:food_delivery_app/screen/table/widget/table_details_widget.dart';
 import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -69,13 +71,29 @@ class TablePage extends GetWidget<TableControlller> {
   }
 
   Widget itemTableView(TableModels table) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         if (table.foodOrder == null) {
           Get.toNamed(Routes.WAITER_CART, arguments: WaiterCartParameter(tableNumber: table.tableNumber ?? 1));
         } else {
           Get.toNamed(Routes.EDIT_ORDER, arguments: EditOrderDetailParameter(foodOrder: table.foodOrder!));
         }
+      },
+      onLongPressStart: (details) {
+        showModalBottomSheet(
+          context: Get.context!,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+          ),
+          builder: (context) => TableDetailsWidget(
+            table: table,
+            onTapDelete: () => controller.deleteTable(table.tableId.toString()),
+            onTapEdit: () {
+              Get.back();
+              Get.toNamed(Routes.EDITTABLE, arguments: TableParameter(tableModels: table));
+            },
+          ),
+        );
       },
       child: Container(
         padding: padding(all: 24),
@@ -87,10 +105,13 @@ class TablePage extends GetWidget<TableControlller> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text((table.tableNumber ?? 1).toString(),
-                style: StyleThemeData.regular16(height: 0), textAlign: TextAlign.center),
+            Text(
+              (table.tableNumber ?? 1).toString(),
+              style: StyleThemeData.regular16(height: 0),
+              textAlign: TextAlign.center,
+            ),
             if (table.foodOrder != null)
-              Text('Đơn hàng: ${table.foodOrder?.total?.toStringAsFixed(2)}', style: StyleThemeData.regular10())
+              Text('Đơn hàng: ${table.foodOrder?.total?.toStringAsFixed(2)}', style: StyleThemeData.regular10()),
           ],
         ),
       ),
