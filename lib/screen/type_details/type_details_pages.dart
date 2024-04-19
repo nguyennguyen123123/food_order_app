@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
-import 'package:food_delivery_app/routes/pages.dart';
-import 'package:food_delivery_app/screen/list_food/list_food_parameter.dart';
 import 'package:food_delivery_app/screen/type_details/type_details_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/custom_avatar.dart';
@@ -38,6 +36,18 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Obx(
+                  () => SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: padding(horizontal: 16),
+                      child: Row(
+                        children: controller.selectedFoodTypes.map(_buildSelectedFoodType).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+                Obx(() => SizedBox(height: controller.selectedFoodTypes.isNotEmpty ? 12.h : null)),
                 Padding(
                   padding: padding(horizontal: 16),
                   child: Text("food_type".tr, style: StyleThemeData.bold18()),
@@ -104,10 +114,27 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
   }
 
   Widget _buildFoodType(FoodType foodType) {
+    print(foodType.parentTypeId);
     return Padding(
       padding: padding(right: 8),
       child: GestureDetector(
-        onTap: () => Get.toNamed(Routes.LIST_FOOD, arguments: ListFoodParameter(foodType: foodType)),
+        onTap: () {
+          if (controller.selectedFoodTypes.contains(foodType)) {
+            controller.removeFoodType(foodType);
+            if (controller.selectedFoodTypes.first.parentTypeId != null) {
+              controller.onRefresh(controller.selectedFoodTypes.first.parentTypeId ?? '');
+            } else {
+              controller.onRefresh(controller.selectedFoodTypes.first.typeId ?? '');
+            }
+          } else {
+            controller.addFoodType(foodType);
+            if (foodType.parentTypeId != null) {
+              controller.onRefresh(foodType.parentTypeId ?? '');
+            } else {
+              controller.onRefresh(foodType.typeId ?? '');
+            }
+          }
+        },
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -121,6 +148,50 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSelectedFoodType(FoodType foodType) {
+    return Stack(
+      children: [
+        Padding(
+          padding: padding(horizontal: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomAvatar(
+                radius: 100,
+                size: 65,
+                url: foodType.image,
+              ),
+              SizedBox(height: 4),
+              Text(foodType.name ?? '', style: StyleThemeData.regular16())
+            ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: InkWell(
+            onTap: () {
+              controller.removeFoodType(foodType);
+              if (controller.selectedFoodTypes.first.parentTypeId != null) {
+                controller.onRefresh(controller.selectedFoodTypes.first.parentTypeId ?? '');
+              } else {
+                controller.onRefresh(controller.selectedFoodTypes.first.typeId ?? '');
+              }
+            },
+            child: Container(
+              padding: padding(all: 4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: appTheme.textDesColor,
+              ),
+              child: Icon(Icons.clear, color: appTheme.whiteText, size: 16),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

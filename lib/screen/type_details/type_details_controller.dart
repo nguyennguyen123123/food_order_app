@@ -16,6 +16,16 @@ class TypeDetailsController extends GetxController {
   final foodTypes = Rx<List<FoodType>?>(null);
   final foods = Rx<List<FoodModel>?>(null);
 
+  var selectedFoodTypes = <FoodType>[].obs;
+
+  void addFoodType(FoodType foodType) {
+    selectedFoodTypes.add(foodType);
+  }
+
+  void removeFoodType(FoodType foodType) {
+    selectedFoodTypes.remove(foodType);
+  }
+
   int page = 0;
   int limit = LIMIT;
 
@@ -60,5 +70,16 @@ class TypeDetailsController extends GetxController {
   void updateQuantityCartItem(int quantity, FoodModel food) {
     cartService.onUpdateQuantityItemInCart(quantity, food);
     orderCartNotifier.value += 1;
+  }
+
+  Future<void> onRefresh(String typeId) async {
+    foods.value = null;
+    final result = await foodRepository.getListFoodByKeyword(
+      limit: limit,
+      keyword: '',
+      page: page,
+      typeId: typeId,
+    );
+    foods.value = result;
   }
 }

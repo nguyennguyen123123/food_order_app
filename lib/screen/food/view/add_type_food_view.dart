@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
+import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/screen/food/food_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/confirmation_button_widget.dart';
@@ -70,6 +71,34 @@ class AddTypeFoodView extends GetWidget<FoodController> {
                   child: Text('select_image'.tr, style: StyleThemeData.regular14()),
                 ),
                 SizedBox(height: 8.h),
+                Align(alignment: Alignment.centerLeft, child: Text('food_type'.tr, style: StyleThemeData.bold14())),
+                SizedBox(height: 4.h),
+                Obx(
+                  () => Container(
+                    width: MediaQuery.of(context).size.width.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: appTheme.blackColor, width: 1),
+                    ),
+                    padding: padding(horizontal: 8),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<FoodType>(
+                        hint: Text('select_category'.tr, style: StyleThemeData.regular16()),
+                        value: controller.selectedFoodType.value,
+                        onChanged: (FoodType? newValue) {
+                          controller.selectedFoodType.value = newValue!;
+                        },
+                        items: controller.foodTypeList.map((FoodType type) {
+                          return DropdownMenuItem<FoodType>(
+                            value: type,
+                            child: Text(type.name ?? ''),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8.h),
                 EditTextFieldCustom(
                   controller: controller.nameTypeController,
                   hintText: 'category_name'.tr,
@@ -86,10 +115,12 @@ class AddTypeFoodView extends GetWidget<FoodController> {
                   textInputType: TextInputType.text,
                 ),
                 SizedBox(height: 24.h),
-                ConfirmationButtonWidget(
-                  isLoading: false,
-                  onTap: controller.addTypeFood,
-                  text: 'confirm'.tr,
+                Obx(
+                  () => ConfirmationButtonWidget(
+                    isLoading: controller.isLoadingAddFoodType.isTrue,
+                    onTap: controller.addTypeFood,
+                    text: 'confirm'.tr,
+                  ),
                 ),
               ],
             ),

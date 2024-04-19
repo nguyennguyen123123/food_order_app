@@ -31,6 +31,7 @@ class FoodController extends GetxController {
   }
 
   var isLoadingFood = false.obs;
+  var isLoadingAddFoodType = false.obs;
 
   var foodTypeList = <FoodType>[].obs;
 
@@ -57,7 +58,7 @@ class FoodController extends GetxController {
   Future<bool> onLoadMoreFood() async {
     final length = (foodList.value ?? []).length;
     if (length < LIMIT * (page + 1)) return false;
-    page += 1; 
+    page += 1;
 
     final result = await foodRepository.getFood(page: page, limit: limit);
 
@@ -147,6 +148,8 @@ class FoodController extends GetxController {
   void addTypeFood() async {
     if (nameTypeController.text.isEmpty || desTypeController.text.isEmpty) return;
     try {
+      isLoadingAddFoodType(true);
+
       final typeId = getUuid();
 
       final url = pickedImageNotifier.value != null
@@ -159,6 +162,7 @@ class FoodController extends GetxController {
 
       FoodType foodType = FoodType(
         typeId: typeId,
+        parentTypeId: selectedFoodType.value?.typeId,
         name: nameTypeController.text,
         description: desTypeController.text,
         image: url,
@@ -168,8 +172,15 @@ class FoodController extends GetxController {
       await foodRepository.addTypeFood(foodType);
 
       Get.back();
+      selectedFoodType.value = null;
+      nameTypeController.clear();
+      desTypeController.clear();
+
+      isLoadingAddFoodType(false);
     } catch (error) {
       print('Error add type $error');
+    } finally {
+      isLoadingAddFoodType(false);
     }
   }
 
