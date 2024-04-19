@@ -5,4 +5,5 @@ class ImagesAssets {
   static String emptyCart = '${_basePath}empty_cart.png';
   static String trash = '${_basePath}trash.png';
   static String waiter = '${_basePath}waiter.png';
+  static String appIcon = '${_basePath}ic_launcher.png';
 }

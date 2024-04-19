@@ -18,12 +18,16 @@ class CartItemView extends StatelessWidget {
     required this.removeCartItem,
     required this.updateNote,
     required this.updateQuantity,
+    this.onRemoveGangIndex,
+    this.canDeleteGang = false,
   });
 
   final OrderItem orderItem;
   final Function(int quantity) updateQuantity;
   final Function() removeCartItem;
   final Function(String note) updateNote;
+  final VoidCallback? onRemoveGangIndex;
+  final bool canDeleteGang;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +70,8 @@ class CartItemView extends StatelessWidget {
                   }
                 },
                 child: Icon(Icons.edit)),
+            if (canDeleteGang)
+              GestureDetector(onTap: onRemoveGangIndex, child: Icon(Icons.settings_backup_restore_rounded)),
           ],
         )
       ],

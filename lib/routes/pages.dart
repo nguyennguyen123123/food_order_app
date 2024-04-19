@@ -22,8 +22,10 @@ import 'package:food_delivery_app/screen/language/language_screen.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_binding.dart';
 import 'package:food_delivery_app/screen/list_food/list_food_page.dart';
 import 'package:food_delivery_app/screen/onboarding/onboarding_scrreen.dart';
-import 'package:food_delivery_app/screen/order_detail/order_detail_binding.dart';
-import 'package:food_delivery_app/screen/order_detail/order_detail_page.dart';
+import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_binding.dart';
+import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_page.dart';
+import 'package:food_delivery_app/screen/order_detail/view/order_detail_binding.dart';
+import 'package:food_delivery_app/screen/order_detail/view/order_detail_page.dart';
 import 'package:food_delivery_app/screen/printer/edit/edit_printer_binding.dart';
 import 'package:food_delivery_app/screen/printer/printe_pages.dart';
 import 'package:food_delivery_app/screen/printer/printer_binding.dart';
@@ -48,6 +50,8 @@ import 'package:food_delivery_app/screen/voucher/view/add_voucher_view.dart';
 import 'package:food_delivery_app/screen/voucher/view/edit_voucher_view.dart';
 import 'package:food_delivery_app/screen/voucher/voucher_binding.dart';
 import 'package:food_delivery_app/screen/voucher/voucher_pages.dart';
+import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_binding.dart';
+import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_page.dart';
 import 'package:get/get.dart';
 
 part 'routes.dart';
@@ -192,6 +196,16 @@ abstract class AppPages {
       name: Routes.TYPEDETAIL,
       page: () => TypeDetailsPages(),
       binding: TypeDetailsBinding(),
+    ),
+    GetPage(
+      name: Routes.WAITER_CART,
+      page: () => WaiterCartPage(),
+      binding: WaiterCartBinding(),
+    ),
+    GetPage(
+      name: Routes.EDIT_ORDER,
+      page: () => EditOrderDetailPage(),
+      binding: EditOrderDetailBinding(),
     ),
   ];
 }

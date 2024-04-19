@@ -74,4 +74,22 @@ class TableRepository extends ITableRepository {
       return null;
     }
   }
+
+  @override
+  Future<List<TableModels>> getListTableInOrder() async {
+    try {
+      const queryOrder = 'order_item!inner (*, food_id:food!inner(*, typeId(*))))';
+      final response = await baseService.client.from(TABLE_NAME.TABLE).select('''
+          *, 
+          order(*, 
+          user_order_id(*),
+          ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder)))),
+          ''').withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+
+      return response.toList();
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
+  }
 }

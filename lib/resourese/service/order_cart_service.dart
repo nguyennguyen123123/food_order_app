@@ -7,7 +7,7 @@ class OrderCartService extends GetxService {
   final items = Rx<List<OrderItem>>([]);
   final partyOrders = Rx<List<PartyOrder>>([]);
   final currentVoucher = Rx<Voucher?>(null);
-  final numberOfGang = Rx<int>(0);
+  final numberOfGang = Rx<int>(1);
 
   void clearCart() {
     items.value = [];
@@ -89,6 +89,163 @@ class OrderCartService extends GetxService {
       numberOfGangs: partyOrders.value[partyIndex].numberOfGangs - 1,
       orderItems: list,
     );
+    partyOrders.refresh();
+  }
+
+  /// Tạo thêm gang ở party order
+  void onCreateNewPartyOrder() {
+    final number = partyOrders.value.length + 1;
+    partyOrders.update((val) => val?.add(PartyOrder(partyNumber: number, numberOfGangs: 1)));
+  }
+
+  /// Cập nhật số lượng món ăn trong đơn hàng mà không thuộc party nào
+  void updateQuantityCart(OrderItem item, int quantity) {
+    items.update((val) {
+      final index =
+          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+              -1;
+      if (index != -1) {
+        val?[index].quantity = quantity;
+      }
+    });
+  }
+
+  /// Cập nhật số lượng món ăn thuộc party trong đơn hàng
+  void updateQuantityPartyItem(int partyIndex, OrderItem item, int quantity) {
+    partyOrders.update((val) {
+      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+      final index =
+          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+      if (index != -1) {
+        items[index].quantity = quantity;
+        val?[partyIndex].orderItems = items;
+      }
+    });
+  }
+
+  /// Xóa món ăn trong đơn hàng không thuộc party nào
+  void removeItemInOrder(OrderItem item) {
+    items.update((val) {
+      final index =
+          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+              -1;
+      if (index != -1) {
+        val?.removeAt(index);
+      }
+    });
+  }
+
+  /// Xóa món ăn của party trong đơn hàng
+  void removeItemInPartyOrder(int partyIndex, OrderItem item) {
+    partyOrders.update((val) {
+      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+      final index =
+          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+      if (index != -1) {
+        items.removeAt(index);
+        val?[partyIndex].orderItems = items;
+      }
+    });
+  }
+
+  /// Cập nhật note cho món ăn không thuộc party
+  void updateCartItemNote(OrderItem item, String note) {
+    items.update((val) {
+      final index =
+          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+              -1;
+      if (index != -1) {
+        val?[index].note = note;
+      }
+    });
+  }
+
+  /// Cập nhật note cho món ăn trong party
+  void updatePartyCartItemNote(int partyIndex, OrderItem item, String note) {
+    partyOrders.update((val) {
+      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+      final index =
+          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+      if (index != -1) {
+        items[index].note = note;
+        val?[partyIndex].orderItems = items;
+      }
+    });
+  }
+
+  /// Cập nhật voucher cho party
+  void updatePartyVoucher(int partyIndex, Voucher voucher) {
+    partyOrders.update((val) {
+      val?[partyIndex].voucher = voucher;
+    });
+  }
+
+  /// Xóa voucher cho party
+  void clearVoucherParty(int partyIndex) {
+    partyOrders.update((val) {
+      val?[partyIndex].voucher = null;
+    });
+  }
+
+  /// Xóa party
+  void onRemovePartyOrder(int partyIndex) {
+    partyOrders.update((val) {
+      val?.removeAt(partyIndex);
+    });
+  }
+
+  /// Thêm mức độ ưu tiên lên món của món ăn trong party hoặc đơn hàng
+  void updateOrderItemInCart(int gangIndex, List<OrderItem> orderItems, {int? partyIndex}) {
+    if (partyIndex == null) {
+      final list = [...items.value];
+      for (final item in orderItems) {
+        final index = list.indexWhere((element) => element.foodId == item.foodId);
+        if (index != -1) {
+          list[index].sortOder = gangIndex;
+        }
+      }
+      items.value = list;
+    } else {
+      final list = [...(partyOrders.value[partyIndex].orderItems ?? <OrderItem>[])];
+      for (final item in orderItems) {
+        final index = list.indexWhere((element) => element.foodId == item.foodId);
+        if (index != -1) {
+          list[index].sortOder = gangIndex;
+        }
+      }
+      partyOrders.value[partyIndex].orderItems = list;
+      partyOrders.refresh();
+    }
+  }
+
+  /// Tạo thêm gang trong party
+  void onPartyCreateGang(int partyIndex) {
+    partyOrders.update((val) {
+      val?[partyIndex].numberOfGangs += 1;
+    });
+  }
+
+  void onRemoveGangIndexOfCartItem(OrderItem item) {
+    items.update((val) {
+      final index =
+          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+              -1;
+      if (index != -1) {
+        val?[index].sortOder = null;
+      }
+    });
+  }
+
+  void onRemoveGangIndexOfPartyCartItem(int partyIndex, OrderItem item) {
+    partyOrders.update((val) {
+      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+      final index =
+          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+      if (index != -1) {
+        items[index].sortOder = null;
+        val?[partyIndex].orderItems = items;
+      }
+    });
   }
 
   double get totalCartPrice {

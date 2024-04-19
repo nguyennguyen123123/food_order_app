@@ -8,18 +8,21 @@ import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
+import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
-class CartController extends GetxController {
+class WaiterCartController extends GetxController {
   final OrderCartService cartService;
   final IOrderRepository orderRepository;
   final ITableRepository tableRepository;
   final AccountService accountService;
+  final WaiterCartParameter parameter;
 
-  CartController(
-      {required this.cartService,
+  WaiterCartController(
+      {required this.parameter,
+      required this.cartService,
       required this.orderRepository,
       required this.tableRepository,
       required this.accountService});
@@ -39,7 +42,6 @@ class CartController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getListTable();
   }
 
   @override
@@ -240,15 +242,5 @@ class CartController extends GetxController {
     }
     isLoading.value = false;
     dissmissLoading();
-  }
-
-  void getListTable() async {
-    final result = await tableRepository.getTable();
-
-    if (result != null) {
-      tableList.assignAll(result);
-    } else {
-      tableList.clear();
-    }
   }
 }

@@ -4,11 +4,11 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/voucher.dart';
-import 'package:food_delivery_app/screen/cart/cart_controller.dart';
 import 'package:food_delivery_app/screen/cart/dialog/add_item_party_dialog.dart';
 import 'package:food_delivery_app/screen/cart/dialog/select_voucher_bts.dart';
 import 'package:food_delivery_app/screen/cart/widget/cart_item_view.dart';
 import 'package:food_delivery_app/screen/cart/widget/empty_cart.dart';
+import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
@@ -18,7 +18,7 @@ import 'package:food_delivery_app/widgets/primary_button.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
-class CartPage extends GetWidget<CartController> {
+class WaiterCartPage extends GetWidget<WaiterCartController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -36,7 +36,6 @@ class CartPage extends GetWidget<CartController> {
               appBar: AppBar(
                 title: Text("place_order_title".tr, style: StyleThemeData.bold18()),
                 centerTitle: true,
-                // leading: IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back_ios, size: 24)),
                 automaticallyImplyLeading: false,
               ),
               body: hasOrderInCart
@@ -161,19 +160,18 @@ class CartPage extends GetWidget<CartController> {
         children: [
           Expanded(child: Text('Áp dụng voucher', style: StyleThemeData.bold18())),
           PrimaryButton(
-            onPressed: () async {
-              final result = await DialogUtils.showBTSView(SelectVoucherBTS());
-              if (result != null && result is Voucher) {
-                updateVoucher(result);
-              }
-            },
-            contentPadding: padding(all: 12),
-            radius: BorderRadius.circular(1000),
-            child: Text(
-              'Chọn',
-              style: StyleThemeData.bold14(color: appTheme.whiteText, height: 0),
-            ),
-          ),
+              onPressed: () async {
+                final result = await DialogUtils.showBTSView(SelectVoucherBTS());
+                if (result != null && result is Voucher) {
+                  updateVoucher(result);
+                }
+              },
+              contentPadding: padding(all: 12),
+              radius: BorderRadius.circular(1000),
+              child: Text(
+                'Chọn',
+                style: StyleThemeData.bold14(color: appTheme.whiteText),
+              ))
         ],
       );
     } else {

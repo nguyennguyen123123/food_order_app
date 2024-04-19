@@ -12,10 +12,11 @@ TableModels _$TableModelsFromJson(Map<String, dynamic> json) => TableModels(
       numberOfOrder: json['number_of_order'] as int?,
       numberOfPeople: json['number_of_people'] as int?,
       createdAt: json['created_at'] as String?,
+      foodOrder: json['order'] != null && json['order'] is Map ? FoodOrder.fromJson(json['order']) : null,
+      foodOrderId: json['order'] != null && json['order'] is String ? json['order'] : null,
     );
 
-Map<String, dynamic> _$TableModelsToJson(TableModels instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TableModelsToJson(TableModels instance) => <String, dynamic>{
       'table_id': instance.tableId,
       'table_number': instance.tableNumber,
       'number_of_order': instance.numberOfOrder,

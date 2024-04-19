@@ -30,4 +30,6 @@ abstract class Routes {
   static const HISTORY_ORDER = '/history-order';
   static const PRODUCTDETAILS = '/product-detail';
   static const TYPEDETAIL = '/type-detail';
+  static const WAITER_CART = '/waiter-cart';
+  static const EDIT_ORDER = '/edit-order';
 }

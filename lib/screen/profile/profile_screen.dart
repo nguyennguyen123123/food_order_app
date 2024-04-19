@@ -108,14 +108,14 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     style: StyleThemeData.regular16(),
                   ),
                   SizedBox(height: 8.h),
-                  if (controller.accountService.myAccount?.role == USER_ROLE.STAFF) ...[
-                    newMethod(
-                      onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
-                      text: "order_management".tr,
-                      icons: IconAssets.cancelIcon,
-                    ),
-                    SizedBox(height: 8.h)
-                  ],
+                  // if (controller.accountService.myAccount?.role == USER_ROLE.STAFF) ...[
+                  newMethod(
+                    onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
+                    text: "order_management".tr,
+                    icons: IconAssets.cancelIcon,
+                  ),
+                  SizedBox(height: 8.h),
+                  // ],
                   if (controller.accountService.myAccount?.role == USER_ROLE.ADMIN) ...[
                     newMethod(
                       onTap: () => Get.toNamed(Routes.HISTORY_ORDER),
