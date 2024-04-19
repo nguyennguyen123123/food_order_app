@@ -99,7 +99,7 @@ class OrderRepository extends IOrderRepository {
       final newParty = party.copyWith(
         partyOrderId: partyId,
         orderId: orderId,
-        total: party.totalPrice,
+        total: party.totalPriceWithoutVoucher,
         orderStatus: ORDER_STATUS.CREATED,
       );
       newParty.voucherPrice = newParty.voucher?.discountValue;
@@ -168,7 +168,7 @@ class OrderRepository extends IOrderRepository {
             .from(TABLE_NAME.FOOD_ORDER)
             .update({'table_number': model.tableNumber}).eq('order_id', foodOrder.orderId ?? ''),
         tableRepository.updateTableWithOrder(foodOrder.tableNumber ?? ''),
-        tableRepository.updateTableWithOrder(model.tableNumber.toString(), orderId: foodOrder.orderId),
+        tableRepository.updateTableWithOrder(model.tableNumber ?? '', orderId: foodOrder.orderId),
       ]);
       return true;
     } catch (e) {
@@ -176,4 +176,27 @@ class OrderRepository extends IOrderRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<bool> onChangeOrderItemToOtherTable(
+      PartyOrder partyOrder, List<String> selectedOrderItemsId, TableModels tableModels) async {
+    try {
+      final isSelectAll = partyOrder.orderItems?.length == selectedOrderItemsId.length;
+      final selectOrderItems =
+          partyOrder.orderItems!.where((element) => selectedOrderItemsId.contains(element.orderItemId)).toList();
+      final table = await tableRepository.getTableByNumber(tableModels.tableNumber ?? '');
+      if (table != null) {
+        if (tableModels.foodOrderId == null && tableModels.foodOrder == null) {
+          if (isSelectAll) {
+          } else {}
+        } else {}
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  // Future<void> _onCreateOrderByItem(List<OrderItem> orderItem) {}
 }

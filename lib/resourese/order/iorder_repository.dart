@@ -13,4 +13,6 @@ abstract class IOrderRepository extends IBaseRepository {
       {int page = 0, int limit = LIMIT, String? orderStatus, String? userOrderId});
   Future<void> onDeleteOrder(FoodOrder foodOrder);
   Future<bool> onChangeTableOfOrder(FoodOrder foodOrder, TableModels model);
+  Future<bool> onChangeOrderItemToOtherTable(
+      PartyOrder partyOrder, List<String> selectedOrderItemsId, TableModels tableModels);
 }

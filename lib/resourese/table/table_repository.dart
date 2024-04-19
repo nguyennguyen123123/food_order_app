@@ -101,9 +101,22 @@ class TableRepository extends ITableRepository {
   @override
   Future<void> updateTableWithOrder(String tableNumber, {String? orderId}) async {
     try {
-      await baseService.client
+      await baseService.client.from(TABLE_NAME.TABLE).update({'order': orderId}).eq('table_number', tableNumber);
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<TableModels?> getTableByNumber(String number) async {
+    try {
+      final result = await baseService.client
           .from(TABLE_NAME.TABLE)
-          .upsert({'order': orderId}).eq('table_number', int.parse(tableNumber));
+          .select('*')
+          .eq('table_number', number)
+          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+      return result.first;
     } catch (error) {
       handleError(error);
       rethrow;

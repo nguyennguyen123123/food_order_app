@@ -30,41 +30,20 @@ class TablePage extends GetWidget<TableControlller> {
       ),
       body: Padding(
         padding: padding(all: 16),
-        child: Obx(
-          () => Column(
-            children: [
-              if (controller.tableList.value == null)
-                Center(child: CircularProgressIndicator())
-              else
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    children: controller.tableList.value!.map((table) {
-                      return itemTableView(
-                        table,
-                        // onTap: () => showModalBottomSheet(
-                        //   context: Get.context!,
-                        //   shape: RoundedRectangleBorder(
-                        //     borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                        //   ),
-                        //   builder: (context) => TableDetailsWidget(
-                        //     table: table,
-                        //     onTapDelete: () => controller.deleteTable(table.tableId.toString()),
-                        //     onTapEdit: () {
-                        //       Get.back();
-                        //       Get.toNamed(Routes.EDITTABLE, arguments: TableParameter(tableModels: table));
-                        //     },
-                        //   ),
-                        // ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-            ],
-          ),
-        ),
+        child: Obx(() {
+          if (controller.tableList.value == null)
+            return Center(child: CircularProgressIndicator());
+          else
+            return RefreshIndicator(
+              onRefresh: controller.getListTable,
+              child: GridView.count(
+                crossAxisCount: 3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                children: controller.tableList.value!.map(itemTableView).toList(),
+              ),
+            );
+        }),
       ),
     );
   }

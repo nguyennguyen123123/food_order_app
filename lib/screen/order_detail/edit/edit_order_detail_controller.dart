@@ -1,16 +1,24 @@
+import 'package:flutter/material.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
+import 'package:food_delivery_app/screen/order_detail/edit/edit_order_response.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
-class EditOrderDetailController extends GetxController {
+class EditOrderDetailController extends GetxController with GetSingleTickerProviderStateMixin {
   final EditOrderDetailParameter parameter;
   final IOrderRepository orderRepository;
   late Rx<FoodOrder> foodOrder;
+  late final tabController = TabController(length: 2, vsync: this);
+  final currentTab = 0.obs;
+  final currentPartyIndex = 0.obs;
+  List<String> tabItems = ['Edit', 'Chuyển bàn'];
+
+  final selectOrderItems = RxList<String>([]);
 
   EditOrderDetailController({
     required this.parameter,
@@ -18,9 +26,45 @@ class EditOrderDetailController extends GetxController {
   });
 
   @override
+  void onClose() {
+    tabController.dispose();
+    currentTab.close();
+    foodOrder.close();
+    super.onClose();
+  }
+
+  @override
   void onInit() {
     super.onInit();
-    foodOrder = Rx(parameter.foodOrder);
+    final order = parameter.foodOrder;
+    if ((order.partyOrders?.length ?? 1) > 1) {
+      final first = order.partyOrders!.removeAt(0);
+      order.partyOrders!.add(first);
+    }
+    foodOrder = Rx(order);
+  }
+
+  void onChangeTab(int tab) {
+    currentTab.value = tab;
+    selectOrderItems.value = [];
+  }
+
+  void onAddItemToSelect(bool isSelected, OrderItem orderItem) {
+    if (isSelected) {
+      selectOrderItems.remove(orderItem.orderItemId);
+    } else {
+      selectOrderItems.add(orderItem.orderItemId ?? '');
+    }
+    selectOrderItems.refresh();
+  }
+
+  void onUpdateAllOrderItem(bool isSelected, List<OrderItem> orderItems) {
+    if (isSelected) {
+      selectOrderItems.value = [];
+    } else {
+      selectOrderItems.value = orderItems.map((e) => e.orderItemId ?? '').toList();
+    }
+    // selectOrderItems.refresh();
   }
 
   void updateQuantityList(int partyIndex, OrderItem item, int quantity) {
@@ -70,7 +114,7 @@ class EditOrderDetailController extends GetxController {
         dissmissLoading();
         await DialogUtils.showSuccessDialog(content: 'Đổi sang bàn ${tableModels.tableNumber} thành công');
         final order = foodOrder.value.copyWith(tableNumber: tableModels.tableNumber.toString());
-        Get.back(result: order);
+        Get.back(result: EditOrderResponse(foodOrder: order, type: EditType.CHANGE_WHOLE_ORDER_TABLE));
       } else {
         dissmissLoading();
       }
@@ -79,6 +123,11 @@ class EditOrderDetailController extends GetxController {
       dissmissLoading();
       print(e);
     }
+  }
+
+  void onMovePartyToOtherTable(TableModels targetTableNumber) {
+    orderRepository.onChangeOrderItemToOtherTable(
+        foodOrder.value.partyOrders![currentPartyIndex.value], selectOrderItems, targetTableNumber);
   }
 
   void onDeleteOrder() async {

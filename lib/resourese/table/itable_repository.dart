@@ -9,4 +9,5 @@ abstract class ITableRepository extends IBaseRepository {
   Future<Map<String, dynamic>?> deleteTable(String tableId);
   Future<List<TableModels>> getListTableInOrder({int page = 0, int limit = LIMIT});
   Future<void> updateTableWithOrder(String tableNumber, {String? orderId});
+  Future<TableModels?> getTableByNumber(String number);
 }

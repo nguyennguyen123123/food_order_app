@@ -14,7 +14,7 @@ class Utils {
       if (voucher.discountType == DiscountType.amount) {
         price -= voucher.discountValue ?? 0;
       } else {
-        price = price * ((voucher.discountValue ?? 100) / 100);
+        price = price * (1 - ((voucher.discountValue ?? 100) / 100));
       }
     }
 

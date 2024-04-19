@@ -12,9 +12,14 @@ import 'package:get/get.dart';
 import 'package:loadmore/loadmore.dart';
 
 class ChangeTableDialog extends StatefulWidget {
-  const ChangeTableDialog({Key? key, this.currentTable = 1}) : super(key: key);
+  const ChangeTableDialog({
+    Key? key,
+    this.currentTable = '1',
+    this.isLimitTableHasOrder = true,
+  }) : super(key: key);
 
-  final int currentTable;
+  final String currentTable;
+  final bool isLimitTableHasOrder;
 
   @override
   State<ChangeTableDialog> createState() => _ChangeTableDialogState();
@@ -106,14 +111,14 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
   }
 
   Widget _buildTable(int index, TableModels table, int currentIndex) {
-    // final isCurrentTable = widget.currentTable == table.tableNumber;
-    // if (isCurrentTable) {
-    //   return Opacity(
-    //     opacity: isCurrentTable ? 0.2 : 1,
-    //     child: Center(child: Text(table.tableNumber.toString())),
-    //   );
-    // }
-    final tableHasOrder = table.foodOrder != null;
+    final isCurrentTable = widget.currentTable == table.tableNumber;
+    if (isCurrentTable) {
+      return Opacity(
+        opacity: isCurrentTable ? 0.2 : 1,
+        child: Center(child: Text(table.tableNumber.toString())),
+      );
+    }
+    final tableHasOrder = widget.isLimitTableHasOrder && table.foodOrder != null;
     return GestureDetector(
       onTap: currentIndex == index || tableHasOrder ? null : () => currentTable.value = index,
       child: Opacity(

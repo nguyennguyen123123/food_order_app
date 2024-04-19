@@ -4,6 +4,7 @@ import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
+import 'package:food_delivery_app/screen/order_detail/edit/edit_order_response.dart';
 import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -34,7 +35,7 @@ class TableControlller extends GetxController {
     getListTable();
   }
 
-  void getListTable() async {
+  Future<void> getListTable() async {
     tableList.value = null;
     tableList.value = await tableRepository.getListTableInOrder();
   }
@@ -42,7 +43,7 @@ class TableControlller extends GetxController {
   void navigateToOrderInTable(TableModels table) async {
     if (table.foodOrder == null) {
       final result =
-          await Get.toNamed(Routes.WAITER_CART, arguments: WaiterCartParameter(tableNumber: table.tableNumber ?? 1));
+          await Get.toNamed(Routes.WAITER_CART, arguments: WaiterCartParameter(tableNumber: table.tableNumber ?? ''));
       if (result != null && result is FoodOrder) {
         table.foodOrder = result;
         tableList.update((val) {
@@ -55,13 +56,21 @@ class TableControlller extends GetxController {
     } else {
       final result =
           await Get.toNamed(Routes.EDIT_ORDER, arguments: EditOrderDetailParameter(foodOrder: table.foodOrder!));
-      if (result != null && result is FoodOrder) {
+      if (result != null && result is EditOrderResponse) {
         final tables = tableList.value ?? <TableModels>[];
-        final index = tables.indexWhere((element) => element.tableNumber == table.tableNumber);
-        if (index != -1) {
-          tables[index] = tables[index].copyWith(foodOrder: result);
+        if (result.type == EditType.CHANGE_WHOLE_ORDER_TABLE) {
+          final oldIndex = tables.indexWhere((element) => element.tableNumber == table.tableNumber);
+          if (oldIndex != -1) {
+            tables[oldIndex].foodOrder = null;
+          }
+          final newIndex =
+              tables.indexWhere((element) => element.tableNumber == (int.tryParse(result.foodOrder.tableNumber!) ?? 0));
+          if (newIndex != -1) {
+            tables[newIndex].foodOrder = result.foodOrder;
+          }
         }
         tableList.value = tables;
+        tableList.refresh();
       }
     }
   }
@@ -76,7 +85,7 @@ class TableControlller extends GetxController {
 
       TableModels tableModels = TableModels(
         tableId: getUuid(),
-        tableNumber: int.tryParse(tableNumberController.text.replaceAll(',', '')),
+        tableNumber: tableNumberController.text.replaceAll(',', ''),
         numberOfOrder: int.tryParse(numberOfOrderController.text.replaceAll(',', '')),
         numberOfPeople: int.tryParse(numberOfPeopleController.text.replaceAll(',', '')),
         createdAt: DateTime.now().toString(),

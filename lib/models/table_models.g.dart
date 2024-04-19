@@ -8,7 +8,7 @@ part of 'table_models.dart';
 
 TableModels _$TableModelsFromJson(Map<String, dynamic> json) => TableModels(
       tableId: json['table_id'] as String?,
-      tableNumber: json['table_number'] as int?,
+      tableNumber: json['table_number'] as String?,
       numberOfOrder: json['number_of_order'] as int?,
       numberOfPeople: json['number_of_people'] as int?,
       createdAt: json['created_at'] as String?,

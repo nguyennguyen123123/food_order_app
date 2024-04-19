@@ -75,6 +75,14 @@ class PartyOrder {
 }
 
 extension PartyOrderExtension on PartyOrder {
+  double get totalPriceWithoutVoucher {
+    var total = 0.0;
+    for (final item in (orderItems ?? <OrderItem>[])) {
+      total += item.quantity * (item.food?.price ?? 0);
+    }
+    return total;
+  }
+
   double get totalPrice {
     var total = 0.0;
     for (final item in (orderItems ?? <OrderItem>[])) {
@@ -105,7 +113,7 @@ extension PartyOrderExtension on PartyOrder {
       if (voucherType == DiscountType.amount.toString()) {
         return (total ?? 0) - (voucherPrice ?? 0);
       } else {
-        return (total ?? 0) * ((voucherPrice ?? 100) / 100);
+        return (total ?? 0) * (1 - ((voucherPrice ?? 100) / 100));
       }
     }
     return (total ?? 0) - (voucherPrice ?? 0);

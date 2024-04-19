@@ -1,5 +1,5 @@
 class WaiterCartParameter {
-  final int tableNumber;
+  final String tableNumber;
 
   WaiterCartParameter({required this.tableNumber});
 }

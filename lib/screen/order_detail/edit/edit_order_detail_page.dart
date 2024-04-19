@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
+import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/screen/order_detail/bottom_sheet/change_table_dialog.dart';
 import 'package:food_delivery_app/screen/order_detail/bottom_sheet/order_add_food_bts.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_controller.dart';
@@ -31,8 +32,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
             Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
             GestureDetector(
                 onTap: () async {
-                  final result = await DialogUtils.showDialogView(ChangeTableDialog(
-                      currentTable: int.tryParse(controller.foodOrder.value.tableNumber ?? '0') ?? 0));
+                  final result = await DialogUtils.showDialogView(
+                      ChangeTableDialog(currentTable: controller.foodOrder.value.tableNumber ?? '0'));
                   if (result != null) {
                     controller.onMoveOrderToOtherTable(result);
                   }
@@ -52,28 +53,56 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
       ),
       body: Obx(() {
         final order = controller.foodOrder.value;
-        return ListView(
-          padding: padding(all: 12),
+        return Column(
           children: [
-            itemData(title: 'order_id'.tr, data: order.orderId ?? ''),
-            SizedBox(height: 4.h),
-            itemData(title: 'table_number'.tr, data: order.tableNumber ?? ''),
-            SizedBox(height: 4.h),
-            itemData(
-                title: 'time'.tr,
-                data:
-                    DateFormat("yyyy/MM/dd HH:mm").format(DateTime.tryParse(order.createdAt ?? '') ?? DateTime.now())),
-            SizedBox(height: 8.h),
-            ...?order.partyOrders?.asMap().entries.map((e) => _buildPartyOrder(e.key, e.value))
+            TabBar(
+                controller: controller.tabController,
+                onTap: controller.onChangeTab,
+                tabs: controller.tabItems.asMap().entries.map((e) => Tab(child: Text(e.value))).toList()),
+            Expanded(
+              child: ListView(
+                padding: padding(all: 12),
+                children: [
+                  itemData(title: 'order_id'.tr, data: order.orderId ?? ''),
+                  SizedBox(height: 4.h),
+                  itemData(title: 'table_number'.tr, data: order.tableNumber ?? ''),
+                  SizedBox(height: 4.h),
+                  itemData(
+                      title: 'time'.tr,
+                      data: DateFormat("yyyy/MM/dd HH:mm")
+                          .format(DateTime.tryParse(order.createdAt ?? '') ?? DateTime.now())),
+                  SizedBox(height: 8.h),
+                  DropdownButton<int>(
+                      value: controller.currentPartyIndex.value,
+                      items: (controller.foodOrder.value.partyOrders ?? [])
+                          .asMap()
+                          .entries
+                          .map((e) => buildDropDownItem(e.key))
+                          .toList(),
+                      onChanged: (value) => controller.currentPartyIndex.value = value ?? 0),
+                  SizedBox(height: 8.h),
+                  _buildPartyOrder(controller.currentPartyIndex.value)
+                  // ...?order.partyOrders?.asMap().entries.map((e) => _buildPartyOrder(e.key, e.value))
+                ],
+              ),
+            ),
           ],
         );
       }),
     );
   }
 
-  Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder) {
-    final number = partyOrder.partyNumber;
-    final total = partyOrder.totalPrice;
+  DropdownMenuItem<int> buildDropDownItem(int index) {
+    return DropdownMenuItem<int>(
+      value: index,
+      child: Text('Party $index'),
+    );
+  }
+
+  Widget _buildPartyOrder(int partyIndex) {
+    final partyOrder = controller.foodOrder.value.partyOrders![partyIndex];
+    final number = partyOrder.partyNumber ?? controller.foodOrder.value.partyOrders?.length;
+    final total = partyOrder.orderPrice;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
     final maxGang = orderItems.fold<int?>(null, (a, b) {
@@ -86,25 +115,56 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
         return (b.sortOder ?? 0) > a ? b.sortOder : a;
       }
     });
+    String getVoucherDiscountText() {
+      if (partyOrder.voucherType == DiscountType.amount) {
+        return Utils.getCurrency((partyOrder.voucherPrice ?? 0));
+      } else {
+        return '${partyOrder.voucherPrice}%';
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (number != null) ...[
-          Row(
-            children: [
-              Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
-              GestureDetector(
-                  onTap: () async {
-                    final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
-                    if (result != null) {
-                      controller.addFoodToPartyOrder(partyIndex, result);
-                    }
-                  },
-                  child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
-            ],
-          ),
-          SizedBox(height: 8.h),
+        if (controller.currentTab.value == 1) ...[
+          Obx(() {
+            final isSelectAll = controller.selectOrderItems.length == orderItems.length;
+            return Row(
+              children: [
+                Checkbox(
+                    value: isSelectAll, onChanged: (value) => controller.onUpdateAllOrderItem(isSelectAll, orderItems)),
+                SizedBox(width: 12.w),
+                Text('Chọn tất cả', style: StyleThemeData.regular17()),
+                Spacer(),
+                GestureDetector(
+                    onTap: () async {
+                      final result = await DialogUtils.showDialogView(ChangeTableDialog(
+                        currentTable: controller.foodOrder.value.tableNumber ?? '',
+                        isLimitTableHasOrder: false,
+                      ));
+                      if (result != null) {
+                        controller.onMovePartyToOtherTable(result);
+                      }
+                    },
+                    child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
+              ],
+            );
+          })
         ],
+        Row(
+          children: [
+            Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
+            GestureDetector(
+                onTap: () async {
+                  final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
+                  if (result != null) {
+                    controller.addFoodToPartyOrder(partyIndex, result);
+                  }
+                },
+                child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
+          ],
+        ),
+        SizedBox(height: 8.h),
         if (maxGang == null)
           ListView.separated(
               shrinkWrap: true,
@@ -115,9 +175,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
         else
           _buildOrderItemByGangIndex(partyIndex, maxGang, orderItems),
         SizedBox(height: 6.h),
-        if (partyOrder.voucherPrice != null) ...[
-          Text('Áp dụng mã giảm giá: Giảm ${Utils.getCurrency((partyOrder.voucherPrice ?? 0))}')
-        ],
+        if (partyOrder.voucherPrice != null) ...[Text('Áp dụng mã giảm giá: Giảm ${getVoucherDiscountText()}')],
         Row(
           children: [Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())), Text(Utils.getCurrency(total))],
         )
@@ -154,50 +212,74 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
   }
 
   Widget _buildOrderItem(int partyIndex, OrderItem item) {
-    return Padding(
-      padding: padding(bottom: 12),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: CachedNetworkImage(
-              imageUrl: item.food?.image ?? '',
-              fit: BoxFit.cover,
-              width: 120.w,
-              height: 120.w,
-              errorWidget: (context, url, error) {
-                return Image.asset(ImagesAssets.noUrlImage);
-              },
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-              child: Column(
-            children: [
-              itemData(title: 'food'.tr, data: item.food?.name ?? ''),
-              SizedBox(height: 8.h),
-              itemData(
-                  title: 'quantity'.tr,
-                  content: NormalQuantityView(
-                    canUpdate: true,
-                    quantity: item.quantity,
-                    showTitle: false,
-                    updateQuantity: (quantity) => controller.updateQuantityList(partyIndex, item, quantity),
-                  )),
-              SizedBox(height: 4.h),
-              itemData(title: 'total'.tr, data: Utils.getCurrency((item.quantity) * (item.food?.price ?? 0))),
+    return GestureDetector(
+      onTap: () {
+        if (controller.currentTab.value == 1) {
+          final isSelected = controller.selectOrderItems.contains(item.orderItemId);
+          controller.onAddItemToSelect(isSelected, item);
+        }
+      },
+      child: Padding(
+        padding: padding(bottom: 12),
+        child: Row(
+          children: [
+            if (controller.currentTab.value == 1) ...[
+              Obx(
+                () {
+                  final isSelected = controller.selectOrderItems.contains(item.orderItemId);
+                  return Checkbox(
+                      value: isSelected, onChanged: (value) => controller.onAddItemToSelect(isSelected, item));
+                },
+              )
             ],
-          )),
-          GestureDetector(
-              onTap: () async {
-                final result =
-                    await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa món ăn khỏi party $partyIndex không?');
-                if (result == true) {
-                  controller.onRemoveItem(partyIndex, item);
-                }
-              },
-              child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
-        ],
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: CachedNetworkImage(
+                imageUrl: item.food?.image ?? '',
+                fit: BoxFit.cover,
+                width: 120.w,
+                height: 120.w,
+                errorWidget: (context, url, error) {
+                  return Image.asset(ImagesAssets.noUrlImage);
+                },
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+                child: Column(
+              children: [
+                itemData(title: 'food'.tr, data: item.food?.name ?? ''),
+                SizedBox(height: 8.h),
+                if (controller.currentTab.value == 0) ...[
+                  itemData(
+                      title: 'quantity'.tr,
+                      content: NormalQuantityView(
+                        canUpdate: true,
+                        quantity: item.quantity,
+                        showTitle: false,
+                        updateQuantity: (quantity) => controller.updateQuantityList(partyIndex, item, quantity),
+                      )),
+                  SizedBox(height: 4.h)
+                ] else ...[
+                  itemData(title: 'quantity'.tr, data: (item.quantity).toString()),
+                  SizedBox(height: 4.h)
+                ],
+                SizedBox(height: 4.h),
+                itemData(title: 'total'.tr, data: Utils.getCurrency((item.quantity) * (item.food?.price ?? 0))),
+              ],
+            )),
+            if (controller.currentTab.value == 0)
+              GestureDetector(
+                  onTap: () async {
+                    final result =
+                        await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa món ăn khỏi party $partyIndex không?');
+                    if (result == true) {
+                      controller.onRemoveItem(partyIndex, item);
+                    }
+                  },
+                  child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
+          ],
+        ),
       ),
     );
   }
