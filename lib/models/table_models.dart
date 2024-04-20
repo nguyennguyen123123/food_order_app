@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:food_delivery_app/models/area.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -16,6 +17,10 @@ class TableModels {
   FoodOrder? foodOrder;
   @JsonKey(includeFromJson: false, includeToJson: false)
   String? foodOrderId;
+  @JsonKey(name: 'area_id')
+  String? areaId;
+  @JsonKey(includeToJson: false, includeFromJson: true, name: 'area_id')
+  Area? area;
 
   TableModels({
     this.tableId,
@@ -23,6 +28,8 @@ class TableModels {
     this.createdAt,
     this.foodOrder,
     this.foodOrderId,
+    this.areaId,
+    this.area,
   });
 
   Map<String, dynamic> toJson() => _$TableModelsToJson(this);
@@ -30,20 +37,4 @@ class TableModels {
   Map toMap(TableModels tableModels) => _$TableModelsToJson(this);
 
   factory TableModels.fromJson(Map<String, dynamic> json) => _$TableModelsFromJson(json);
-
-  TableModels copyWith({
-    String? tableId,
-    String? tableNumber,
-    String? createdAt,
-    FoodOrder? foodOrder,
-    String? foodOrderId,
-  }) {
-    return TableModels(
-      tableId: tableId ?? this.tableId,
-      tableNumber: tableNumber ?? this.tableNumber,
-      createdAt: createdAt ?? this.createdAt,
-      foodOrder: foodOrder ?? this.foodOrder,
-      foodOrderId: foodOrderId ?? this.foodOrderId,
-    );
-  }
 }

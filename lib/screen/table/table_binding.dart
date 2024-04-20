@@ -8,6 +8,7 @@ class TableBinding implements Binding {
     Get.put(
       TableControlller(
         tableRepository: Get.find(),
+        areaRepository: Get.find(),
       ),
     );
   }

@@ -17,6 +17,6 @@ class HomeMainBinding implements Bindings {
       tableRepository: Get.find(),
       accountService: Get.find(),
     ));
-    Get.put(TableControlller(tableRepository: Get.find()));
+    Get.put(TableControlller(tableRepository: Get.find(), areaRepository: Get.find()));
   }
 }

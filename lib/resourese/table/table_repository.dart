@@ -36,7 +36,7 @@ class TableRepository extends ITableRepository {
     try {
       final response = await baseService.client
           .from(TABLE_NAME.TABLE)
-          .select()
+          .select("*, area_id(*)")
           .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
 
       return response.toList();
@@ -85,6 +85,7 @@ class TableRepository extends ITableRepository {
           *, 
           order(*, 
           user_order_id(*),
+          area_id(*),
           ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder)))),
           ''')
           .limit(limit)
