@@ -17,16 +17,12 @@ class EditTableController extends GetxController {
   var isLoading = false.obs;
 
   late TextEditingController tableNumberController;
-  late TextEditingController numberOfOrderController;
-  late TextEditingController numberOfPeopleController;
 
   @override
   void onInit() {
     super.onInit();
 
     tableNumberController = TextEditingController(text: tableParametar?.tableNumber.toString());
-    numberOfOrderController = TextEditingController(text: tableParametar?.numberOfOrder.toString());
-    numberOfPeopleController = TextEditingController(text: tableParametar?.numberOfPeople.toString());
   }
 
   void editTable() async {
@@ -38,8 +34,6 @@ class EditTableController extends GetxController {
       TableModels tableModels = TableModels(
         tableId: tableId,
         tableNumber: tableNumberController.text.replaceAll(',', ''),
-        numberOfOrder: int.tryParse(numberOfOrderController.text.replaceAll(',', '')),
-        numberOfPeople: int.tryParse(numberOfPeopleController.text.replaceAll(',', '')),
         createdAt: tableParametar?.createdAt,
       );
 
@@ -66,7 +60,5 @@ class EditTableController extends GetxController {
   void dispose() {
     super.dispose();
     tableNumberController.dispose();
-    numberOfOrderController.dispose();
-    numberOfPeopleController.dispose();
   }
 }

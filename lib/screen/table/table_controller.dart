@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/models/area.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
+import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/routes/pages.dart';
@@ -13,33 +15,41 @@ import 'package:get/get.dart';
 
 class TableControlller extends GetxController {
   final ITableRepository tableRepository;
+  final IAreaRepository areaRepository;
   final IOrderRepository orderRepository;
 
-  TableControlller({required this.tableRepository, required this.orderRepository});
+  TableControlller({required this.tableRepository, required this.areaRepository, required this.orderRepository});
 
   final TextEditingController tableNumberController = TextEditingController();
-  final TextEditingController numberOfOrderController = TextEditingController();
-  final TextEditingController numberOfPeopleController = TextEditingController();
 
   var isLoadingAdd = false.obs;
   var isLoadingDelete = false.obs;
   var tableList = Rx<List<TableModels>?>(null);
 
+  var areaTypeList = <Area>[].obs;
+
+  var selectedAreaType = Rx<Area?>(null);
+
   void clear() {
     tableNumberController.clear();
-    numberOfOrderController.clear();
-    numberOfPeopleController.clear();
   }
 
   @override
   void onInit() {
     super.onInit();
     getListTable();
+    getListArea();
   }
 
   Future<void> getListTable() async {
     tableList.value = null;
     tableList.value = await tableRepository.getListTableInOrder();
+  }
+
+  Future<void> getListArea() async {
+    final result = await areaRepository.getArea();
+
+    areaTypeList.assignAll(result);
   }
 
   void navigateToOrderInTable(TableModels table) async {
@@ -92,18 +102,15 @@ class TableControlller extends GetxController {
   }
 
   void addTable() async {
-    if (tableNumberController.text.isEmpty ||
-        numberOfOrderController.text.isEmpty ||
-        numberOfPeopleController.text.isEmpty) return;
+    if (tableNumberController.text.isEmpty || selectedAreaType.value?.areaId == null) return;
 
     try {
       isLoadingAdd(true);
 
       TableModels tableModels = TableModels(
         tableId: getUuid(),
+        areaId: selectedAreaType.value?.areaId,
         tableNumber: tableNumberController.text.replaceAll(',', ''),
-        numberOfOrder: int.tryParse(numberOfOrderController.text.replaceAll(',', '')),
-        numberOfPeople: int.tryParse(numberOfPeopleController.text.replaceAll(',', '')),
         createdAt: DateTime.now().toString(),
       );
 
@@ -157,7 +164,5 @@ class TableControlller extends GetxController {
   void dispose() {
     super.dispose();
     tableNumberController.dispose();
-    numberOfOrderController.dispose();
-    numberOfPeopleController.dispose();
   }
 }

@@ -9,6 +9,7 @@ class TableBinding implements Binding {
       TableControlller(
         orderRepository: Get.find(),
         tableRepository: Get.find(),
+        areaRepository: Get.find(),
       ),
     );
   }

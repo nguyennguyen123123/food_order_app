@@ -34,20 +34,6 @@ class TableDetailsWidget extends StatelessWidget {
                 Text(table.tableNumber.toString(), style: StyleThemeData.regular16()),
               ],
             ),
-            SizedBox(height: 8.h),
-            Row(
-              children: [
-                Text('Số đơn: ', style: StyleThemeData.bold18()),
-                Text(table.numberOfOrder.toString(), style: StyleThemeData.regular16()),
-              ],
-            ),
-            SizedBox(height: 8.h),
-            Row(
-              children: [
-                Text('Số khách: ', style: StyleThemeData.bold18()),
-                Text(table.numberOfPeople.toString(), style: StyleThemeData.regular16()),
-              ],
-            ),
             SizedBox(height: 24.h),
             Row(
               children: [
