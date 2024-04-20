@@ -202,6 +202,7 @@ class WaiterCartController extends GetxController {
         cartService.items.value = [];
         cartService.partyOrders.value = [];
         currentPartySelected.value = -2;
+        cartService.currentPartyOrder = -2;
         await DialogUtils.showSuccessDialog(content: "create_order_success".tr);
         Get.back(result: result);
       } else {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/table_models.dart';
@@ -12,7 +13,8 @@ import 'package:get/get.dart';
 class EditOrderDetailController extends GetxController with GetSingleTickerProviderStateMixin {
   final EditOrderDetailParameter parameter;
   final IOrderRepository orderRepository;
-  late Rx<FoodOrder> foodOrder;
+  late FoodOrder originalOrder;
+  late Rx<FoodOrder?> foodOrder = Rx(null);
   late final tabController = TabController(length: 2, vsync: this);
   final currentTab = 0.obs;
   final currentPartyIndex = 0.obs;
@@ -27,6 +29,8 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
 
   @override
   void onClose() {
+    selectOrderItems.close();
+    currentPartyIndex.close();
     tabController.dispose();
     currentTab.close();
     foodOrder.close();
@@ -36,12 +40,34 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   @override
   void onInit() {
     super.onInit();
-    final order = parameter.foodOrder;
-    if ((order.partyOrders?.length ?? 1) > 1) {
-      final first = order.partyOrders!.removeAt(0);
-      order.partyOrders!.add(first);
+    onInitOrderData();
+  }
+
+  Future<void> onInitOrderData() async {
+    try {
+      showLoading();
+      final order = await orderRepository.getOrderDetail(parameter.foodOrder.orderId ?? '');
+      if (order == null) {
+        throw Exception();
+      }
+      if ((order.partyOrders?.length ?? 1) > 1) {
+        final first = order.partyOrders!.removeAt(0);
+        order.partyOrders!.add(first);
+      }
+      originalOrder = order.copyWith();
+      renewOrder();
+      dissmissLoading();
+    } catch (e) {
+      dissmissLoading();
+      await DialogUtils.showInfoErrorDialog(content: 'Vui lòng thử lại');
+      Get.back();
     }
-    foodOrder = Rx(order);
+  }
+
+  void onChangePartyIndex(int partyIndex) {
+    if (currentPartyIndex.value == partyIndex) return;
+    currentPartyIndex.value = partyIndex;
+    renewOrder();
   }
 
   void onChangeTab(int tab) {
@@ -64,7 +90,6 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     } else {
       selectOrderItems.value = orderItems.map((e) => e.orderItemId ?? '').toList();
     }
-    // selectOrderItems.refresh();
   }
 
   void updateQuantityList(int partyIndex, OrderItem item, int quantity) {
@@ -90,7 +115,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   }
 
   void addFoodToPartyOrder(int partyIndex, List<OrderItem> orderItems) {
-    final order = foodOrder.value;
+    final order = foodOrder.value!;
     for (final item in orderItems) {
       final orderIndex = order.partyOrders?[partyIndex].orderItems
               ?.indexWhere((element) => element.food?.foodId == item.food?.foodId) ??
@@ -109,12 +134,15 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   void onMoveOrderToOtherTable(TableModels tableModels) async {
     showLoading();
     try {
-      final result = await orderRepository.onChangeTableOfOrder(foodOrder.value, tableModels);
+      final result = await orderRepository.onChangeTableOfOrder(foodOrder.value!, tableModels);
       if (result) {
         dissmissLoading();
         await DialogUtils.showSuccessDialog(content: 'Đổi sang bàn ${tableModels.tableNumber} thành công');
-        final order = foodOrder.value.copyWith(tableNumber: tableModels.tableNumber.toString());
-        Get.back(result: EditOrderResponse(foodOrder: order, type: EditType.CHANGE_WHOLE_ORDER_TABLE));
+        Get.back(
+            result: EditOrderResponse(
+                type: EditType.CHANGE_TABLE,
+                orignalTable: foodOrder.value!.tableNumber ?? '',
+                targetTable: tableModels.tableNumber ?? ''));
       } else {
         dissmissLoading();
       }
@@ -125,13 +153,76 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     }
   }
 
-  void onMovePartyToOtherTable(TableModels targetTableNumber) {
-    orderRepository.onChangeOrderItemToOtherTable(
-        foodOrder.value.partyOrders![currentPartyIndex.value], selectOrderItems, targetTableNumber);
+  void onMovePartyToOtherTable(TableModels targetTableNumber) async {
+    try {
+      showLoading();
+      final res = await orderRepository.onChangeOrderItemToOtherTable(foodOrder.value!.orderId ?? '',
+          foodOrder.value!.partyOrders![currentPartyIndex.value], selectOrderItems, targetTableNumber);
+      if (res) {
+        dissmissLoading();
+        await DialogUtils.showSuccessDialog(
+            content: 'Các món ăn đã chuyển sang bàn số $targetTableNumber. Vui lòng kiểm tra lại');
+        Get.back(
+            result: EditOrderResponse(
+                type: EditType.CHANGE_TABLE,
+                orignalTable: foodOrder.value!.tableNumber ?? '',
+                targetTable: targetTableNumber.tableNumber ?? ''));
+      } else {
+        dissmissLoading();
+        await DialogUtils.showInfoErrorDialog(content: 'Vui lòng thử lại');
+      }
+    } catch (e) {
+      print(e);
+      dissmissLoading();
+      await DialogUtils.showInfoErrorDialog(content: 'Vui lòng thử lại');
+    }
   }
 
   void onDeleteOrder() async {
-    excute(() => orderRepository.onDeleteOrder(foodOrder.value));
+    excute(() => orderRepository.onDeleteOrder(foodOrder.value!));
     Get.back();
+  }
+
+  void onCompleteOrder() async {
+    try {
+      final newOrder = foodOrder.value!.copyWith();
+      newOrder.partyOrders![currentPartyIndex.value].orderStatus = ORDER_STATUS.DONE;
+      final newPartyOrder = newOrder.partyOrders![currentPartyIndex.value];
+      // final partyNumber = newPartyOrder.partyNumber == null ? newOrder.partyOrders!.length : newPartyOrder.partyNumber!;
+      final isYes = await DialogUtils.showYesNoDialog(title: 'Xác nhận thanh toán đơn hàng');
+      if (!isYes) return;
+      showLoading();
+      final isCompleteOrder =
+          newOrder.partyOrders!.where((element) => element.orderStatus == ORDER_STATUS.CREATED).isEmpty;
+
+      if (isCompleteOrder) {
+        newOrder.orderStatus = ORDER_STATUS.DONE;
+        await Future.wait([
+          orderRepository.completeOrder(newOrder.orderId ?? '', newOrder.tableNumber ?? ''),
+          orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? ''),
+        ]);
+        dissmissLoading();
+        await DialogUtils.showSuccessDialog(content: 'Đơn hàng đã được hoàn thành');
+        Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: newOrder.tableNumber ?? ''));
+      } else {
+        await orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? '');
+        dissmissLoading();
+        await DialogUtils.showSuccessDialog(content: 'Xác nhận hoàn thành đơn hàng');
+      }
+      originalOrder = newOrder;
+      foodOrder.value =
+          originalOrder.copyWith(partyOrders: originalOrder.partyOrders?.map((e) => e.copyWith()).toList());
+    } catch (e) {
+      print(e);
+    } finally {
+      dissmissLoading();
+    }
+  }
+
+  void renewOrder() {
+    foodOrder.value = originalOrder.copyWith(
+        partyOrders: originalOrder.partyOrders
+            ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((e) => e.copyWith()).toList()))
+            .toList());
   }
 }

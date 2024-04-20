@@ -78,7 +78,7 @@ class FoodRepository extends IFoodRepository {
   }
 
   @override
-  Future<List<FoodType>?> getTypeFood() async {
+  Future<List<FoodType>?> getTypeFood({String? parentTypeFoodId}) async {
     try {
       final response = await baseService.client
           .from(TABLE_NAME.FOODTYPE)
@@ -90,6 +90,25 @@ class FoodRepository extends IFoodRepository {
       handleError(e);
       rethrow;
     }
+  }
+
+  @override
+  Future<List<FoodType>> filterTypeFood({String? parentTypeFoodId, int page = 0, int limit = LIMIT}) async {
+    try {
+      var query = baseService.client.from(TABLE_NAME.FOODTYPE).select();
+      if (parentTypeFoodId != null) {
+        query = query.eq('parent_type_id', parentTypeFoodId);
+      }
+      final response = await query
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
+          .withConverter((data) => data.map((e) => FoodType.fromJson(e)).toList());
+
+      return response.toList();
+    } catch (e) {
+      handleError(e);
+    }
+    return [];
   }
 
   @override

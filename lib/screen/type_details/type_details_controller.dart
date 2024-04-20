@@ -29,6 +29,8 @@ class TypeDetailsController extends GetxController {
   int page = 0;
   int limit = LIMIT;
 
+  int typePage = 0;
+
   @override
   void onClose() {
     orderCartNotifier.dispose();
@@ -38,16 +40,7 @@ class TypeDetailsController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    onGetFood();
-  }
-
-  Future<void> onGetFood() async {
-    final result = await Future.wait([
-      foodRepository.getTypeFood(),
-      foodRepository.getFood(page: page, limit: limit),
-    ]);
-    foodTypes.value = result[0] as List<FoodType>;
-    foods.value = result[1] as List<FoodModel>;
+    onRefresh();
   }
 
   Future<bool> onLoadMoreFoods() async {
@@ -62,6 +55,18 @@ class TypeDetailsController extends GetxController {
     return true;
   }
 
+  Future<bool> onLoadMoreType() async {
+    final length = (foodTypes.value ?? []).length;
+    if (length < LIMIT * (page + 1)) return false;
+    typePage += 1;
+    final lastId = selectedFoodTypes.isNotEmpty ? selectedFoodTypes.last.typeId : null;
+    final result = await foodRepository.filterTypeFood(parentTypeFoodId: lastId, page: typePage, limit: limit);
+
+    foodTypes.update((val) => val?.addAll(result));
+    if (result.length < limit) return false;
+    return true;
+  }
+
   void addItemToCart(FoodModel food) {
     cartService.onAddItemToCart(food);
     orderCartNotifier.value += 1;
@@ -72,14 +77,38 @@ class TypeDetailsController extends GetxController {
     orderCartNotifier.value += 1;
   }
 
-  Future<void> onRefresh(String typeId) async {
+  void updateFoodTypeToList(FoodType foodType) async {
+    final foodTypeIndex = selectedFoodTypes.indexWhere((element) => element.typeId == foodType.typeId);
+    if (foodTypeIndex != -1) {
+      // removeFoodType(foodType);
+
+      // if (selectedFoodTypes.first.parentTypeId != null) {
+      //   onRefresh(selectedFoodTypes.first.parentTypeId ?? '');
+      // } else {
+      //   onRefresh(selectedFoodTypes.first.typeId ?? '');
+      // }
+      return;
+    } else {
+      addFoodType(foodType);
+      onRefresh(typeId: foodType.typeId);
+    }
+  }
+
+  Future<void> onRefresh({String? typeId}) async {
+    typePage = 0;
+    page = 0;
     foods.value = null;
-    final result = await foodRepository.getListFoodByKeyword(
-      limit: limit,
-      keyword: '',
-      page: page,
-      typeId: typeId,
-    );
-    foods.value = result;
+    foodTypes.value = null;
+    final result = await Future.wait([
+      foodRepository.filterTypeFood(parentTypeFoodId: typeId),
+      foodRepository.getListFoodByKeyword(
+        limit: limit,
+        keyword: '',
+        page: page,
+        typeId: typeId,
+      )
+    ]);
+    foodTypes.value = result[0] as List<FoodType>;
+    foods.value = result[1] as List<FoodModel>;
   }
 }
