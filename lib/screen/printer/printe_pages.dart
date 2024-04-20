@@ -29,14 +29,17 @@ class PrinterPages extends GetWidget<PrinterController> {
       body: Padding(
         padding: padding(all: 16),
         child: Obx(
-          () => ListView.separated(
-            itemCount: controller.printer.length,
-            separatorBuilder: (context, index) => SizedBox(height: 12.h),
-            itemBuilder: (context, index) {
-              final printer = controller.printer[index];
+          () => RefreshIndicator(
+            onRefresh: controller.getPrinter,
+            child: ListView.separated(
+              itemCount: controller.printer.length,
+              separatorBuilder: (context, index) => SizedBox(height: 12.h),
+              itemBuilder: (context, index) {
+                final printer = controller.printer[index];
 
-              return itemPrinterWidget(printer);
-            },
+                return itemPrinterWidget(printer);
+              },
+            ),
           ),
         ),
       ),

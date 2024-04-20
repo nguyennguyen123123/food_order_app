@@ -110,5 +110,13 @@ const Map<String, String> enUS = {
   "add_voucher_successful": "Add Voucher Successful",
   "add_voucher_failed": "Add Voucher Failed",
   "add_to_cart": "Add to Cart",
-  "product_suggestions": "Product Suggestions"
+  "product_suggestions": "Product Suggestions",
+  "area": "Area",
+  "add_new_area_successfully": "Successfully added new area",
+  "add_area_failed": "Failed to add new area",
+  "delete_area_successfully": "Successfully deleted area",
+  "delete_area_failed": "Failed to delete area",
+  "enter_name_area": "Enter area name",
+  "edit_area": "Edit area",
+  "add_new_area": "Add new area"
 };

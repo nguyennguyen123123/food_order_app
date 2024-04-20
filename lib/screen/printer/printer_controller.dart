@@ -26,7 +26,7 @@ class PrinterController extends GetxController {
     getPrinter();
   }
 
-  void getPrinter() async {
+  Future<void> getPrinter() async {
     final result = await printerRepository.getPrinter();
 
     // printer.value = result as List<Printer>;

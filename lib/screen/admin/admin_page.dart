@@ -21,6 +21,8 @@ class AdminPage extends GetWidget<AdminController> {
           ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.PRINT), text: 'Quản lý máy in'),
           SizedBox(height: 24.h),
           ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.VOUCHER), text: 'Voucher'),
+          SizedBox(height: 24.h),
+          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.AREA), text: 'Khu vực'),
         ],
       ),
     );

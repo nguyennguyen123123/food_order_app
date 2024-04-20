@@ -1,5 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:food_delivery_app/constant/app_config.dart';
+import 'package:food_delivery_app/resourese/area/area_repository.dart';
+import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
 import 'package:food_delivery_app/resourese/auth_repository/auth_repository.dart';
 import 'package:food_delivery_app/resourese/auth_repository/iauth_repository.dart';
 import 'package:food_delivery_app/resourese/check_in_out/check_in_out_repository.dart';
@@ -63,5 +65,6 @@ class AppService {
     ));
     Get.put<IVoucherRepository>(VoucherRepository(baseService: Get.find()));
     Get.put<ICheckInOutRepository>(CheckInOutRepository(baseService: Get.find()));
+    Get.put<IAreaRepository>(AreaRepository(baseService: Get.find()));
   }
 }

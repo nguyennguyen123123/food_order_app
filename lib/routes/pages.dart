@@ -1,5 +1,10 @@
 import 'package:food_delivery_app/screen/admin/admin_binding.dart';
 import 'package:food_delivery_app/screen/admin/admin_page.dart';
+import 'package:food_delivery_app/screen/area/area_binding.dart';
+import 'package:food_delivery_app/screen/area/area_pages.dart';
+import 'package:food_delivery_app/screen/area/edit/edit_area_binding.dart';
+import 'package:food_delivery_app/screen/area/view/add_area_view.dart';
+import 'package:food_delivery_app/screen/area/view/edit_area_view.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
 import 'package:food_delivery_app/screen/cart/cart_binding.dart';
@@ -206,6 +211,20 @@ abstract class AppPages {
       name: Routes.EDIT_ORDER,
       page: () => EditOrderDetailPage(),
       binding: EditOrderDetailBinding(),
+    ),
+    GetPage(
+      name: Routes.AREA,
+      page: () => AreaPages(),
+      binding: AreaBinding(),
+    ),
+    GetPage(
+      name: Routes.ADDAREA,
+      page: () => AddAreaView(),
+    ),
+    GetPage(
+      name: Routes.EDITAREA,
+      page: () => EditAreaView(),
+      binding: EditAreaBinding(),
     ),
   ];
 }

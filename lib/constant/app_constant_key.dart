@@ -33,6 +33,7 @@ abstract class TABLE_NAME {
   static const PARTY_ORDER = 'party_order';
   static const PARTY_ORDER_ITEM = 'party_order_item';
   static const ORDER_WITH_PARTY = 'order_with_party';
+  static const AREA = 'area';
 }
 
 abstract class ERROR_CODE {
