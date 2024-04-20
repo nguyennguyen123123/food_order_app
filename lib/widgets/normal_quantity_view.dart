@@ -11,6 +11,7 @@ class NormalQuantityView extends StatelessWidget {
     this.canUpdate = true,
     this.quantity = 1,
     this.showTitle = true,
+    this.canReduceToZero = false,
   }) : super(key: key);
 
   final int quantity;
@@ -18,6 +19,7 @@ class NormalQuantityView extends StatelessWidget {
   final bool canUpdate;
   final bool showTitle;
   final bool Function(int quantity)? checkUpdateValue;
+  final bool canReduceToZero;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +35,10 @@ class NormalQuantityView extends StatelessWidget {
           child: Row(
             children: [
               Opacity(
-                opacity: quantity == 1 ? 0.5 : 1,
+                opacity: quantity == 1 && !canReduceToZero ? 0.5 : 1,
                 child: GestureDetector(
                     onTap: () {
-                      if (quantity == 1) return;
+                      if (quantity == 1 && !canReduceToZero) return;
                       updateQuantity?.call(quantity - 1);
                     },
                     child: Icon(Icons.remove)),

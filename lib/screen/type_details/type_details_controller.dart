@@ -1,13 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
+import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:get/get.dart';
 
 class TypeDetailsController extends GetxController {
   final IFoodRepository foodRepository;
+  final OrderCartService cartService;
+  final orderCartNotifier = ValueNotifier(0);
 
-  TypeDetailsController({required this.foodRepository});
+  TypeDetailsController({required this.foodRepository, required this.cartService});
 
   final foodTypes = Rx<List<FoodType>?>(null);
   final foods = Rx<List<FoodModel>?>(null);
@@ -24,6 +28,12 @@ class TypeDetailsController extends GetxController {
 
   int page = 0;
   int limit = LIMIT;
+
+  @override
+  void onClose() {
+    orderCartNotifier.dispose();
+    super.onClose();
+  }
 
   @override
   void onInit() async {
@@ -50,6 +60,16 @@ class TypeDetailsController extends GetxController {
     foods.update((val) => val?.addAll(result));
     if (result.length < limit) return false;
     return true;
+  }
+
+  void addItemToCart(FoodModel food) {
+    cartService.onAddItemToCart(food);
+    orderCartNotifier.value += 1;
+  }
+
+  void updateQuantityCartItem(int quantity, FoodModel food) {
+    cartService.onUpdateQuantityItemInCart(quantity, food);
+    orderCartNotifier.value += 1;
   }
 
   Future<void> onRefresh(String typeId) async {

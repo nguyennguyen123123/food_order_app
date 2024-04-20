@@ -12,7 +12,9 @@ import 'package:food_delivery_app/widgets/voucher_item.dart';
 import 'package:get/get.dart';
 
 class SelectVoucherBTS extends StatefulWidget {
-  const SelectVoucherBTS({Key? key}) : super(key: key);
+  const SelectVoucherBTS({this.voucher, Key? key}) : super(key: key);
+
+  final Voucher? voucher;
 
   @override
   State<SelectVoucherBTS> createState() => _SelectVoucherBTSState();
@@ -45,6 +47,14 @@ class _SelectVoucherBTSState extends State<SelectVoucherBTS> {
     vouchersNotifier.value = null;
     page = 0;
     vouchersNotifier.value = await voucherRepository.getVoucher();
+    if (widget.voucher != null) {
+      if (widget.voucher?.voucherId == null) {
+        isCustomVoucher.value = true;
+        voucherCustomPrice.text = (widget.voucher?.discountValue ?? 0).toStringAsFixed(2);
+      } else {
+        currentVoucher.value = widget.voucher;
+      }
+    }
   }
 
   @override
@@ -107,7 +117,10 @@ class _SelectVoucherBTSState extends State<SelectVoucherBTS> {
                         children: [
                           Checkbox(
                               value: isSelectVoucher,
-                              onChanged: (val) => currentVoucher.value = voucher,
+                              onChanged: (val) {
+                                currentVoucher.value = voucher;
+                                isCustomVoucher.value = false;
+                              },
                               activeColor: Colors.amber),
                           Expanded(child: VoucherItem(voucher: voucher)),
                         ],
@@ -120,17 +133,22 @@ class _SelectVoucherBTSState extends State<SelectVoucherBTS> {
           ),
         ),
         SizedBox(height: 12.h),
-        BottomButton(
-          onConfirm: () {
-            if (isCustomVoucher.value) {
-              Get.back(
-                  result: Voucher(
-                      discountType: DiscountType.amount,
-                      discountValue: double.tryParse(voucherCustomPrice.text) ?? 0.0));
-            } else {
-              Get.back(result: currentVoucher.value);
-            }
-          },
+        TwoValueNotifier<TextEditingValue, Voucher?>(
+          firstNotifier: voucherCustomPrice,
+          secondNotifier: currentVoucher,
+          itemBuilder: (text, voucher) => BottomButton(
+            isDisableConfirm: (!isCustomVoucher.value || text.text.isEmpty) && voucher == null,
+            onConfirm: () {
+              if (isCustomVoucher.value) {
+                Get.back(
+                    result: Voucher(
+                        discountType: DiscountType.amount,
+                        discountValue: double.tryParse(voucherCustomPrice.text) ?? 0.0));
+              } else {
+                Get.back(result: currentVoucher.value);
+              }
+            },
+          ),
         )
       ],
     );

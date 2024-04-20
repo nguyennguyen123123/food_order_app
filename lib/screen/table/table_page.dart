@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
+import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/routes/pages.dart';
-import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/screen/table/table_parameter.dart';
 import 'package:food_delivery_app/screen/table/widget/table_details_widget.dart';
-import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -31,54 +30,27 @@ class TablePage extends GetWidget<TableControlller> {
       ),
       body: Padding(
         padding: padding(all: 16),
-        child: Obx(
-          () => Column(
-            children: [
-              if (controller.tableList.value == null)
-                Center(child: CircularProgressIndicator())
-              else
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    children: controller.tableList.value!.map((table) {
-                      return itemTableView(
-                        table,
-                        // onTap: () => showModalBottomSheet(
-                        //   context: Get.context!,
-                        //   shape: RoundedRectangleBorder(
-                        //     borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                        //   ),
-                        //   builder: (context) => TableDetailsWidget(
-                        //     table: table,
-                        //     onTapDelete: () => controller.deleteTable(table.tableId.toString()),
-                        //     onTapEdit: () {
-                        //       Get.back();
-                        //       Get.toNamed(Routes.EDITTABLE, arguments: TableParameter(tableModels: table));
-                        //     },
-                        //   ),
-                        // ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-            ],
-          ),
-        ),
+        child: Obx(() {
+          if (controller.tableList.value == null)
+            return Center(child: CircularProgressIndicator());
+          else
+            return RefreshIndicator(
+              onRefresh: controller.getListTable,
+              child: GridView.count(
+                crossAxisCount: 3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                children: controller.tableList.value!.map(itemTableView).toList(),
+              ),
+            );
+        }),
       ),
     );
   }
 
   Widget itemTableView(TableModels table) {
     return GestureDetector(
-      onTap: () {
-        if (table.foodOrder == null) {
-          Get.toNamed(Routes.WAITER_CART, arguments: WaiterCartParameter(tableNumber: table.tableNumber ?? 1));
-        } else {
-          Get.toNamed(Routes.EDIT_ORDER, arguments: EditOrderDetailParameter(foodOrder: table.foodOrder!));
-        }
-      },
+      onTap: () => controller.navigateToOrderInTable(table),
       onLongPressStart: (details) {
         showModalBottomSheet(
           context: Get.context!,
@@ -111,7 +83,7 @@ class TablePage extends GetWidget<TableControlller> {
               textAlign: TextAlign.center,
             ),
             if (table.foodOrder != null)
-              Text('Đơn hàng: ${table.foodOrder?.total?.toStringAsFixed(2)}', style: StyleThemeData.regular10()),
+              Text('Đơn hàng: ${table.foodOrder?.totalPrice.toStringAsFixed(2)}', style: StyleThemeData.regular10())
           ],
         ),
       ),

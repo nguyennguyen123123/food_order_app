@@ -85,7 +85,7 @@ extension FoodOrderExtension on FoodOrder {
     }
     var total = 0.0;
     for (final order in partyOrders!) {
-      total += order.priceInVoucher;
+      total += order.orderPrice;
     }
     return total;
   }

@@ -1,13 +1,11 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
-import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/voucher.dart';
+import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/cart/dialog/add_item_party_dialog.dart';
 import 'package:food_delivery_app/screen/cart/dialog/select_voucher_bts.dart';
 import 'package:food_delivery_app/screen/cart/widget/cart_item_view.dart';
-import 'package:food_delivery_app/screen/cart/widget/empty_cart.dart';
 import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
@@ -22,120 +20,126 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final foods = controller.cartService.items.value;
-      final total = controller.cartService.totalCartPrice;
-      final hasOrderInCart = (foods.isEmpty && controller.partyOrders.isEmpty) ||
-          (foods.isEmpty &&
-              controller.partyOrders.isNotEmpty &&
-              (controller.partyOrders.first.orderItems?.isEmpty ?? true));
       return Stack(
         children: [
           GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: Scaffold(
               appBar: AppBar(
-                title: Text("place_order_title".tr, style: StyleThemeData.bold18()),
+                title: Text("Lên đơn cho bàn ${controller.parameter.tableNumber}".tr, style: StyleThemeData.bold18()),
                 centerTitle: true,
                 automaticallyImplyLeading: false,
               ),
-              body: hasOrderInCart
-                  ? EmptyCart()
-                  : Column(
+              body: Column(
+                children: [
+                  Obx(
+                    () => DropdownButton<int>(
+                        value: controller.currentPartySelected.value,
+                        items: <DropdownMenuItem<int>>[
+                          _buildDropdownItem(-2, 'Mặc định'),
+                          _buildDropdownItem(-1, 'Tạo thêm party'),
+                          ...controller.cartService.partyOrders.value.asMap().entries.map((e) => _buildDropdownItem(
+                                e.key,
+                                'Party ${e.key + 1}',
+                                canDelete: true && controller.currentPartySelected.value != e.key,
+                                onDelete: () async {
+                                  final result = await DialogUtils.showYesNoDialog(
+                                      title: 'Bạn muốn xóa party ${e.key + 1} khỏi đơn không?');
+                                  if (result == true) {
+                                    controller.onRemovePartyIndex(e.key);
+                                  }
+                                },
+                              )),
+                        ],
+                        onChanged: (value) => controller.onChangeCurrentPartyOrder(value ?? -2)),
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.toNamed(Routes.TYPEDETAIL),
+                    child: Container(
+                      color: appTheme.background,
+                      padding: padding(all: 12),
+                      child: Row(
+                        children: [
+                          Icon(Icons.add, size: 16.w, color: appTheme.blackColor),
+                          SizedBox(width: 8.w),
+                          Expanded(child: Text('Thêm món ăn', style: StyleThemeData.regular17()))
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
                       children: [
-                        Expanded(
-                          child: ListView(
+                        Obx(() {
+                          final orderItems = controller.currentOrderItems;
+
+                          return _buildListOrderItem(
+                            orderItems,
+                            partyIndex: controller.currentPartySelected.value >= 0
+                                ? controller.currentPartySelected.value
+                                : null,
+                            numerGangs: controller.numberOfGangs,
+                            itemBuilder: (index, item, {int? gangIndex}) => CartItemView(
+                              item,
+                              updateQuantity: (quantity) => controller.updateQuantityCart(item, quantity),
+                              removeCartItem: () => controller.removeItemInOrder(item),
+                              updateNote: (note) => controller.updateCartItemNote(item, note),
+                              onRemoveGangIndex: () => controller.onRemoveGangIndexOfCartItem(item),
+                              canDeleteGang: gangIndex != null,
+                            ),
+                            onCreateGang: controller.onCreateGang,
+                            onRemoveGang: controller.onRemoveGang,
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                  Obx(() {
+                    final total = controller.currentCartPrice;
+
+                    return Container(
+                      padding: padding(all: 12),
+                      decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
+                      child: Column(
+                        children: [
+                          _buildVoucherField(
+                            controller.currentVoucher,
+                            updateVoucher: controller.onAddVoucher,
+                            clearVoucher: controller.onClearVoucher,
+                          ),
+                          Divider(),
+                          Row(
                             children: [
-                              Padding(
-                                padding: padding(horizontal: 16, top: 16),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("table_number".tr, style: StyleThemeData.bold14()),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("total".tr, style: StyleThemeData.bold18()),
+                                    SizedBox(height: 8.h),
+                                    Text(Utils.getCurrency(total.toDouble()), style: StyleThemeData.regular17())
+                                  ],
                                 ),
                               ),
-                              Padding(
-                                padding: padding(top: 4, left: 16, right: 16, bottom: 16),
-                                child: controller.tableList.isEmpty
-                                    ? Center(child: CircularProgressIndicator())
-                                    : itemSelectTable(),
-                              ),
-                              GestureDetector(
-                                onTap: () => controller.onCreateNewPartyOrder(),
-                                child: Container(
-                                  color: appTheme.background,
-                                  padding: padding(all: 12),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.add, size: 16.w, color: appTheme.blackColor),
-                                      SizedBox(width: 8.w),
-                                      Expanded(child: Text('Tạo party', style: StyleThemeData.regular17()))
-                                    ],
-                                  ),
+                              PrimaryButton(
+                                onPressed: controller.onPlaceOrder,
+                                contentPadding: padding(horizontal: 18, vertical: 12),
+                                radius: BorderRadius.circular(100),
+                                isDisable: controller.isEmptyCart,
+                                backgroundColor: appTheme.primaryColor,
+                                borderColor: appTheme.primaryColor,
+                                child: Text(
+                                  'confirm'.tr,
+                                  style: StyleThemeData.bold18(color: appTheme.whiteText, height: 0),
                                 ),
-                              ),
-                              _buildListPartyOrder(),
-                              if (controller.partyOrders.length > 0) Divider(height: 1, color: appTheme.borderColor),
-                              _buildListOrderItem(
-                                foods,
-                                numerGangs: controller.cartService.numberOfGang.value,
-                                itemBuilder: (index, item, {int? gangIndex}) => CartItemView(
-                                  item,
-                                  updateQuantity: (quantity) => controller.updateQuantityCart(item, quantity),
-                                  removeCartItem: () => controller.removeItemInOrder(item),
-                                  updateNote: (note) => controller.updateCartItemNote(item, note),
-                                  onRemoveGangIndex: () => controller.onRemoveGangIndexOfCartItem(item),
-                                  canDeleteGang: gangIndex != null,
-                                ),
-                                onCreateGang: controller.cartService.onCreateNewGang,
-                                onRemoveGang: controller.cartService.onRemoveGang,
                               ),
                             ],
                           ),
-                        ),
-                        hasOrderInCart
-                            ? SizedBox()
-                            : Container(
-                                padding: padding(all: 12),
-                                decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
-                                child: Column(
-                                  children: [
-                                    _buildVoucherField(
-                                      controller.cartService.currentVoucher.value,
-                                      updateVoucher: controller.cartService.onAddVoucher,
-                                      clearVoucher: () => controller.cartService.currentVoucher.value = null,
-                                    ),
-                                    Divider(),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text("total".tr, style: StyleThemeData.bold18()),
-                                              SizedBox(height: 8.h),
-                                              Text(Utils.getCurrency(total.toDouble()),
-                                                  style: StyleThemeData.regular17())
-                                            ],
-                                          ),
-                                        ),
-                                        PrimaryButton(
-                                          onPressed: controller.onPlaceOrder,
-                                          contentPadding: padding(horizontal: 18, vertical: 12),
-                                          radius: BorderRadius.circular(100),
-                                          isDisable: controller.selectedValue.value == null,
-                                          backgroundColor: appTheme.primaryColor,
-                                          borderColor: appTheme.primaryColor,
-                                          child: Text(
-                                            'confirm'.tr,
-                                            style: StyleThemeData.bold18(color: appTheme.whiteText, height: 0),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )
-                      ],
-                    ),
+                        ],
+                      ),
+                    );
+                  })
+                ],
+              ),
             ),
           ),
           if (controller.isLoading.value) ...[
@@ -150,6 +154,24 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
     });
   }
 
+  DropdownMenuItem<int> _buildDropdownItem(
+    int value,
+    String title, {
+    bool canDelete = false,
+    VoidCallback? onDelete,
+  }) {
+    return DropdownMenuItem<int>(
+        value: value,
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text(title, style: StyleThemeData.bold16()),
+          if (canDelete)
+            GestureDetector(
+              onTap: onDelete,
+              child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 24),
+            )
+        ]));
+  }
+
   Widget _buildVoucherField(
     Voucher? voucher, {
     required void Function(Voucher) updateVoucher,
@@ -161,7 +183,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
           Expanded(child: Text('Áp dụng voucher', style: StyleThemeData.bold18())),
           PrimaryButton(
               onPressed: () async {
-                final result = await DialogUtils.showBTSView(SelectVoucherBTS());
+                final result = await DialogUtils.showBTSView(SelectVoucherBTS(voucher: voucher));
                 if (result != null && result is Voucher) {
                   updateVoucher(result);
                 }
@@ -186,71 +208,6 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
         ],
       );
     }
-  }
-
-  Widget _buildPartyOrderItem(int partyIndex) {
-    final partyOrder = controller.partyOrders[partyIndex];
-    return Padding(
-      padding: padding(horizontal: 12, vertical: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(child: Text('Party ${partyIndex + 1}', style: StyleThemeData.bold18())),
-              GestureDetector(
-                  onTap: () async {
-                    final result = await DialogUtils.showYesNoDialog(
-                        title: 'Bạn muốn xóa party ${partyIndex + 1} khỏi đơn không?');
-                    if (result == true) {
-                      controller.onRemovePartyOrder(partyIndex);
-                    }
-                  },
-                  child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
-              GestureDetector(
-                  onTap: () async {
-                    final result = await DialogUtils.showDialogView(
-                        AddItemPartyDialog(orderItems: controller.cartService.items.value));
-                    if (result != null && result is List<OrderItem>) {
-                      controller.cartService.onAddItemToPartyOrder(partyIndex, result);
-                    }
-                  },
-                  child: Icon(Icons.add, size: 32.w, color: appTheme.blackColor))
-            ],
-          ),
-          SizedBox(height: 8.h),
-          _buildListOrderItem(
-            partyOrder.orderItems ?? [],
-            partyIndex: partyIndex,
-            itemBuilder: (index, item, {gangIndex}) => CartItemView(
-              item,
-              updateQuantity: (quantity) => controller.updateQuantityPartyItem(partyIndex, item, quantity),
-              removeCartItem: () => controller.removeItemInPartyOrder(partyIndex, item),
-              updateNote: (note) => controller.updatePartyCartItemNote(partyIndex, item, note),
-              canDeleteGang: gangIndex != null,
-              onRemoveGangIndex: () => controller.onRemoveGangIndexOfPartyCartItem(partyIndex, item),
-            ),
-            onCreateGang: () => controller.onPartyCreateGang(partyIndex),
-            onRemoveGang: (gangIndex) => controller.cartService.onRemoveGangInParty(partyIndex, gangIndex),
-            numerGangs: partyOrder.numberOfGangs,
-          ),
-          SizedBox(height: 8.h),
-          if (partyOrder.orderItems?.isNotEmpty == true)
-            _buildVoucherField(
-              partyOrder.voucher,
-              updateVoucher: (voucher) => controller.updatePartyVoucher(partyIndex, voucher),
-              clearVoucher: () => controller.clearVoucherParty(partyIndex),
-            ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
-              Text(Utils.getCurrency(partyOrder.totalPrice))
-            ],
-          )
-        ],
-      ),
-    );
   }
 
   Widget _buildListOrderItem(
@@ -284,7 +241,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                   onAddItemToGang: () async {
                     final result = await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
                     if (result != null && result is List<OrderItem>) {
-                      controller.updateOrderItemInCart(index, result, partyIndex: partyIndex);
+                      controller.cartService.updateOrderItemInCart(index, result, partyIndex: partyIndex);
                     }
                   },
                 ),
@@ -302,17 +259,6 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
           _buildGangView(onCreateGang: onCreateGang),
         ],
       ],
-    );
-  }
-
-  Widget _buildListPartyOrder() {
-    return Obx(
-      () => ListView.separated(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) => _buildPartyOrderItem(index),
-          separatorBuilder: (context, index) => SizedBox(height: 8.h),
-          itemCount: controller.partyOrders.length),
     );
   }
 
@@ -353,54 +299,6 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
             Expanded(child: Text('Tạo Gang', style: StyleThemeData.bold16(color: appTheme.greyColor))),
             ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 20),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget itemSelectTable() {
-    return Container(
-      padding: padding(all: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: appTheme.blackColor),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2<String>(
-          isExpanded: true,
-          hint: Text(
-            'select_table_number'.tr,
-            style: StyleThemeData.regular16(height: 0),
-          ),
-          iconStyleData: IconStyleData(icon: Icon(Icons.keyboard_arrow_down_outlined)),
-          items: controller.tableList
-              .map((item) => DropdownMenuItem<String>(
-                    value: item.tableId,
-                    child: Text(
-                      item.tableNumber.toString(),
-                      style: StyleThemeData.regular16(height: 0),
-                    ),
-                  ))
-              .toList(),
-          value: controller.selectedValue.value?.tableId,
-          onChanged: (value) {
-            controller.selectedValue.value = controller.tableList.firstWhere((item) => item.tableId == value);
-          },
-          buttonStyleData: ButtonStyleData(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            height: 40.h,
-            width: Get.size.width.w,
-          ),
-          dropdownStyleData: const DropdownStyleData(
-            maxHeight: 800,
-            offset: const Offset(0, -10),
-          ),
-          menuItemStyleData: MenuItemStyleData(height: 40.h),
-          onMenuStateChange: (isOpen) {
-            if (!isOpen) {
-              controller.searchController.clear();
-            }
-          },
         ),
       ),
     );

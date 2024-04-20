@@ -37,7 +37,7 @@ class EditTableController extends GetxController {
       isLoading(true);
       TableModels tableModels = TableModels(
         tableId: tableId,
-        tableNumber: int.tryParse(tableNumberController.text.replaceAll(',', '')),
+        tableNumber: tableNumberController.text.replaceAll(',', ''),
         numberOfOrder: int.tryParse(numberOfOrderController.text.replaceAll(',', '')),
         numberOfPeople: int.tryParse(numberOfPeopleController.text.replaceAll(',', '')),
         createdAt: tableParametar?.createdAt,

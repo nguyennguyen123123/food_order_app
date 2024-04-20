@@ -9,7 +9,7 @@ class TableModels {
   @JsonKey(name: 'table_id')
   String? tableId;
   @JsonKey(name: 'table_number') // số bàn
-  int? tableNumber;
+  String? tableNumber;
   @JsonKey(name: 'number_of_order') // số đơn
   int? numberOfOrder;
   @JsonKey(name: 'number_of_people') // số khách
@@ -39,7 +39,7 @@ class TableModels {
 
   TableModels copyWith({
     String? tableId,
-    int? tableNumber,
+    String? tableNumber,
     int? numberOfOrder,
     int? numberOfPeople,
     String? createdAt,

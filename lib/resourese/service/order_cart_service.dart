@@ -1,3 +1,4 @@
+import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/voucher.dart';
@@ -8,12 +9,34 @@ class OrderCartService extends GetxService {
   final partyOrders = Rx<List<PartyOrder>>([]);
   final currentVoucher = Rx<Voucher?>(null);
   final numberOfGang = Rx<int>(1);
+  int currentPartyOrder = -1;
 
   void clearCart() {
     items.value = [];
     partyOrders.value = [];
     currentVoucher.value = null;
     numberOfGang.value = 0;
+  }
+
+  List<OrderItem> get currentListItems =>
+      currentPartyOrder < 0 ? items.value : partyOrders.value[currentPartyOrder].orderItems ?? <OrderItem>[];
+
+  void onAddItemToCart(FoodModel foodModel) {
+    final item = OrderItem(food: foodModel, foodId: foodModel.foodId);
+    if (currentPartyOrder < 0) {
+      onAddOrderItem(item);
+    } else {
+      onAddItemToPartyOrder(currentPartyOrder, [item]);
+    }
+  }
+
+  void onUpdateQuantityItemInCart(int quantity, FoodModel foodModel) {
+    final item = OrderItem(food: foodModel, foodId: foodModel.foodId);
+    if (currentPartyOrder < 0) {
+      updateQuantityCart(item, quantity);
+    } else {
+      updateQuantityPartyItem(currentPartyOrder, item, quantity);
+    }
   }
 
   void onAddOrderItem(OrderItem orderItem) {
@@ -105,7 +128,11 @@ class OrderCartService extends GetxService {
           val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
               -1;
       if (index != -1) {
-        val?[index].quantity = quantity;
+        if (quantity > 0) {
+          val?[index].quantity = quantity;
+        } else {
+          val?.removeAt(index);
+        }
       }
     });
   }
@@ -117,7 +144,11 @@ class OrderCartService extends GetxService {
       final index =
           items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
       if (index != -1) {
-        items[index].quantity = quantity;
+        if (quantity > 0) {
+          items[index].quantity = quantity;
+        } else {
+          items.removeAt(index);
+        }
         val?[partyIndex].orderItems = items;
       }
     });
