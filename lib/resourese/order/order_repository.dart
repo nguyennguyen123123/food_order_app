@@ -358,4 +358,25 @@ class OrderRepository extends IOrderRepository {
 
     return false;
   }
+
+  @override
+  Future<void> updateListOrderInParty(
+      PartyOrder partyOrder, List<OrderItem> orignalOrderItem, List<OrderItem> orderItem) async {
+    try {
+      //Xoá những item này
+      final deleteItem = <OrderItem>[];
+      final newItem = orderItem.where((element) => element.orderItemId == null).toList();
+      for (final item in orignalOrderItem) {
+        final index = orderItem.indexWhere((element) => element.food?.foodId == item.food?.foodId);
+        if (index == -1) {
+          deleteItem.add(item);
+        }
+      }
+
+      /// cập nhật các item trong party
+      /// check cái nào cần cập nhật cái nào ko
+    } catch (e) {
+      print(e);
+    }
+  }
 }

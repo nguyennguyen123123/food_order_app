@@ -101,11 +101,12 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                   padding: padding(all: 8),
                   decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
                   child: BottomButton(
-                      isDisableCancel: true,
+                      isDisableCancel: false,
                       isDisableConfirm: false,
+                      cancelText: 'Cập nhật',
                       confirmText: 'Hoàn thành',
                       onConfirm: controller.onCompleteOrder,
-                      onCancel: () {})),
+                      onCancel: controller.updatePartyOrder)),
           ],
         );
       }),
@@ -123,7 +124,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     final order = controller.foodOrder.value!;
     final partyOrder = order.partyOrders![partyIndex];
     final number = partyOrder.partyNumber ?? order.partyOrders?.length;
-    final total = partyOrder.orderPrice;
+    final total = partyOrder.totalPrice;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
     final isPartyOrderComplete = partyOrder.orderStatus == ORDER_STATUS.DONE;

@@ -24,9 +24,9 @@ class SplashController extends GetxController {
   void init() async {
     if (baseService.client.auth.currentUser != null) {
       await accountService.initAccount();
-      Get.toNamed(Routes.MAIN);
+      Get.offAllNamed(Routes.MAIN);
     } else {
-      Get.toNamed(Routes.ONBOARD);
+      Get.offAllNamed(Routes.ONBOARD);
     }
   }
 }
