@@ -16,8 +16,6 @@ class TableControlller extends GetxController {
   TableControlller({required this.tableRepository});
 
   final TextEditingController tableNumberController = TextEditingController();
-  final TextEditingController numberOfOrderController = TextEditingController();
-  final TextEditingController numberOfPeopleController = TextEditingController();
 
   var isLoadingAdd = false.obs;
   var isLoadingDelete = false.obs;
@@ -25,8 +23,6 @@ class TableControlller extends GetxController {
 
   void clear() {
     tableNumberController.clear();
-    numberOfOrderController.clear();
-    numberOfPeopleController.clear();
   }
 
   @override
@@ -76,9 +72,7 @@ class TableControlller extends GetxController {
   }
 
   void addTable() async {
-    if (tableNumberController.text.isEmpty ||
-        numberOfOrderController.text.isEmpty ||
-        numberOfPeopleController.text.isEmpty) return;
+    if (tableNumberController.text.isEmpty) return;
 
     try {
       isLoadingAdd(true);
@@ -86,8 +80,6 @@ class TableControlller extends GetxController {
       TableModels tableModels = TableModels(
         tableId: getUuid(),
         tableNumber: tableNumberController.text.replaceAll(',', ''),
-        numberOfOrder: int.tryParse(numberOfOrderController.text.replaceAll(',', '')),
-        numberOfPeople: int.tryParse(numberOfPeopleController.text.replaceAll(',', '')),
         createdAt: DateTime.now().toString(),
       );
 
@@ -141,7 +133,5 @@ class TableControlller extends GetxController {
   void dispose() {
     super.dispose();
     tableNumberController.dispose();
-    numberOfOrderController.dispose();
-    numberOfPeopleController.dispose();
   }
 }

@@ -28,29 +28,12 @@ class AddTableView extends GetWidget<TableControlller> {
         padding: padding(all: 16),
         child: Column(
           children: [
+            
             EditTextFieldCustom(
               controller: controller.tableNumberController,
               hintText: 'enter_table_number'.tr,
               label: 'table_number'.tr,
               suffix: Icon(Icons.title),
-              textInputType: TextInputType.number,
-              numberFormat: NumericTextFormatter(),
-            ),
-            SizedBox(height: 12.h),
-            EditTextFieldCustom(
-              controller: controller.numberOfOrderController,
-              hintText: 'enter_order_number'.tr,
-              label: 'order_number'.tr,
-              suffix: Icon(Icons.description),
-              textInputType: TextInputType.number,
-              numberFormat: NumericTextFormatter(),
-            ),
-            SizedBox(height: 12.h),
-            EditTextFieldCustom(
-              controller: controller.numberOfPeopleController,
-              hintText: 'enter_number_of_guests'.tr,
-              label: 'number_of_guests'.tr,
-              suffix: Icon(Icons.price_change),
               textInputType: TextInputType.number,
               numberFormat: NumericTextFormatter(),
             ),

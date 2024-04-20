@@ -10,10 +10,6 @@ class TableModels {
   String? tableId;
   @JsonKey(name: 'table_number') // số bàn
   String? tableNumber;
-  @JsonKey(name: 'number_of_order') // số đơn
-  int? numberOfOrder;
-  @JsonKey(name: 'number_of_people') // số khách
-  int? numberOfPeople;
   @JsonKey(name: 'created_at')
   String? createdAt;
   @JsonKey(name: 'order', includeToJson: false)
@@ -24,8 +20,6 @@ class TableModels {
   TableModels({
     this.tableId,
     this.tableNumber,
-    this.numberOfOrder,
-    this.numberOfPeople,
     this.createdAt,
     this.foodOrder,
     this.foodOrderId,
@@ -40,8 +34,6 @@ class TableModels {
   TableModels copyWith({
     String? tableId,
     String? tableNumber,
-    int? numberOfOrder,
-    int? numberOfPeople,
     String? createdAt,
     FoodOrder? foodOrder,
     String? foodOrderId,
@@ -49,8 +41,6 @@ class TableModels {
     return TableModels(
       tableId: tableId ?? this.tableId,
       tableNumber: tableNumber ?? this.tableNumber,
-      numberOfOrder: numberOfOrder ?? this.numberOfOrder,
-      numberOfPeople: numberOfPeople ?? this.numberOfPeople,
       createdAt: createdAt ?? this.createdAt,
       foodOrder: foodOrder ?? this.foodOrder,
       foodOrderId: foodOrderId ?? this.foodOrderId,

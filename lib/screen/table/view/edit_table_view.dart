@@ -36,24 +36,6 @@ class EditTableView extends GetWidget<EditTableController> {
               textInputType: TextInputType.number,
               numberFormat: NumericTextFormatter(),
             ),
-            SizedBox(height: 12.h),
-            EditTextFieldCustom(
-              controller: controller.numberOfOrderController,
-              hintText: 'enter_order_number'.tr,
-              label: 'order_number'.tr,
-              suffix: Icon(Icons.description),
-              textInputType: TextInputType.number,
-              numberFormat: NumericTextFormatter(),
-            ),
-            SizedBox(height: 12.h),
-            EditTextFieldCustom(
-              controller: controller.numberOfPeopleController,
-              hintText: 'enter_number_of_guests'.tr,
-              label: 'number_of_guests'.tr,
-              suffix: Icon(Icons.price_change),
-              textInputType: TextInputType.number,
-              numberFormat: NumericTextFormatter(),
-            ),
             SizedBox(height: 24.h),
             Obx(
               () => ConfirmationButtonWidget(
