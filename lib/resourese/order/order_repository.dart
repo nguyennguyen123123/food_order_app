@@ -360,7 +360,7 @@ class OrderRepository extends IOrderRepository {
   }
 
   @override
-  Future<void> updateListOrderInParty(
+  Future<List<OrderItem>> updateListOrderInParty(
       PartyOrder partyOrder, List<OrderItem> orignalOrderItem, List<OrderItem> orderItem) async {
     try {
       //Xoá những item này
@@ -372,11 +372,36 @@ class OrderRepository extends IOrderRepository {
           deleteItem.add(item);
         }
       }
+      final oldOrderItem = orderItem.where((element) => element.orderItemId != null).toList();
 
-      /// cập nhật các item trong party
-      /// check cái nào cần cập nhật cái nào ko
+      if (deleteItem.isNotEmpty) {
+        await deleteListOrderItem(deleteItem);
+      }
+      await Future.wait(oldOrderItem.map((item) async {
+        return baseService.client
+            .from(TABLE_NAME.ORDER_ITEM)
+            .update({'sort_order': item.sortOder, 'quantity': item.quantity})
+            .select("*, food_id (*, typeId(*) )")
+            .withConverter((data) => data.map((e) => OrderItem.fromJson(e)).toList());
+      }));
+      final result = await Future.wait(newItem.map((item) async {
+        final newItem = await _uploadOrderItem(item.copyWith(partyOderId: partyOrder.partyOrderId));
+        await baseService.client
+            .from(TABLE_NAME.PARTY_ORDER_ITEM)
+            .insert({'party_order_id': partyOrder.partyOrderId, 'order_item_id': newItem.orderItemId});
+        return newItem;
+      }));
+      return [...oldOrderItem, ...result];
     } catch (e) {
       print(e);
+      return [];
     }
+  }
+
+  Future<void> deleteListOrderItem(List<OrderItem> orderItems) async {
+    await Future.wait(orderItems.map((e) => baseService.client
+        .from(TABLE_NAME.ORDER_ITEM)
+        .delete()
+        .eq(_ORDER_COLUMN_KEY.ORDER_ITEM_ID, e.orderItemId ?? '')));
   }
 }
