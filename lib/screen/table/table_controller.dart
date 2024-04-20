@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
+import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
@@ -12,8 +13,9 @@ import 'package:get/get.dart';
 
 class TableControlller extends GetxController {
   final ITableRepository tableRepository;
+  final IOrderRepository orderRepository;
 
-  TableControlller({required this.tableRepository});
+  TableControlller({required this.tableRepository, required this.orderRepository});
 
   final TextEditingController tableNumberController = TextEditingController();
   final TextEditingController numberOfOrderController = TextEditingController();
@@ -45,7 +47,7 @@ class TableControlller extends GetxController {
       final result =
           await Get.toNamed(Routes.WAITER_CART, arguments: WaiterCartParameter(tableNumber: table.tableNumber ?? ''));
       if (result != null && result is FoodOrder) {
-        table.foodOrder = result;
+        table.foodOrder = await orderRepository.getOrderDetail(result.orderId ?? '');
         tableList.update((val) {
           final index = val?.indexWhere((element) => element.tableId == table.tableId) ?? -1;
           if (index != -1) {
@@ -54,19 +56,33 @@ class TableControlller extends GetxController {
         });
       }
     } else {
-      final result =
-          await Get.toNamed(Routes.EDIT_ORDER, arguments: EditOrderDetailParameter(foodOrder: table.foodOrder!));
+      final result = await Get.toNamed(Routes.EDIT_ORDER,
+          arguments: EditOrderDetailParameter(foodOrder: table.foodOrder!.copyWith()));
       if (result != null && result is EditOrderResponse) {
         final tables = tableList.value ?? <TableModels>[];
-        if (result.type == EditType.CHANGE_WHOLE_ORDER_TABLE) {
-          final oldIndex = tables.indexWhere((element) => element.tableNumber == table.tableNumber);
-          if (oldIndex != -1) {
-            tables[oldIndex].foodOrder = null;
+        if (result.type == EditType.CHANGE_TABLE) {
+          final originalTable = await tableRepository.getTableByNumber(result.orignalTable);
+          final targetTable = await tableRepository.getTableByNumber(result.targetTable);
+
+          if (originalTable != null) {
+            final oldIndex = tables.indexWhere((element) => element.tableNumber == result.orignalTable);
+            if (oldIndex != -1) {
+              tables[oldIndex] = originalTable;
+            }
           }
-          final newIndex =
-              tables.indexWhere((element) => element.tableNumber == (int.tryParse(result.foodOrder.tableNumber!) ?? 0));
-          if (newIndex != -1) {
-            tables[newIndex].foodOrder = result.foodOrder;
+          if (targetTable != null) {
+            final newIndex = tables.indexWhere((element) => element.tableNumber == result.targetTable);
+            if (newIndex != -1) {
+              tables[newIndex] = targetTable;
+            }
+          }
+        } else {
+          final table = await tableRepository.getTableByNumber(result.orignalTable);
+          if (table != null) {
+            final oldIndex = tables.indexWhere((element) => element.tableNumber == result.orignalTable);
+            if (oldIndex != -1) {
+              tables[oldIndex] = table;
+            }
           }
         }
         tableList.value = tables;

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
@@ -11,6 +12,7 @@ import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/utils/utils.dart';
+import 'package:food_delivery_app/widgets/bottom_button.dart';
 import 'package:food_delivery_app/widgets/image_asset_custom.dart';
 import 'package:food_delivery_app/widgets/normal_quantity_view.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -26,33 +28,46 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
         backgroundColor: appTheme.transparentColor,
         titleSpacing: 0,
         automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
-            Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
-            GestureDetector(
-                onTap: () async {
-                  final result = await DialogUtils.showDialogView(
-                      ChangeTableDialog(currentTable: controller.foodOrder.value.tableNumber ?? '0'));
-                  if (result != null) {
-                    controller.onMoveOrderToOtherTable(result);
-                  }
-                },
-                child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
-            SizedBox(width: 12.w),
-            GestureDetector(
-                onTap: () async {
-                  final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa đơn này không?');
-                  if (result == true) {
-                    controller.onDeleteOrder();
-                  }
-                },
-                child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
-          ],
-        ),
+        title: Obx(() {
+          final order = controller.foodOrder.value;
+          if (order == null) return SizedBox();
+          final isOrderNonComplete =
+              order.partyOrders!.firstWhereOrNull((element) => element.orderStatus == ORDER_STATUS.DONE) == null;
+          return Row(
+            children: [
+              IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
+              Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
+              if (isOrderNonComplete)
+                GestureDetector(
+                    onTap: () async {
+                      final result = await DialogUtils.showDialogView(
+                          ChangeTableDialog(currentTable: controller.foodOrder.value!.tableNumber ?? '0'));
+                      if (result != null) {
+                        controller.onMoveOrderToOtherTable(result);
+                      }
+                    },
+                    child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
+              SizedBox(width: 12.w),
+              if (isOrderNonComplete)
+                GestureDetector(
+                    onTap: () async {
+                      final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa đơn này không?');
+                      if (result == true) {
+                        controller.onDeleteOrder();
+                      }
+                    },
+                    child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
+            ],
+          );
+        }),
       ),
       body: Obx(() {
         final order = controller.foodOrder.value;
+        if (order == null) {
+          return Center(child: CircularProgressIndicator());
+        }
+        final isPartyOrderComplete =
+            order.partyOrders?[controller.currentPartyIndex.value].orderStatus == ORDER_STATUS.DONE;
         return Column(
           children: [
             TabBar(
@@ -74,18 +89,23 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                   SizedBox(height: 8.h),
                   DropdownButton<int>(
                       value: controller.currentPartyIndex.value,
-                      items: (controller.foodOrder.value.partyOrders ?? [])
-                          .asMap()
-                          .entries
-                          .map((e) => buildDropDownItem(e.key))
-                          .toList(),
-                      onChanged: (value) => controller.currentPartyIndex.value = value ?? 0),
+                      items: (order.partyOrders ?? []).asMap().entries.map((e) => buildDropDownItem(e.key)).toList(),
+                      onChanged: (value) => controller.onChangePartyIndex(value ?? 0)),
                   SizedBox(height: 8.h),
                   _buildPartyOrder(controller.currentPartyIndex.value)
-                  // ...?order.partyOrders?.asMap().entries.map((e) => _buildPartyOrder(e.key, e.value))
                 ],
               ),
             ),
+            if (!isPartyOrderComplete)
+              Container(
+                  padding: padding(all: 8),
+                  decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
+                  child: BottomButton(
+                      isDisableCancel: true,
+                      isDisableConfirm: false,
+                      confirmText: 'Hoàn thành',
+                      onConfirm: controller.onCompleteOrder,
+                      onCancel: () {})),
           ],
         );
       }),
@@ -95,16 +115,18 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
   DropdownMenuItem<int> buildDropDownItem(int index) {
     return DropdownMenuItem<int>(
       value: index,
-      child: Text('Party $index'),
+      child: Text('Party ${index + 1}'),
     );
   }
 
   Widget _buildPartyOrder(int partyIndex) {
-    final partyOrder = controller.foodOrder.value.partyOrders![partyIndex];
-    final number = partyOrder.partyNumber ?? controller.foodOrder.value.partyOrders?.length;
+    final order = controller.foodOrder.value!;
+    final partyOrder = order.partyOrders![partyIndex];
+    final number = partyOrder.partyNumber ?? order.partyOrders?.length;
     final total = partyOrder.orderPrice;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
+    final isPartyOrderComplete = partyOrder.orderStatus == ORDER_STATUS.DONE;
     final maxGang = orderItems.fold<int?>(null, (a, b) {
       if (b.sortOder == null) {
         return a;
@@ -126,7 +148,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (controller.currentTab.value == 1) ...[
+        if (controller.currentTab.value == 1 && !isPartyOrderComplete) ...[
           Obx(() {
             final isSelectAll = controller.selectOrderItems.length == orderItems.length;
             return Row(
@@ -139,7 +161,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 GestureDetector(
                     onTap: () async {
                       final result = await DialogUtils.showDialogView(ChangeTableDialog(
-                        currentTable: controller.foodOrder.value.tableNumber ?? '',
+                        currentTable: order.tableNumber ?? '',
                         isLimitTableHasOrder: false,
                       ));
                       if (result != null) {
@@ -154,14 +176,15 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
         Row(
           children: [
             Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
-            GestureDetector(
-                onTap: () async {
-                  final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
-                  if (result != null) {
-                    controller.addFoodToPartyOrder(partyIndex, result);
-                  }
-                },
-                child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
+            if (!isPartyOrderComplete)
+              GestureDetector(
+                  onTap: () async {
+                    final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
+                    if (result != null) {
+                      controller.addFoodToPartyOrder(partyIndex, result);
+                    }
+                  },
+                  child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
           ],
         ),
         SizedBox(height: 8.h),
@@ -169,11 +192,12 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
           ListView.separated(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => _buildOrderItem(partyIndex, partyOrder.orderItems![index]),
+              itemBuilder: (context, index) =>
+                  _buildOrderItem(partyIndex, partyOrder.orderItems![index], isPartyOrderComplete),
               separatorBuilder: (context, index) => SizedBox(height: 6.h),
               itemCount: partyOrder.orderItems?.length ?? 0)
         else
-          _buildOrderItemByGangIndex(partyIndex, maxGang, orderItems),
+          _buildOrderItemByGangIndex(partyIndex, maxGang, orderItems, isPartyOrderComplete),
         SizedBox(height: 6.h),
         if (partyOrder.voucherPrice != null) ...[Text('Áp dụng mã giảm giá: Giảm ${getVoucherDiscountText()}')],
         Row(
@@ -183,12 +207,12 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     );
   }
 
-  Widget _buildOrderItemByGangIndex(int partyIndex, int maxGang, List<OrderItem> orderItem) {
+  Widget _buildOrderItemByGangIndex(int partyIndex, int maxGang, List<OrderItem> orderItem, bool isPartyOrderComplete) {
     final orderItemNoGang = orderItem.where((element) => element.sortOder == null).toList();
 
     return Column(
       children: [
-        ...orderItemNoGang.map((e) => _buildOrderItem(partyIndex, e)),
+        ...orderItemNoGang.map((e) => _buildOrderItem(partyIndex, e, isPartyOrderComplete)),
         ...List.generate(maxGang + 1, (gangIndex) {
           final orderItemInGang = orderItem.where((element) => element.sortOder == gangIndex).toList();
           return Column(
@@ -203,7 +227,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                   ],
                 ),
               ),
-              ...orderItemInGang.map((e) => _buildOrderItem(partyIndex, e)),
+              ...orderItemInGang.map((e) => _buildOrderItem(partyIndex, e, isPartyOrderComplete)),
             ],
           );
         })
@@ -211,7 +235,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     );
   }
 
-  Widget _buildOrderItem(int partyIndex, OrderItem item) {
+  Widget _buildOrderItem(int partyIndex, OrderItem item, bool isPartyOrderComplete) {
     return GestureDetector(
       onTap: () {
         if (controller.currentTab.value == 1) {
@@ -250,7 +274,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
               children: [
                 itemData(title: 'food'.tr, data: item.food?.name ?? ''),
                 SizedBox(height: 8.h),
-                if (controller.currentTab.value == 0) ...[
+                if (controller.currentTab.value == 0 && !isPartyOrderComplete) ...[
                   itemData(
                       title: 'quantity'.tr,
                       content: NormalQuantityView(
@@ -268,7 +292,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 itemData(title: 'total'.tr, data: Utils.getCurrency((item.quantity) * (item.food?.price ?? 0))),
               ],
             )),
-            if (controller.currentTab.value == 0)
+            if (controller.currentTab.value == 0 && !isPartyOrderComplete)
               GestureDetector(
                   onTap: () async {
                     final result =

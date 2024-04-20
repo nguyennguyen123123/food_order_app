@@ -14,5 +14,8 @@ abstract class IOrderRepository extends IBaseRepository {
   Future<void> onDeleteOrder(FoodOrder foodOrder);
   Future<bool> onChangeTableOfOrder(FoodOrder foodOrder, TableModels model);
   Future<bool> onChangeOrderItemToOtherTable(
-      PartyOrder partyOrder, List<String> selectedOrderItemsId, TableModels tableModels);
+      String currentOrderId, PartyOrder partyOrder, List<String> selectedOrderItemsId, TableModels tableModels);
+  Future<FoodOrder?> getOrderDetail(String orderId);
+  Future<bool> completeOrder(String orderId, String tableNumber);
+  Future<bool> completePartyOrder(String partyOrderId);
 }

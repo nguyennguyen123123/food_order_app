@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
@@ -10,6 +12,15 @@ import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
+import 'package:get/get.dart';
+
+abstract class _ORDER_COLUMN_KEY {
+  static const PARTY_ORDER_ID = 'party_order_id';
+  static const ORDER_ITEM_ID = 'order_item_id';
+  static const ORDER_ID = 'order_id';
+  static const ORDER_STATUS = 'order_status';
+  static const USER_ORDER_ID = 'user_order_id';
+}
 
 class OrderRepository extends IOrderRepository {
   final BaseService baseService;
@@ -59,7 +70,7 @@ class OrderRepository extends IOrderRepository {
       );
 
       // foodOrder.orderItems = await Future.wait(orderItems.map(_uploadOrderItem));
-
+      /// Tạo đơn
       final order = await baseService.client
           .from(TABLE_NAME.FOOD_ORDER)
           .insert(foodOrder.toJson())
@@ -67,6 +78,7 @@ class OrderRepository extends IOrderRepository {
           .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
 
       // await _uploadPartyOrderItem(orders, orderId);
+      // Tạo dữ liệu cho các party
       Future.wait([
         _uploadPartyOrderItem(orders, orderId),
         profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1),
@@ -118,6 +130,25 @@ class OrderRepository extends IOrderRepository {
           .from(TABLE_NAME.ORDER_WITH_PARTY)
           .insert({'order_id': orderId, 'party_order_id': partyId});
     }));
+  }
+
+  @override
+  Future<FoodOrder?> getOrderDetail(String orderId) async {
+    try {
+      const queryOrder = 'order_item!inner (*, food_id:food!inner(*, typeId(*))))';
+      var query = baseService.client.from(TABLE_NAME.FOOD_ORDER).select('''
+        *,
+        user_order_id(*),
+        ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder))),
+        ${TABLE_NAME.FOOD_ORDER_ITEM}!inner(*, $queryOrder),
+        ''').eq('order_id', orderId);
+      final response = await query.withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
+
+      return response.first;
+    } catch (e) {
+      handleError(e);
+    }
+    return null;
   }
 
 // food_id (*, typeId (*))
@@ -179,7 +210,7 @@ class OrderRepository extends IOrderRepository {
 
   @override
   Future<bool> onChangeOrderItemToOtherTable(
-      PartyOrder partyOrder, List<String> selectedOrderItemsId, TableModels tableModels) async {
+      String currentOrderId, PartyOrder partyOrder, List<String> selectedOrderItemsId, TableModels tableModels) async {
     try {
       final isSelectAll = partyOrder.orderItems?.length == selectedOrderItemsId.length;
       final selectOrderItems =
@@ -187,9 +218,73 @@ class OrderRepository extends IOrderRepository {
       final table = await tableRepository.getTableByNumber(tableModels.tableNumber ?? '');
       if (table != null) {
         if (tableModels.foodOrderId == null && tableModels.foodOrder == null) {
+          /// Trường hợp bàn đó chưa có đơn nào
+          final orderId = getUuid();
+          final newOrder = FoodOrder(
+            tableNumber: table.tableNumber,
+            orderId: orderId,
+            userOrder: accountService.myAccount,
+            userOrderId: accountService.myAccount?.userId,
+            orderStatus: ORDER_STATUS.CREATED,
+            orderType: ORDER_TYPE.NORMAL,
+            bondNumber: 1,
+          );
+          await baseService.client
+              .from(TABLE_NAME.FOOD_ORDER)
+              .insert(newOrder.toJson())
+              .select("*, user_order_id(*)")
+              .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
           if (isSelectAll) {
-          } else {}
-        } else {}
+            /// Muốn chuyển tất cả món trong party
+            await baseService.client
+                .from(TABLE_NAME.ORDER_WITH_PARTY)
+                .delete()
+                .eq('order_id', currentOrderId)
+                .eq('party_order_id', partyOrder.partyOrderId ?? '');
+            await baseService.client
+                .from(TABLE_NAME.ORDER_WITH_PARTY)
+                .insert({'order_id': orderId, 'party_order_id': partyOrder.partyOrderId ?? ''});
+          } else {
+            ///Chỉ chuyển một số món trong party
+            await _uploadPartyWithOrderItem(
+                partyOrder.partyOrderId ?? '', PartyOrder(orderItems: selectOrderItems), orderId);
+          }
+          await tableRepository.updateTableWithOrder(tableModels.tableNumber ?? '', orderId: orderId);
+        } else {
+          /// Trường hợp bàn đó đã có đơn
+          final orderId = tableModels.foodOrder?.orderId ?? '';
+          if (isSelectAll) {
+            /// Muốn chuyển tất cả món trong party
+
+            await baseService.client
+                .from(TABLE_NAME.ORDER_WITH_PARTY)
+                .delete()
+                .eq('order_id', currentOrderId)
+                .eq('party_order_id', partyOrder.partyOrderId ?? '');
+            await baseService.client
+                .from(TABLE_NAME.ORDER_WITH_PARTY)
+                .insert({'order_id': orderId, 'party_order_id': partyOrder.partyOrderId ?? ''});
+          } else {
+            ///Chỉ chuyển một số món trong party
+            int? newPartyNumber = null;
+            final isContainNullNumber =
+                tableModels.foodOrder?.partyOrders?.firstWhereOrNull((element) => element.partyNumber == null) != null;
+            if (isContainNullNumber) {
+              for (final party in tableModels.foodOrder!.partyOrders!) {
+                if (party.partyNumber != null) {
+                  if (newPartyNumber == null) {
+                    newPartyNumber = party.partyNumber;
+                  } else {
+                    newPartyNumber = max(newPartyNumber, party.partyNumber ?? 0);
+                  }
+                }
+              }
+              newPartyNumber = (newPartyNumber ?? 0) + 1;
+            }
+            await _uploadPartyWithOrderItem(partyOrder.partyOrderId ?? '',
+                PartyOrder(orderItems: selectOrderItems, partyNumber: newPartyNumber), orderId);
+          }
+        }
       }
       return false;
     } catch (e) {
@@ -198,5 +293,69 @@ class OrderRepository extends IOrderRepository {
     }
   }
 
-  // Future<void> _onCreateOrderByItem(List<OrderItem> orderItem) {}
+  Future<PartyOrder?> _uploadPartyWithOrderItem(String oldPartyOrderId, PartyOrder party, String orderId) async {
+    try {
+      final partyId = getUuid();
+
+      final newParty = party.copyWith(
+        partyOrderId: partyId,
+        orderId: orderId,
+        total: party.totalPriceWithoutVoucher,
+        orderStatus: ORDER_STATUS.CREATED,
+      );
+
+      await baseService.client.from(TABLE_NAME.PARTY_ORDER).insert(newParty.toJson());
+      await baseService.client
+          .from(TABLE_NAME.ORDER_WITH_PARTY)
+          .insert({'order_id': orderId, 'party_order_id': partyId});
+      final orderItems = party.orderItems ?? <OrderItem>[];
+      await Future.wait(orderItems.map((item) async {
+        await baseService.client
+            .from(TABLE_NAME.PARTY_ORDER_ITEM)
+            .delete()
+            .eq('party_order_id', oldPartyOrderId)
+            .eq('order_item_id', item.orderItemId ?? '');
+        await baseService.client
+            .from(TABLE_NAME.ORDER_ITEM)
+            .update({'party_order_id': partyId, 'sort_order': null}).eq('order_item_id', item.orderItemId ?? '');
+        await baseService.client
+            .from(TABLE_NAME.PARTY_ORDER_ITEM)
+            .insert({'party_order_id': partyId, 'order_item_id': item.orderItemId});
+      }));
+      return party;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> completeOrder(String orderId, String tableNumber) async {
+    try {
+      await Future.wait([
+        baseService.client
+            .from(TABLE_NAME.FOOD_ORDER)
+            .update({_ORDER_COLUMN_KEY.ORDER_STATUS: ORDER_STATUS.DONE}).eq(_ORDER_COLUMN_KEY.ORDER_ID, orderId),
+        tableRepository.updateTableWithOrder(tableNumber)
+      ]);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+
+    return false;
+  }
+
+  @override
+  Future<bool> completePartyOrder(String partyOrderId) async {
+    try {
+      await baseService.client.from(TABLE_NAME.PARTY_ORDER).update(
+          {_ORDER_COLUMN_KEY.ORDER_STATUS: ORDER_STATUS.DONE}).eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, partyOrderId);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+
+    return false;
+  }
 }
