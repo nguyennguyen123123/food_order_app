@@ -126,5 +126,13 @@ const Map<String, String> viVN = {
   "add_voucher_successful": "Thêm voucher thành công",
   "add_voucher_failed": "Thêm voucher thất bại",
   "add_to_cart": "Thêm vào giỏ hàng",
-  "product_suggestions": "Gợi ý sản phẩm"
+  "product_suggestions": "Gợi ý sản phẩm",
+  "area": "Khu vực",
+  "add_new_area_successfully": "Thêm khu vực mới thành công",
+  "add_area_failed": "Thêm khu vực thất bại",
+  "delete_area_successfully": "Xóa khu vực thành công",
+  "delete_area_failed": "Xóa khu vực thất bại",
+  "enter_name_area": "Nhập tên khu vực",
+  "edit_area": "Chỉnh sửa khu vực",
+  "add_new_area": "Thêm khu vực mới"
 };

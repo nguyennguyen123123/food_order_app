@@ -32,4 +32,7 @@ abstract class Routes {
   static const TYPEDETAIL = '/type-detail';
   static const WAITER_CART = '/waiter-cart';
   static const EDIT_ORDER = '/edit-order';
+  static const AREA = '/area';
+  static const ADDAREA = '/add-area';
+  static const EDITAREA = '/edit-area';
 }
