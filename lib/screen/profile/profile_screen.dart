@@ -124,7 +124,7 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     ),
                     const Divider(thickness: 1),
                     newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.adminIcon),
-                    const Divider(thickness: 1)
+                    const Divider(thickness: 1),
                   ],
                   newMethod(
                     onTap: () {
