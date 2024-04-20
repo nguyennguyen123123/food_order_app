@@ -37,8 +37,8 @@ class TableControlller extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getListTable();
     getListArea();
+    getListTable();
   }
 
   Future<void> getListTable() async {

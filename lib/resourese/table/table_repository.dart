@@ -83,9 +83,9 @@ class TableRepository extends ITableRepository {
           .from(TABLE_NAME.TABLE)
           .select('''
           *, 
+          area_id(*),
           order(*, 
           user_order_id(*),
-          area_id(*),
           ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder)))),
           ''')
           .limit(limit)
