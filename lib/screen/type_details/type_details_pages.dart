@@ -29,7 +29,7 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: controller.onGetFood,
+        onRefresh: controller.onRefresh,
         child: SingleChildScrollView(
           child: Padding(
             padding: padding(bottom: 16),
@@ -42,7 +42,12 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
                     child: Padding(
                       padding: padding(horizontal: 16),
                       child: Row(
-                        children: controller.selectedFoodTypes.map(_buildSelectedFoodType).toList(),
+                        children: controller.selectedFoodTypes
+                            .asMap()
+                            .entries
+                            .map((e) => _buildSelectedFoodType(
+                                e.key, e.value, e.key == controller.selectedFoodTypes.length - 1))
+                            .toList(),
                       ),
                     ),
                   ),
@@ -56,11 +61,19 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
                 Obx(
                   () => controller.foodTypes.value == null
                       ? Center(child: CircularProgressIndicator())
-                      : SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Padding(
-                            padding: padding(horizontal: 16),
-                            child: Row(children: controller.foodTypes.value!.map(_buildFoodType).toList()),
+                      : LoadMore(
+                          onLoadMore: controller.onLoadMoreType,
+                          delegate: LoadMoreDelegateCustom(),
+                          child: SizedBox(
+                            height: 140.h,
+                            width: double.infinity,
+                            child: ListView.separated(
+                              padding: padding(horizontal: 16),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) => _buildFoodType(controller.foodTypes.value![index]),
+                              separatorBuilder: (context, index) => SizedBox(width: 16.w),
+                              itemCount: controller.foodTypes.value!.length,
+                            ),
                           ),
                         ),
                 ),
@@ -114,27 +127,10 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
   }
 
   Widget _buildFoodType(FoodType foodType) {
-    print(foodType.parentTypeId);
     return Padding(
       padding: padding(right: 8),
       child: GestureDetector(
-        onTap: () {
-          if (controller.selectedFoodTypes.contains(foodType)) {
-            controller.removeFoodType(foodType);
-            if (controller.selectedFoodTypes.first.parentTypeId != null) {
-              controller.onRefresh(controller.selectedFoodTypes.first.parentTypeId ?? '');
-            } else {
-              controller.onRefresh(controller.selectedFoodTypes.first.typeId ?? '');
-            }
-          } else {
-            controller.addFoodType(foodType);
-            if (foodType.parentTypeId != null) {
-              controller.onRefresh(foodType.parentTypeId ?? '');
-            } else {
-              controller.onRefresh(foodType.typeId ?? '');
-            }
-          }
-        },
+        onTap: () => controller.updateFoodTypeToList(foodType),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -151,7 +147,7 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
     );
   }
 
-  Widget _buildSelectedFoodType(FoodType foodType) {
+  Widget _buildSelectedFoodType(int index, FoodType foodType, bool isLast) {
     return Stack(
       children: [
         Padding(
@@ -169,28 +165,30 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
             ],
           ),
         ),
-        Positioned(
-          top: 0,
-          right: 0,
-          child: InkWell(
-            onTap: () {
-              controller.removeFoodType(foodType);
-              if (controller.selectedFoodTypes.first.parentTypeId != null) {
-                controller.onRefresh(controller.selectedFoodTypes.first.parentTypeId ?? '');
-              } else {
-                controller.onRefresh(controller.selectedFoodTypes.first.typeId ?? '');
-              }
-            },
-            child: Container(
-              padding: padding(all: 4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: appTheme.textDesColor,
+        if (isLast)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: InkWell(
+              onTap: () {
+                controller.removeFoodType(foodType);
+
+                if (controller.selectedFoodTypes.isNotEmpty) {
+                  controller.onRefresh(typeId: controller.selectedFoodTypes.last.typeId ?? '');
+                } else {
+                  controller.onRefresh();
+                }
+              },
+              child: Container(
+                padding: padding(all: 4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: appTheme.textDesColor,
+                ),
+                child: Icon(Icons.clear, color: appTheme.whiteText, size: 16),
               ),
-              child: Icon(Icons.clear, color: appTheme.whiteText, size: 16),
             ),
           ),
-        ),
       ],
     );
   }
