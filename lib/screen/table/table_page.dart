@@ -11,15 +11,39 @@ import 'package:get/get.dart';
 class TablePage extends GetWidget<TableControlller> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: appTheme.transparentColor,
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        title: Padding(
-          padding: padding(horizontal: 16),
-          child: Text('table_list'.tr, style: StyleThemeData.bold18(height: 0)),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: appTheme.transparentColor,
+          automaticallyImplyLeading: false,
+          titleSpacing: 0,
+          title: Padding(
+            padding: padding(horizontal: 16),
+            child: Text('table_list'.tr, style: StyleThemeData.bold18(height: 0)),
+          ),
+          actions: [
+            IconButton(onPressed: () => Get.toNamed(Routes.ADDTABLE), icon: Icon(Icons.add)),
+            SizedBox(width: 12.w),
+          ],
+        ),
+        body: Padding(
+          padding: padding(all: 16),
+          child: Obx(() {
+            if (controller.tableList.value == null)
+              return Center(child: CircularProgressIndicator());
+            else
+              return RefreshIndicator(
+                onRefresh: controller.getListTable,
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  children: controller.tableList.value!.map(itemTableView).toList(),
+                ),
+              );
+          }),
         ),
       ),
       body: Padding(

@@ -126,6 +126,8 @@ class WaiterCartController extends GetxController {
   void onRemovePartyIndex(int partyIndex) {
     if (currentPartySelected.value == partyIndex) {
       currentPartySelected.value = -2;
+    } else if (currentPartySelected.value > 0) {
+      currentPartySelected.value -= 1;
     }
     cartService.onRemovePartyOrder(partyIndex);
     Get.back();

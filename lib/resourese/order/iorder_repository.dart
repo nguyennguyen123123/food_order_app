@@ -18,4 +18,6 @@ abstract class IOrderRepository extends IBaseRepository {
   Future<FoodOrder?> getOrderDetail(String orderId);
   Future<bool> completeOrder(String orderId, String tableNumber);
   Future<bool> completePartyOrder(String partyOrderId);
+  Future<void> updateListOrderInParty(
+      PartyOrder partyOrder, List<OrderItem> orignalOrderItem, List<OrderItem> orderItem);
 }

@@ -45,18 +45,17 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
 
   Future<void> onInitOrderData() async {
     try {
-      showLoading();
-      final order = await orderRepository.getOrderDetail(parameter.foodOrder.orderId ?? '');
-      if (order == null) {
-        throw Exception();
-      }
+      final order = parameter.foodOrder.copyWith(
+          partyOrders: parameter.foodOrder.partyOrders
+              ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((e) => e.copyWith()).toList()))
+              .toList());
+
       if ((order.partyOrders?.length ?? 1) > 1) {
         final first = order.partyOrders!.removeAt(0);
         order.partyOrders!.add(first);
       }
       originalOrder = order.copyWith();
       renewOrder();
-      dissmissLoading();
     } catch (e) {
       dissmissLoading();
       await DialogUtils.showInfoErrorDialog(content: 'Vui lòng thử lại');
@@ -225,4 +224,6 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
             ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((e) => e.copyWith()).toList()))
             .toList());
   }
+
+  void updatePartyOrder() {}
 }
