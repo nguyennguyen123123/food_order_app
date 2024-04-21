@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
-import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -21,10 +20,6 @@ class TablePage extends GetWidget<TableControlller> {
           padding: padding(horizontal: 16),
           child: Text('table_list'.tr, style: StyleThemeData.bold18(height: 0)),
         ),
-        actions: [
-          IconButton(onPressed: () => Get.toNamed(Routes.ADDTABLE), icon: Icon(Icons.add)),
-          SizedBox(width: 12.w),
-        ],
       ),
       body: Padding(
         padding: padding(all: 16),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
+import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -35,41 +36,49 @@ class TableDetailsWidget extends StatelessWidget {
               ],
             ),
             SizedBox(height: 24.h),
-            Row(
-              children: [
-                Flexible(
-                  child: InkWell(
-                    onTap: onTapDelete,
-                    child: Container(
-                      width: Get.size.width.w,
-                      height: 40.h,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: appTheme.errorColor),
+            if (table.foodOrder != null)
+              Row(
+                children: [
+                  Text('Đơn hàng: ', style: StyleThemeData.bold18()),
+                  Text(table.foodOrder?.totalPrice.toStringAsFixed(2) ?? '', style: StyleThemeData.regular16()),
+                ],
+              )
+            else
+              Row(
+                children: [
+                  Flexible(
+                    child: InkWell(
+                      onTap: onTapDelete,
+                      child: Container(
+                        width: Get.size.width.w,
+                        height: 40.h,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: appTheme.errorColor),
+                        ),
+                        child: Text('Xóa', style: StyleThemeData.bold18(height: 0, color: appTheme.errorColor)),
                       ),
-                      child: Text('Xóa', style: StyleThemeData.bold18(height: 0, color: appTheme.errorColor)),
                     ),
                   ),
-                ),
-                SizedBox(width: 12.w),
-                Flexible(
-                  child: InkWell(
-                    onTap: onTapEdit,
-                    child: Container(
-                      width: Get.size.width.w,
-                      height: 40.h,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: appTheme.appColor,
+                  SizedBox(width: 12.w),
+                  Flexible(
+                    child: InkWell(
+                      onTap: onTapEdit,
+                      child: Container(
+                        width: Get.size.width.w,
+                        height: 40.h,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: appTheme.appColor,
+                        ),
+                        child: Text('Chỉnh sửa', style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
                       ),
-                      child: Text('Chỉnh sửa', style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
           ],
         ),
       ),
