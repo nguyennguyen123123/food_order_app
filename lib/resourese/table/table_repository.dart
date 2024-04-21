@@ -123,4 +123,20 @@ class TableRepository extends ITableRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<List<TableModels>?> getListAreaTable(String areaId) async {
+    try {
+      final result = await baseService.client
+          .from(TABLE_NAME.TABLE)
+          .select()
+          .eq('area_id', areaId)
+          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+
+      return result;
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
+  }
 }

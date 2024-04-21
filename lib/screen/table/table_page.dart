@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
+import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -23,20 +24,59 @@ class TablePage extends GetWidget<TableControlller> {
       ),
       body: Padding(
         padding: padding(all: 16),
-        child: Obx(() {
-          if (controller.tableList.value == null)
-            return Center(child: CircularProgressIndicator());
-          else
-            return RefreshIndicator(
-              onRefresh: controller.getListTable,
-              child: GridView.count(
-                crossAxisCount: 3,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                children: controller.tableList.value!.map(itemTableView).toList(),
-              ),
-            );
-        }),
+        child: Column(
+          children: [
+            Align(alignment: Alignment.centerLeft, child: Text('Khu vực', style: StyleThemeData.bold18())),
+            SizedBox(height: 8.h),
+            Obx(() => SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: controller.areaTypeList.map((area) {
+                      return Padding(
+                        padding: padding(right: 12),
+                        child: InkWell(
+                          onTap: () {
+                            controller
+                                .getListAreaTable(area.areaId ?? '')
+                                .then((value) => Get.toNamed(Routes.LISTAREATABLE));
+                          },
+                          child: Container(
+                            padding: padding(vertical: 8, horizontal: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: appTheme.appColor,
+                            ),
+                            child: Text(
+                              area.areaName ?? '',
+                              style: StyleThemeData.bold14(height: 0, color: appTheme.whiteText),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                )),
+            SizedBox(height: 12.h),
+            Align(alignment: Alignment.centerLeft, child: Text('Số bàn', style: StyleThemeData.bold18())),
+            SizedBox(height: 8.h),
+            Obx(() {
+              if (controller.tableList.value == null)
+                return Center(child: CircularProgressIndicator());
+              else
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: controller.getListTable,
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      children: controller.tableList.value!.map(itemTableView).toList(),
+                    ),
+                  ),
+                );
+            }),
+          ],
+        ),
       ),
     );
   }

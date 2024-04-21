@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/models/area.dart';
 import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
+import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -48,6 +49,7 @@ class AreaController extends GetxController {
 
         areaList.value?.add(area);
         Get.back();
+        Get.find<TableControlller>().getListArea();
         areaNameController.clear();
         DialogUtils.showSuccessDialog(content: "add_new_area_successfully".tr);
       }

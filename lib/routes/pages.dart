@@ -49,6 +49,7 @@ import 'package:food_delivery_app/screen/table/table_binding.dart';
 import 'package:food_delivery_app/screen/table/table_page.dart';
 import 'package:food_delivery_app/screen/table/view/add_table_view.dart';
 import 'package:food_delivery_app/screen/table/view/edit_table_view.dart';
+import 'package:food_delivery_app/screen/table/widget/list_area_table_widget.dart';
 import 'package:food_delivery_app/screen/type_details/type_details_binding.dart';
 import 'package:food_delivery_app/screen/type_details/type_details_pages.dart';
 import 'package:food_delivery_app/screen/voucher/edit/edit_voucher_binding.dart';
@@ -233,6 +234,10 @@ abstract class AppPages {
       name: Routes.EDITAREA,
       page: () => EditAreaView(),
       binding: EditAreaBinding(),
+    ),
+    GetPage(
+      name: Routes.LISTAREATABLE,
+      page: () => ListAreaTable(),
     ),
   ];
 }
