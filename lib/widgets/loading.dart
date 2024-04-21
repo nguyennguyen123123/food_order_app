@@ -11,7 +11,7 @@ void dissmissLoading() {
 Future<void> excute(Future<void> Function() function) async {
   try {
     EasyLoading.show();
-    function.call();
+    await function.call();
   } catch (e) {
     print(e);
   } finally {

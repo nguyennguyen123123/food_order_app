@@ -33,7 +33,7 @@ class ProfileRepository extends IProfileRepository {
 
       return null;
     } catch (error) {
-      print(error);
+      handleError(error);
       return null;
     }
   }

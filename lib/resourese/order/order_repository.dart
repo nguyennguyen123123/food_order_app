@@ -381,6 +381,7 @@ class OrderRepository extends IOrderRepository {
         return baseService.client
             .from(TABLE_NAME.ORDER_ITEM)
             .update({'sort_order': item.sortOder, 'quantity': item.quantity})
+            .eq(_ORDER_COLUMN_KEY.ORDER_ITEM_ID, item.orderItemId ?? '')
             .select("*, food_id (*, typeId(*) )")
             .withConverter((data) => data.map((e) => OrderItem.fromJson(e)).toList());
       }));
