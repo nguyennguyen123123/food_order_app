@@ -377,6 +377,10 @@ class OrderRepository extends IOrderRepository {
       if (deleteItem.isNotEmpty) {
         await deleteListOrderItem(deleteItem);
       }
+      await baseService.client.from(TABLE_NAME.PARTY_ORDER).update({
+        'voucher_price': partyOrder.voucherPrice,
+        'voucher_type': partyOrder.voucherType,
+      }).eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, partyOrder.partyOrderId ?? '');
       await Future.wait(oldOrderItem.map((item) async {
         return baseService.client
             .from(TABLE_NAME.ORDER_ITEM)
@@ -404,5 +408,39 @@ class OrderRepository extends IOrderRepository {
         .from(TABLE_NAME.ORDER_ITEM)
         .delete()
         .eq(_ORDER_COLUMN_KEY.ORDER_ITEM_ID, e.orderItemId ?? '')));
+  }
+
+  @override
+  Future<PartyOrder?> uploadNewPartyOrder(String orderId, PartyOrder partyOrder) async {
+    try {
+      final partyId = getUuid();
+
+      final newParty = partyOrder.copyWith(
+        partyOrderId: partyId,
+        orderId: orderId,
+        total: partyOrder.totalPriceWithoutVoucher,
+        orderStatus: ORDER_STATUS.CREATED,
+        voucherPrice: partyOrder.voucher?.discountValue,
+        voucherType: partyOrder.voucher?.discountType.toString(),
+      );
+
+      await baseService.client.from(TABLE_NAME.PARTY_ORDER).insert(newParty.toJson());
+
+      final orderItems = partyOrder.orderItems ?? <OrderItem>[];
+      newParty.orderItems = await Future.wait(orderItems.map((item) async {
+        final newItem = await _uploadOrderItem(item.copyWith(partyOderId: partyId));
+        await baseService.client
+            .from(TABLE_NAME.PARTY_ORDER_ITEM)
+            .insert({'party_order_id': partyId, 'order_item_id': newItem.orderItemId});
+        return newItem;
+      }));
+      await baseService.client
+          .from(TABLE_NAME.ORDER_WITH_PARTY)
+          .insert({'order_id': orderId, 'party_order_id': partyId});
+      return newParty;
+    } catch (e) {
+      print(e);
+    }
+    return null;
   }
 }

@@ -8,6 +8,7 @@ class TypeDetailsBinding implements Binding {
     Get.put(TypeDetailsController(
       foodRepository: Get.find(),
       cartService: Get.find(),
+      paramter: Get.arguments,
     ));
   }
 }

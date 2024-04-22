@@ -9,8 +9,6 @@ part 'food_order.g.dart';
 class FoodOrder {
   @JsonKey(name: 'order_id')
   String? orderId;
-  // @JsonKey(name: 'food_order_item', includeFromJson: true, includeToJson: false)
-  // List<OrderItem>? orderItems;
   @JsonKey(name: 'voucher_price')
   double? voucherPrice;
   @JsonKey(name: 'table_number')

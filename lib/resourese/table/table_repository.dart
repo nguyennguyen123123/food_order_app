@@ -8,6 +8,17 @@ class TableRepository extends ITableRepository {
 
   TableRepository({required this.baseService});
 
+  String get fullQueryTableOrder {
+    const queryOrder = 'order_item!inner (*, food_id:food!inner(*, typeId(*))))';
+    return '''
+          *, 
+          area_id(*),
+          order(*, 
+          user_order_id(*),
+          ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder)))),
+          ''';
+  }
+
   @override
   Future<Map<String, dynamic>?> addTable(TableModels tableModels) async {
     try {
@@ -78,16 +89,9 @@ class TableRepository extends ITableRepository {
   @override
   Future<List<TableModels>> getListTableInOrder({int page = 0, int limit = LIMIT}) async {
     try {
-      const queryOrder = 'order_item!inner (*, food_id:food!inner(*, typeId(*))))';
       final response = await baseService.client
           .from(TABLE_NAME.TABLE)
-          .select('''
-          *, 
-          area_id(*),
-          order(*, 
-          user_order_id(*),
-          ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder)))),
-          ''')
+          .select(fullQueryTableOrder)
           .limit(limit)
           .range(page * limit, (page + 1) * limit)
           .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
@@ -114,7 +118,7 @@ class TableRepository extends ITableRepository {
     try {
       final result = await baseService.client
           .from(TABLE_NAME.TABLE)
-          .select('*')
+          .select(fullQueryTableOrder)
           .eq('table_number', number)
           .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
       return result.first;

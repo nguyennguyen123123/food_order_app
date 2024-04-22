@@ -7,7 +7,7 @@ import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/custom_network_image.dart';
 import 'package:food_delivery_app/widgets/image_asset_custom.dart';
-import 'package:food_delivery_app/widgets/quantity_view.dart';
+import 'package:food_delivery_app/widgets/normal_quantity_view.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
@@ -18,16 +18,14 @@ class CartItemView extends StatelessWidget {
     required this.removeCartItem,
     required this.updateNote,
     required this.updateQuantity,
-    this.onRemoveGangIndex,
-    this.canDeleteGang = false,
+    this.showPartyIndex = false,
   });
 
   final OrderItem orderItem;
   final Function(int quantity) updateQuantity;
   final Function() removeCartItem;
   final Function(String note) updateNote;
-  final VoidCallback? onRemoveGangIndex;
-  final bool canDeleteGang;
+  final bool showPartyIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +41,22 @@ class CartItemView extends StatelessWidget {
               Text("type".tr + (orderItem.food?.foodType?.name ?? '')),
               Text('price'.tr + ' ' + Utils.getCurrency(orderItem.food?.price ?? 0)),
               Text('note_text'.tr + (orderItem.note ?? '')),
-              QuantityView(
-                quantity: orderItem.quantity,
-                updateQuantity: (value) => updateQuantity(value),
-              )
+              if (showPartyIndex)
+                Row(
+                  children: [
+                    NormalQuantityView(
+                      quantity: orderItem.quantity,
+                      updateQuantity: (value) => updateQuantity(value),
+                    ),
+                    SizedBox(width: 4.w),
+                    Text('Party ${orderItem.partyIndex + 1}'),
+                  ],
+                )
+              else
+                NormalQuantityView(
+                  quantity: orderItem.quantity,
+                  updateQuantity: (value) => updateQuantity(value),
+                )
             ],
           ),
         ),
@@ -70,8 +80,6 @@ class CartItemView extends StatelessWidget {
                   }
                 },
                 child: Icon(Icons.edit)),
-            if (canDeleteGang)
-              GestureDetector(onTap: onRemoveGangIndex, child: Icon(Icons.settings_backup_restore_rounded)),
           ],
         )
       ],

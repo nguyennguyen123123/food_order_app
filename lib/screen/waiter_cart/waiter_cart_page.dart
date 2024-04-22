@@ -3,9 +3,9 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/routes/pages.dart';
-import 'package:food_delivery_app/screen/cart/dialog/add_item_party_dialog.dart';
 import 'package:food_delivery_app/screen/cart/dialog/select_voucher_bts.dart';
 import 'package:food_delivery_app/screen/cart/widget/cart_item_view.dart';
+import 'package:food_delivery_app/screen/type_details/type_details_parameter.dart';
 import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
@@ -19,8 +19,8 @@ import 'package:get/get.dart';
 class WaiterCartPage extends GetWidget<WaiterCartController> {
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return Stack(
+    return Obx(
+      () => Stack(
         children: [
           GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
@@ -36,8 +36,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                     () => DropdownButton<int>(
                         value: controller.currentPartySelected.value,
                         items: <DropdownMenuItem<int>>[
-                          _buildDropdownItem(-2, 'Mặc định'),
-                          _buildDropdownItem(-1, 'Tạo thêm party'),
+                          _buildDropdownItem(-2, 'Alles'),
                           ...controller.cartService.partyOrders.value.asMap().entries.map((e) => _buildDropdownItem(
                                 e.key,
                                 'Party ${e.key + 1}',
@@ -50,22 +49,9 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                                   }
                                 },
                               )),
+                          _buildDropdownItem(-1, 'Tạo thêm party'),
                         ],
                         onChanged: (value) => controller.onChangeCurrentPartyOrder(value ?? -2)),
-                  ),
-                  GestureDetector(
-                    onTap: () => Get.toNamed(Routes.TYPEDETAIL),
-                    child: Container(
-                      color: appTheme.background,
-                      padding: padding(all: 12),
-                      child: Row(
-                        children: [
-                          Icon(Icons.add, size: 16.w, color: appTheme.blackColor),
-                          SizedBox(width: 8.w),
-                          Expanded(child: Text('Thêm món ăn', style: StyleThemeData.regular17()))
-                        ],
-                      ),
-                    ),
                   ),
                   Expanded(
                     child: ListView(
@@ -79,13 +65,14 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                                 ? controller.currentPartySelected.value
                                 : null,
                             numerGangs: controller.numberOfGangs,
-                            itemBuilder: (index, item, {int? gangIndex}) => CartItemView(
+                            itemBuilder: (index, item, gangIndex) => CartItemView(
                               item,
-                              updateQuantity: (quantity) => controller.updateQuantityCart(item, quantity),
+                              updateQuantity: (quantity) => controller.updateQuantityCart(item, quantity, gangIndex),
                               removeCartItem: () => controller.removeItemInOrder(item),
                               updateNote: (note) => controller.updateCartItemNote(item, note),
-                              onRemoveGangIndex: () => controller.onRemoveGangIndexOfCartItem(item),
-                              canDeleteGang: gangIndex != null,
+                              showPartyIndex: controller.currentPartySelected.value == -2,
+                              // onRemoveGangIndex: () => controller.onRemoveGangIndexOfCartItem(item),
+                              // canDeleteGang: gangIndex != null,
                             ),
                             onCreateGang: controller.onCreateGang,
                             onRemoveGang: controller.onRemoveGang,
@@ -102,11 +89,24 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                       decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
                       child: Column(
                         children: [
-                          _buildVoucherField(
-                            controller.currentVoucher,
-                            updateVoucher: controller.onAddVoucher,
-                            clearVoucher: controller.onClearVoucher,
-                          ),
+                          if (controller.currentPartySelected.value >= 0) ...[
+                            _buildVoucherField(
+                              controller.currentVoucher,
+                              updateVoucher: controller.onAddVoucher,
+                              clearVoucher: controller.onClearVoucher,
+                            )
+                          ] else ...[
+                            ...controller.cartService.partyOrders.value
+                                .asMap()
+                                .entries
+                                .map((data) => _buildVoucherField(
+                                      data.value.voucher,
+                                      title: 'Party ${data.key + 1}',
+                                      updateVoucher: (voucher) =>
+                                          controller.onAddVoucher(voucher, partyIndex: data.key),
+                                      clearVoucher: () => controller.onClearVoucher(partyIndex: data.key),
+                                    ))
+                          ],
                           Divider(),
                           Row(
                             children: [
@@ -150,8 +150,8 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
             ),
           ]
         ],
-      );
-    });
+      ),
+    );
   }
 
   DropdownMenuItem<int> _buildDropdownItem(
@@ -174,12 +174,14 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
 
   Widget _buildVoucherField(
     Voucher? voucher, {
+    String? title,
     required void Function(Voucher) updateVoucher,
     required VoidCallback clearVoucher,
   }) {
     if (voucher == null) {
       return Row(
         children: [
+          Text(title ?? '', style: StyleThemeData.bold12()),
           Expanded(child: Text('Áp dụng voucher', style: StyleThemeData.bold18())),
           PrimaryButton(
               onPressed: () async {
@@ -199,6 +201,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
     } else {
       return Row(
         children: [
+          Text(title ?? '', style: StyleThemeData.bold12()),
           Expanded(child: Text("Mã voucher: ${voucher.code}")),
           if (voucher.discountType == DiscountType.amount)
             Text('Giảm ${Utils.getCurrency(voucher.discountValue)}')
@@ -214,22 +217,22 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
     List<OrderItem> foods, {
     int? partyIndex,
     EdgeInsets? paddingView,
-    required Widget Function(int index, OrderItem item, {int? gangIndex}) itemBuilder,
+    required Widget Function(int index, OrderItem item, int gangIndex) itemBuilder,
     int numerGangs = 0,
     VoidCallback? onCreateGang,
     required void Function(int gangIndex) onRemoveGang,
   }) {
-    final orderItemNoGang = foods.where((element) => element.sortOder == null).toList();
+    // final orderItemNoGang = foods.where((element) => element.sortOder == null).toList();
 
     return Column(
       children: [
-        ListView.separated(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            padding: paddingView ?? padding(all: 12),
-            itemBuilder: (context, index) => itemBuilder(index, orderItemNoGang[index]),
-            separatorBuilder: (context, index) => SizedBox(height: 6.h),
-            itemCount: orderItemNoGang.length),
+        // ListView.separated(
+        //     shrinkWrap: true,
+        //     physics: NeverScrollableScrollPhysics(),
+        //     padding: paddingView ?? padding(all: 12),
+        //     itemBuilder: (context, index) => itemBuilder(index, orderItemNoGang[index]),
+        //     separatorBuilder: (context, index) => SizedBox(height: 6.h),
+        //     itemCount: orderItemNoGang.length),
         if (numerGangs > 0) ...[
           ...List.generate(numerGangs, (index) {
             final orderItemInGang = foods.where((element) => element.sortOder == index).toList();
@@ -239,10 +242,11 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                   gangIndex: index,
                   onRemoveGang: onRemoveGang,
                   onAddItemToGang: () async {
-                    final result = await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
-                    if (result != null && result is List<OrderItem>) {
-                      controller.cartService.updateOrderItemInCart(index, result, partyIndex: partyIndex);
-                    }
+                    Get.toNamed(Routes.TYPEDETAIL, arguments: TypeDetailsParamter(gangIndex: index));
+                    // final result = await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
+                    // if (result != null && result is List<OrderItem>) {
+                    //   controller.cartService.updateOrderItemInCart(index, result, partyIndex: partyIndex);
+                    // }
                   },
                 ),
                 if (orderItemInGang.isNotEmpty)
@@ -250,7 +254,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       padding: paddingView ?? padding(all: 12),
-                      itemBuilder: (context, i) => itemBuilder(i, orderItemInGang[i], gangIndex: index),
+                      itemBuilder: (context, i) => itemBuilder(i, orderItemInGang[i], index),
                       separatorBuilder: (context, index) => SizedBox(height: 6.h),
                       itemCount: orderItemInGang.length),
               ],

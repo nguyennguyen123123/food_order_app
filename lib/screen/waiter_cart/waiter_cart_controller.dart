@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
@@ -28,26 +30,23 @@ class WaiterCartController extends GetxController {
 
   final isLoading = false.obs;
 
-  final currentPartySelected = Rx<int>(-2);
+  final currentPartySelected = Rx<int>(0);
 
   List<PartyOrder> get partyOrders => cartService.partyOrders.value;
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
+  final numberOfGang = 0.obs;
 
   @override
   void onClose() {
+    numberOfGang.close();
     isLoading.close();
     currentPartySelected.close();
     super.onClose();
   }
 
   bool get isEmptyCart {
-    final isEmptyItems = cartService.items.value.isEmpty;
+    // final isEmptyItems = cartService.items.value.isEmpty;
     final isEmptyPartyOrder = cartService.partyOrders.value.isEmpty;
-    if ((isEmptyItems && isEmptyPartyOrder) ||
+    if ((isEmptyPartyOrder) ||
         (cartService.partyOrders.value.isNotEmpty &&
             (cartService.partyOrders.value.first.orderItems?.isEmpty ?? true))) {
       return true;
@@ -57,56 +56,81 @@ class WaiterCartController extends GetxController {
   }
 
   List<OrderItem> get currentOrderItems {
-    if (currentPartySelected.value >= 0) {
-      return cartService.partyOrders.value[currentPartySelected.value].orderItems ?? <OrderItem>[];
-    } else {
-      return cartService.items.value;
+    if (currentPartySelected.value == -2) {
+      final items = <OrderItem>[];
+      for (var party in cartService.partyOrders.value) {
+        items.addAll(party.orderItems ?? []);
+      }
+      return items;
     }
+    // if (currentPartySelected.value >= 0) {
+    return cartService.partyOrders.value[currentPartySelected.value].orderItems ?? <OrderItem>[];
+    // } else {
+    //   return cartService.items.value;
+    // }
   }
 
   int get numberOfGangs {
-    if (currentPartySelected.value >= 0) {
-      return cartService.partyOrders.value[currentPartySelected.value].numberOfGangs;
-    } else {
-      return cartService.numberOfGang.value;
+    if (currentPartySelected.value == -2) {
+      return numberOfGang.value;
     }
+    // if (currentPartySelected.value >= 0) {
+    return cartService.partyOrders.value[currentPartySelected.value].numberOfGangs;
+    // } else {
+    //   return cartService.numberOfGang.value;
+    // }
   }
 
   double get currentCartPrice {
-    if (currentPartySelected.value >= 0) {
-      final partyOrder = cartService.partyOrders.value[currentPartySelected.value];
-      return Utils.calculateVoucherPrice(partyOrder.voucher, partyOrder.totalPrice);
-    } else {
+    if (currentPartySelected.value == -2) {
       var total = 0.0;
-      for (final food in cartService.items.value) {
-        total += food.quantity * (food.food?.price ?? 0);
+      for (var party in cartService.partyOrders.value) {
+        total += party.totalPrice;
       }
-      return Utils.calculateVoucherPrice(cartService.currentVoucher.value, total);
+      return total;
     }
+    // if (currentPartySelected.value >= 0) {
+    final partyOrder = cartService.partyOrders.value[currentPartySelected.value];
+    return Utils.calculateVoucherPrice(partyOrder.voucher, partyOrder.totalPrice);
+    // } else {
+    //   var total = 0.0;
+    //   for (final food in cartService.items.value) {
+    //     total += food.quantity * (food.food?.price ?? 0);
+    //   }
+    //   return Utils.calculateVoucherPrice(cartService.currentVoucher.value, total);
+    // }
   }
 
   Voucher? get currentVoucher {
-    if (currentPartySelected.value >= 0) {
-      return cartService.partyOrders.value[currentPartySelected.value].voucher;
-    } else {
-      return cartService.currentVoucher.value;
-    }
+    // if (currentPartySelected.value >= 0) {
+    return cartService.partyOrders.value[currentPartySelected.value].voucher;
+    // } else {
+    //   return cartService.currentVoucher.value;
+    // }
   }
 
-  void onAddVoucher(Voucher voucher) {
-    if (currentPartySelected.value >= 0) {
-      cartService.updatePartyVoucher(currentPartySelected.value, voucher);
-    } else {
-      cartService.currentVoucher.value = voucher;
+  void onAddVoucher(Voucher voucher, {int? partyIndex}) {
+    // if (currentPartySelected.value >= 0) {
+    if (partyIndex != null) {
+      cartService.updatePartyVoucher(partyIndex, voucher);
+      return;
     }
+    cartService.updatePartyVoucher(currentPartySelected.value, voucher);
+    // } else {
+    //   cartService.currentVoucher.value = voucher;
+    // }
   }
 
-  void onClearVoucher() {
-    if (currentPartySelected.value >= 0) {
-      cartService.clearVoucherParty(currentPartySelected.value);
-    } else {
-      cartService.currentVoucher.value = null;
+  void onClearVoucher({int? partyIndex}) {
+    // if (currentPartySelected.value >= 0) {
+    if (partyIndex != null) {
+      cartService.clearVoucherParty(partyIndex);
+      return;
     }
+    cartService.clearVoucherParty(currentPartySelected.value);
+    // } else {
+    //   cartService.currentVoucher.value = null;
+    // }
   }
 
   void onChangeCurrentPartyOrder(int value) {
@@ -115,8 +139,13 @@ class WaiterCartController extends GetxController {
       currentPartySelected.value = cartService.partyOrders.value.length - 1;
       cartService.currentPartyOrder = cartService.partyOrders.value.length - 1;
     } else if (value == -2) {
+      var gang = 0;
+      for (final party in cartService.partyOrders.value) {
+        gang = max(party.numberOfGangs, gang);
+      }
+      numberOfGang.value = gang;
       currentPartySelected.value = -2;
-      cartService.currentPartyOrder = value;
+      cartService.currentPartyOrder = 0;
     } else {
       currentPartySelected.value = value;
       cartService.currentPartyOrder = value;
@@ -133,52 +162,65 @@ class WaiterCartController extends GetxController {
     Get.back();
   }
 
-  void updateQuantityCart(OrderItem item, int quantity) {
-    if (currentPartySelected.value >= 0) {
-      cartService.updateQuantityPartyItem(currentPartySelected.value, item, quantity);
+  void updateQuantityCart(OrderItem item, int quantity, int gangIndex) {
+    // if (currentPartySelected.value >= 0) {
+    if (currentPartySelected.value == -2) {
+      cartService.updateQuantityPartyItem(item.partyIndex, item, quantity, gangIndex);
     } else {
-      cartService.updateQuantityCart(item, quantity);
+      cartService.updateQuantityPartyItem(currentPartySelected.value, item, quantity, gangIndex);
     }
+    // } else {
+    //   cartService.updateQuantityCart(item, quantity);
+    // }
   }
 
   void removeItemInOrder(OrderItem item) {
-    if (currentPartySelected.value >= 0) {
-      cartService.removeItemInPartyOrder(currentPartySelected.value, item);
+    // if (currentPartySelected.value >= 0) {
+    if (currentPartySelected.value == -2) {
+      cartService.removeItemInPartyOrder(item.partyIndex, item);
     } else {
-      cartService.removeItemInOrder(item);
+      cartService.removeItemInPartyOrder(currentPartySelected.value, item);
     }
+    // } else {
+    //   cartService.removeItemInOrder(item);
+    // }
   }
 
   void updateCartItemNote(OrderItem item, String note) {
-    if (currentPartySelected.value >= 0) {
-      cartService.updatePartyCartItemNote(currentPartySelected.value, item, note);
+    if (currentPartySelected.value == -2) {
+      cartService.updatePartyCartItemNote(item.partyIndex, item, note);
     } else {
-      cartService.updateCartItemNote(item, note);
+      cartService.updatePartyCartItemNote(currentPartySelected.value, item, note);
     }
+    // if (currentPartySelected.value >= 0) {
+    // cartService.updatePartyCartItemNote(currentPartySelected.value, item, note);
+    // } else {
+    //   cartService.updateCartItemNote(item, note);
+    // }
   }
 
   void onRemoveGangIndexOfCartItem(OrderItem item) {
-    if (currentPartySelected.value >= 0) {
-      cartService.onRemoveGangIndexOfPartyCartItem(currentPartySelected.value, item);
-    } else {
-      cartService.onRemoveGangIndexOfCartItem(item);
-    }
+    // if (currentPartySelected.value >= 0) {
+    cartService.onRemoveGangIndexOfPartyCartItem(currentPartySelected.value, item);
+    // } else {
+    //   cartService.onRemoveGangIndexOfCartItem(item);
+    // }
   }
 
   void onCreateGang() {
-    if (currentPartySelected.value >= 0) {
-      cartService.onPartyCreateGang(currentPartySelected.value);
-    } else {
-      cartService.onCreateNewGang();
-    }
+    // if (currentPartySelected.value >= 0) {
+    cartService.onPartyCreateGang(currentPartySelected.value);
+    // } else {
+    //   cartService.onCreateNewGang();
+    // }
   }
 
   void onRemoveGang(int gang) {
-    if (currentPartySelected.value >= 0) {
-      cartService.onRemoveGangInParty(currentPartySelected.value, gang);
-    } else {
-      cartService.onRemoveGang(gang);
-    }
+    // if (currentPartySelected.value >= 0) {
+    cartService.onRemoveGangInParty(currentPartySelected.value, gang);
+    // } else {
+    //   cartService.onRemoveGang(gang);
+    // }
   }
 
   /// Lên đơn
@@ -192,16 +234,16 @@ class WaiterCartController extends GetxController {
     showLoading();
     try {
       final result = await orderRepository.onPlaceOrder(
-        cartService.items.value,
+        [],
         cartService.partyOrders.value,
-        voucher: cartService.currentVoucher.value,
+        // voucher: cartService.currentVoucher.value,
         tableNumber: parameter.tableNumber.toString(),
         bondNumber: (accountService.myAccount?.numberOfOrder ?? 0) + 1,
       );
       isLoading.value = false;
       dissmissLoading();
       if (result != null) {
-        cartService.items.value = [];
+        // cartService.items.value = [];
         cartService.partyOrders.value = [];
         currentPartySelected.value = -2;
         cartService.currentPartyOrder = -2;
