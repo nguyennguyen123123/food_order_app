@@ -28,7 +28,7 @@ class TableControlller extends GetxController {
 
   var areaTypeList = <Area>[].obs;
 
-  var listAreaTable = <TableModels>[].obs;
+  // var listAreaTable = <TableModels>[].obs;
 
   @override
   void onInit() {
@@ -108,6 +108,6 @@ class TableControlller extends GetxController {
   Future<void> getListAreaTable(String areaId) async {
     final result = await tableRepository.getListAreaTable(areaId);
 
-    listAreaTable.assignAll(result!);
+    tableList.value = result;
   }
 }

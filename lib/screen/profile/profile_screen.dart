@@ -16,8 +16,8 @@ import 'package:get/get.dart';
 class ProfileScreen extends GetWidget<ProfileController> {
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
+    return WillPopScope(
+      onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: appTheme.background,
         appBar: AppBar(

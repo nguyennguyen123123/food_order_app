@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
-import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -11,8 +10,8 @@ import 'package:get/get.dart';
 class TablePage extends GetWidget<TableControlller> {
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
+    return WillPopScope(
+      onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -28,25 +27,27 @@ class TablePage extends GetWidget<TableControlller> {
           padding: padding(all: 16),
           child: Column(
             children: [
-              Align(alignment: Alignment.centerLeft, child: Text('Khu vực', style: StyleThemeData.bold18())),
+              Obx(
+                () => controller.areaTypeList.isNotEmpty
+                    ? Align(alignment: Alignment.centerLeft, child: Text('Khu vực', style: StyleThemeData.bold18()))
+                    : Container(),
+              ),
               SizedBox(height: 8.h),
               Obx(() => SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: controller.areaTypeList.map((area) {
+                        final isSelected = controller.tableList.value?.first.areaId == area.areaId;
+
                         return Padding(
                           padding: padding(right: 12),
                           child: InkWell(
-                            onTap: () {
-                              controller
-                                  .getListAreaTable(area.areaId ?? '')
-                                  .then((value) => Get.toNamed(Routes.LISTAREATABLE));
-                            },
+                            onTap: () => controller.getListAreaTable(area.areaId ?? ''),
                             child: Container(
                               padding: padding(vertical: 8, horizontal: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: appTheme.appColor,
+                                color: isSelected ? appTheme.appColor : appTheme.frameColor,
                               ),
                               child: Text(
                                 area.areaName ?? '',

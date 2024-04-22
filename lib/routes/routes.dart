@@ -36,5 +36,4 @@ abstract class Routes {
   static const AREA = '/area';
   static const ADDAREA = '/add-area';
   static const EDITAREA = '/edit-area';
-  static const LISTAREATABLE = '/list-area-table';
 }
