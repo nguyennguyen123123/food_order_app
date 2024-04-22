@@ -42,7 +42,7 @@ class EditAreaController extends GetxController {
 
       if (result != null) {
         Get.back();
-        Get.find<AreaController>().updateTable(result);
+        Get.find<AreaController>().updateArea(result);
         DialogUtils.showSuccessDialog(content: "edit_successfully".tr);
       } else {
         DialogUtils.showInfoErrorDialog(content: "edit_failed".tr);

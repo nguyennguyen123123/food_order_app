@@ -15,7 +15,7 @@ class AreaController extends GetxController {
 
   var isLoadingAdd = false.obs;
   var isLoadingDelete = false.obs;
-  var areaList = Rx<List<Area>?>(null);
+  var areaList = <Area>[].obs;
 
   @override
   void onInit() {
@@ -24,11 +24,9 @@ class AreaController extends GetxController {
   }
 
   Future<void> onRefresh() async {
-    areaList.value = null;
-
     final result = await areaRepository.getArea();
 
-    areaList.value = result;
+    areaList.assignAll(result);
   }
 
   Future<void> addArea() async {
@@ -47,7 +45,7 @@ class AreaController extends GetxController {
       if (result != null) {
         final area = Area.fromJson(result);
 
-        areaList.value?.add(area);
+        areaList.add(area);
         Get.back();
         Get.find<TableControlller>().getListArea();
         areaNameController.clear();
@@ -69,7 +67,7 @@ class AreaController extends GetxController {
 
       final delete = await areaRepository.deleteArea(areaId);
       if (delete != null) {
-        areaList.value?.removeWhere((table) => table.areaId == areaId);
+        areaList.removeWhere((table) => table.areaId == areaId);
         Get.back();
         DialogUtils.showSuccessDialog(content: "delete_area_successfully".tr);
       } else {
@@ -82,10 +80,10 @@ class AreaController extends GetxController {
     }
   }
 
-  void updateTable(Area updatedArea) {
-    final index = areaList.value?.indexWhere((table) => table.areaId == updatedArea.areaId) ?? -1;
+  void updateArea(Area updatedArea) {
+    final index = areaList.indexWhere((table) => table.areaId == updatedArea.areaId);
     if (index != -1) {
-      areaList.value![index] = updatedArea;
+      areaList[index] = updatedArea;
     }
   }
 
