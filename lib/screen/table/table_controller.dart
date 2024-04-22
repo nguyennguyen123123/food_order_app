@@ -24,11 +24,20 @@ class TableControlller extends GetxController {
     required this.cartService,
   });
 
-  var tableList = Rx<List<TableModels>?>(null);
+  final tableList = Rx<List<TableModels>?>(null);
 
-  var areaTypeList = <Area>[].obs;
+  final areaTypeList = <Area>[].obs;
+  final currentAreaId = Rx<String>('');
+  int page = 0;
+  final limit = 50;
 
-  // var listAreaTable = <TableModels>[].obs;
+  @override
+  void onClose() {
+    tableList.close();
+    areaTypeList.close();
+    currentAreaId.close();
+    super.onClose();
+  }
 
   @override
   void onInit() {
@@ -39,12 +48,12 @@ class TableControlller extends GetxController {
 
   Future<void> getListTable() async {
     tableList.value = null;
-    tableList.value = await tableRepository.getListTableInOrder();
+    page = 0;
+    tableList.value = await tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
   }
 
   Future<void> getListArea() async {
     final result = await areaRepository.getArea();
-
     areaTypeList.assignAll(result);
   }
 
@@ -106,8 +115,17 @@ class TableControlller extends GetxController {
   }
 
   Future<void> getListAreaTable(String areaId) async {
-    final result = await tableRepository.getListAreaTable(areaId);
+    currentAreaId.value = areaId;
+    getListTable();
+  }
 
-    tableList.value = result;
+  Future<bool> onLoadMore() async {
+    final length = tableList.value?.length ?? 0;
+    if ((page + 1) * limit > length) return false;
+    page += 1;
+    final result = await tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
+    tableList.value = [...tableList.value!, ...result];
+    if (result.length < limit) return false;
+    return true;
   }
 }

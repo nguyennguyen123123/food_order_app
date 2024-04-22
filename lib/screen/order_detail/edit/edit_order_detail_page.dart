@@ -150,7 +150,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
 
   Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder) {
     final order = controller.foodOrder.value!;
-    final number = partyOrder.partyNumber ?? order.partyOrders?.length ?? 0;
+    final number = (partyOrder.partyNumber ?? 0) + 1;
     // final total = partyOrder.totalPrice;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
@@ -245,7 +245,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                           },
                           child: Icon(Icons.add, size: 24, color: appTheme.blackColor)),
                     SizedBox(width: 6.w),
-                    if (gangIndex > 0 && !isPartyOrderComplete)
+                    if (gangIndex > 0 && !isPartyOrderComplete && controller.isAdmin)
                       GestureDetector(
                         onTap: () => controller.onRemoveGangIndex(gangIndex),
                         child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 24),

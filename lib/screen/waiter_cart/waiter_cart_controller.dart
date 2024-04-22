@@ -199,25 +199,35 @@ class WaiterCartController extends GetxController {
     // }
   }
 
-  void onRemoveGangIndexOfCartItem(OrderItem item) {
-    // if (currentPartySelected.value >= 0) {
-    cartService.onRemoveGangIndexOfPartyCartItem(currentPartySelected.value, item);
-    // } else {
-    //   cartService.onRemoveGangIndexOfCartItem(item);
-    // }
-  }
+  // void onRemoveGangIndexOfCartItem(OrderItem item) {
+  // if (currentPartySelected.value >= 0) {
+  // cartService.onRemoveGangIndexOfPartyCartItem(currentPartySelected.value, item);
+  // } else {
+  //   cartService.onRemoveGangIndexOfCartItem(item);
+  // }
+  // }
 
   void onCreateGang() {
+    if (currentPartySelected.value == -2) {
+      cartService.onPartyCreateGang(0);
+      numberOfGang.value += 1;
+    } else {
+      cartService.onPartyCreateGang(currentPartySelected.value);
+    }
     // if (currentPartySelected.value >= 0) {
-    cartService.onPartyCreateGang(currentPartySelected.value);
     // } else {
     //   cartService.onCreateNewGang();
     // }
   }
 
   void onRemoveGang(int gang) {
+    if (currentPartySelected.value == -2) {
+      cartService.onRemoveGangIndexInAllParty(gang);
+    } else {
+      cartService.onRemoveGangInParty(currentPartySelected.value, gang);
+    }
     // if (currentPartySelected.value >= 0) {
-    cartService.onRemoveGangInParty(currentPartySelected.value, gang);
+    // cartService.onRemoveGangInParty(currentPartySelected.value, gang);
     // } else {
     //   cartService.onRemoveGang(gang);
     // }
