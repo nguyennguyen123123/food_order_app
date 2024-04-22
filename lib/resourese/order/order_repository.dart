@@ -5,7 +5,6 @@ import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
-import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
@@ -37,21 +36,15 @@ class OrderRepository extends IOrderRepository {
 
   @override
   Future<FoodOrder?> onPlaceOrder(
-    List<OrderItem> orderItems,
     List<PartyOrder> partyOrders, {
     required String tableNumber,
-    Voucher? voucher,
     int bondNumber = 1,
   }) async {
     try {
-      if (orderItems.isEmpty && partyOrders.isEmpty) {
+      if (partyOrders.isEmpty) {
         throw Exception();
       }
       partyOrders.removeWhere((element) => (element.orderItems?.isEmpty ?? true) == true);
-      final orders = <PartyOrder>[
-        PartyOrder(orderItems: orderItems, voucher: voucher),
-        ...partyOrders,
-      ];
 
       final orderId = getUuid();
       var total = 0.0;
@@ -67,6 +60,7 @@ class OrderRepository extends IOrderRepository {
         orderStatus: ORDER_STATUS.CREATED,
         orderType: partyOrders.length > 1 ? ORDER_TYPE.PARTY : ORDER_TYPE.NORMAL,
         bondNumber: bondNumber,
+        partyOrders: partyOrders,
       );
 
       // foodOrder.orderItems = await Future.wait(orderItems.map(_uploadOrderItem));
@@ -80,13 +74,13 @@ class OrderRepository extends IOrderRepository {
       // await _uploadPartyOrderItem(orders, orderId);
       // Tạo dữ liệu cho các party
       Future.wait([
-        _uploadPartyOrderItem(orders, orderId),
+        _uploadPartyOrderItem(partyOrders, orderId),
         profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1),
         tableRepository.updateTableWithOrder(tableNumber, orderId: orderId),
       ]);
       // await profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1);
       accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber + 1);
-      return order.first;
+      return foodOrder;
     } catch (e) {
       handleError(e);
       rethrow;

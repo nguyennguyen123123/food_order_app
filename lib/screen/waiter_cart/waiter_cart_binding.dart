@@ -11,6 +11,7 @@ class WaiterCartBinding implements Bindings {
         tableRepository: Get.find(),
         accountService: Get.find(),
         parameter: Get.arguments,
+        printerService: Get.find(),
       ),
     );
   }
