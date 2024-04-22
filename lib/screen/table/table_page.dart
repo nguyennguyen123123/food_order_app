@@ -11,8 +11,8 @@ import 'package:get/get.dart';
 class TablePage extends GetWidget<TableControlller> {
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
+    return WillPopScope(
+      onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
