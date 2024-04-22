@@ -279,6 +279,7 @@ class OrderRepository extends IOrderRepository {
                 PartyOrder(orderItems: selectOrderItems, partyNumber: newPartyNumber), orderId);
           }
         }
+        return true;
       }
       return false;
     } catch (e) {
@@ -332,6 +333,24 @@ class OrderRepository extends IOrderRepository {
             .update({_ORDER_COLUMN_KEY.ORDER_STATUS: ORDER_STATUS.DONE}).eq(_ORDER_COLUMN_KEY.ORDER_ID, orderId),
         tableRepository.updateTableWithOrder(tableNumber)
       ]);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+
+    return false;
+  }
+
+  @override
+  Future<bool> completeListPartyOrder(List<String> partyIds) async {
+    try {
+      await Future.wait(partyIds.map((id) async {
+        if (id.isNotEmpty) {
+          await baseService.client
+              .from(TABLE_NAME.PARTY_ORDER)
+              .update({_ORDER_COLUMN_KEY.ORDER_STATUS: ORDER_STATUS.DONE}).eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, id);
+        }
+      }));
       return true;
     } catch (e) {
       print(e);

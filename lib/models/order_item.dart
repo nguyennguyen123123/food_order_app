@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,11 +19,13 @@ class OrderItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   int orignalQuantity;
   @JsonKey(name: 'sort_order')
-  int? sortOder;
+  int sortOder;
   @JsonKey(name: 'party_order_id', includeFromJson: false, includeToJson: true)
   String? partyOderId;
   @JsonKey(includeFromJson: false, includeToJson: false)
   int partyIndex;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String partyOrderStaus;
 
   OrderItem({
     this.orderItemId,
@@ -31,9 +34,10 @@ class OrderItem {
     this.quantity = 1,
     this.note,
     this.orignalQuantity = 1,
-    this.sortOder,
+    this.sortOder = 0,
     this.partyOderId,
     this.partyIndex = 0,
+    this.partyOrderStaus = ORDER_STATUS.CREATED,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => _$OrderItemFromJson(json);
@@ -50,6 +54,7 @@ class OrderItem {
     int? sortOder,
     String? partyOderId,
     int? partyIndex,
+    String? partyOrderStaus,
   }) {
     return OrderItem(
       orderItemId: orderItemId ?? this.orderItemId,
@@ -61,6 +66,7 @@ class OrderItem {
       sortOder: sortOder ?? this.sortOder,
       partyOderId: partyOderId ?? this.partyOderId,
       partyIndex: partyIndex ?? this.partyIndex,
+      partyOrderStaus: partyOrderStaus ?? this.partyOrderStaus,
     );
   }
 }

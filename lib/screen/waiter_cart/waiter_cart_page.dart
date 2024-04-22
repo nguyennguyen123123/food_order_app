@@ -235,15 +235,27 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
         //     separatorBuilder: (context, index) => SizedBox(height: 6.h),
         //     itemCount: orderItemNoGang.length),
         if (numerGangs > 0) ...[
-          ...List.generate(numerGangs, (index) {
-            final orderItemInGang = foods.where((element) => element.sortOder == index).toList();
+          ...List.generate(numerGangs, (gangIndex) {
+            final orderItemInGang = foods.where((element) => element.sortOder == gangIndex).toList();
             return Column(
               children: [
                 _buildGangView(
-                  gangIndex: index,
+                  gangIndex: gangIndex,
                   onRemoveGang: onRemoveGang,
                   onAddItemToGang: () async {
-                    Get.toNamed(Routes.TYPEDETAIL, arguments: TypeDetailsParamter(gangIndex: index));
+                    Get.toNamed(Routes.TYPEDETAIL,
+                        arguments: TypeDetailsParamter(
+                          // gangIndex: index,
+                          onAddFoodToCart: (food) => controller.cartService.onAddItemToCart(food, gangIndex),
+                          updateQuantityFoodItem: (quantity, food) =>
+                              controller.cartService.onUpdateQuantityItemInCart(quantity, food, gangIndex),
+                          getQuantityFoodInCart: (item) {
+                            final listItems = controller.cartService.currentListItems;
+                            final i = listItems.indexWhere(
+                                (element) => element.food?.foodId == item.foodId && gangIndex == element.sortOder);
+                            return i != -1 ? listItems[i].quantity : 0;
+                          },
+                        ));
                     // final result = await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
                     // if (result != null && result is List<OrderItem>) {
                     //   controller.cartService.updateOrderItemInCart(index, result, partyIndex: partyIndex);
@@ -255,7 +267,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       padding: paddingView ?? padding(all: 12),
-                      itemBuilder: (context, i) => itemBuilder(i, orderItemInGang[i], index),
+                      itemBuilder: (context, i) => itemBuilder(i, orderItemInGang[i], gangIndex),
                       separatorBuilder: (context, index) => SizedBox(height: 6.h),
                       itemCount: orderItemInGang.length),
               ],

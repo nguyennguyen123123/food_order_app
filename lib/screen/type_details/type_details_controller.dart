@@ -74,25 +74,20 @@ class TypeDetailsController extends GetxController {
   }
 
   void addItemToCart(FoodModel food) {
-    cartService.onAddItemToCart(food, paramter.gangIndex);
+    paramter.onAddFoodToCart(food);
+    // cartService.onAddItemToCart(food, paramter.gangIndex);
     orderCartNotifier.value += 1;
   }
 
   void updateQuantityCartItem(int quantity, FoodModel food) {
-    cartService.onUpdateQuantityItemInCart(quantity, food, paramter.gangIndex);
+    paramter.updateQuantityFoodItem(quantity, food);
+    // cartService.onUpdateQuantityItemInCart(quantity, food, paramter.gangIndex);
     orderCartNotifier.value += 1;
   }
 
   void updateFoodTypeToList(FoodType foodType) async {
     final foodTypeIndex = selectedFoodTypes.indexWhere((element) => element.typeId == foodType.typeId);
     if (foodTypeIndex != -1) {
-      // removeFoodType(foodType);
-
-      // if (selectedFoodTypes.first.parentTypeId != null) {
-      //   onRefresh(selectedFoodTypes.first.parentTypeId ?? '');
-      // } else {
-      //   onRefresh(selectedFoodTypes.first.typeId ?? '');
-      // }
       return;
     } else {
       addFoodType(foodType);

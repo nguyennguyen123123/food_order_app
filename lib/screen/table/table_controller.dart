@@ -9,6 +9,7 @@ import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_response.dart';
 import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart';
+import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
 class TableControlller extends GetxController {
@@ -75,6 +76,7 @@ class TableControlller extends GetxController {
       final result = await Get.toNamed(Routes.EDIT_ORDER,
           arguments: EditOrderDetailParameter(foodOrder: table.foodOrder!.copyWith()));
       if (result != null && result is EditOrderResponse) {
+        showLoading();
         final tables = tableList.value ?? <TableModels>[];
         if (result.type == EditType.CHANGE_TABLE) {
           final originalTable = await tableRepository.getTableByNumber(result.orignalTable);
@@ -103,6 +105,21 @@ class TableControlller extends GetxController {
         }
         tableList.value = tables;
         tableList.refresh();
+        dissmissLoading();
+      }
+    }
+  }
+
+  void onRefreshTable(String tableNumber) async {
+    if (tableNumber.isNotEmpty) {
+      final tables = tableList.value ?? <TableModels>[];
+      final table = await tableRepository.getTableByNumber(tableNumber);
+      if (table != null) {
+        final oldIndex = tables.indexWhere((element) => element.tableNumber == tableNumber);
+        if (oldIndex != -1) {
+          tables[oldIndex] = table;
+        }
+        tableList.value = tables;
       }
     }
   }

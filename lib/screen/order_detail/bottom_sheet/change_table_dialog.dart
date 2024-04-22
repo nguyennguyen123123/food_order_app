@@ -63,6 +63,7 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
 
   @override
   Widget build(BuildContext context) {
+    //// Đổi thành text field để nhập số bàn
     return Padding(
       padding: padding(all: 12),
       child: Column(
