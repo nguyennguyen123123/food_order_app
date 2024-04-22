@@ -29,7 +29,7 @@ class TablePage extends GetWidget<TableControlller> {
             children: [
               Obx(
                 () => controller.areaTypeList.isNotEmpty
-                    ? Align(alignment: Alignment.centerLeft, child: Text('Khu vực', style: StyleThemeData.bold18()))
+                    ? Align(alignment: Alignment.centerLeft, child: Text('area'.tr, style: StyleThemeData.bold18()))
                     : Container(),
               ),
               SizedBox(height: 8.h),
@@ -60,7 +60,7 @@ class TablePage extends GetWidget<TableControlller> {
                     ),
                   )),
               SizedBox(height: 12.h),
-              Align(alignment: Alignment.centerLeft, child: Text('Số bàn', style: StyleThemeData.bold18())),
+              Align(alignment: Alignment.centerLeft, child: Text('table_number'.tr, style: StyleThemeData.bold18())),
               SizedBox(height: 8.h),
               Obx(() {
                 if (controller.tableList.value == null)
@@ -104,7 +104,10 @@ class TablePage extends GetWidget<TableControlller> {
               textAlign: TextAlign.center,
             ),
             if (table.foodOrder != null)
-              Text('Đơn hàng: ${table.foodOrder?.totalPrice.toStringAsFixed(2)}', style: StyleThemeData.regular10())
+              Text(
+                'order'.tr + ': ${table.foodOrder?.totalPrice.toStringAsFixed(2)}',
+                style: StyleThemeData.regular10(),
+              )
           ],
         ),
       ),

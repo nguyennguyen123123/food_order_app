@@ -48,7 +48,7 @@ class TableManagePage extends GetWidget<TableManageControlller> {
     );
   }
 
-  Widget itemTableView(TableModels table) { 
+  Widget itemTableView(TableModels table) {
     return GestureDetector(
       onTap: () => showModalBottomSheet(
         context: Get.context!,
@@ -80,7 +80,10 @@ class TableManagePage extends GetWidget<TableManageControlller> {
               textAlign: TextAlign.center,
             ),
             if (table.foodOrder != null)
-              Text('Đơn hàng: ${table.foodOrder?.totalPrice.toStringAsFixed(2)}', style: StyleThemeData.regular10())
+              Text(
+                'order'.tr + ': ${table.foodOrder?.totalPrice.toStringAsFixed(2)}',
+                style: StyleThemeData.regular10(),
+              )
           ],
         ),
       ),

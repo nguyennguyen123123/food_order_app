@@ -29,7 +29,7 @@ class AddTableView extends GetWidget<TableManageControlller> {
         padding: padding(all: 16),
         child: Column(
           children: [
-            Align(alignment: Alignment.centerLeft, child: Text('Khu vực', style: StyleThemeData.bold14())),
+            Align(alignment: Alignment.centerLeft, child: Text('area'.tr, style: StyleThemeData.bold14())),
             SizedBox(height: 4.h),
             Obx(
               () => Container(
@@ -41,7 +41,7 @@ class AddTableView extends GetWidget<TableManageControlller> {
                 padding: padding(horizontal: 8),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<Area>(
-                    hint: Text('Chọn khu'.tr, style: StyleThemeData.regular16()),
+                    hint: Text('select_area'.tr, style: StyleThemeData.regular16()),
                     value: controller.selectedAreaType.value,
                     onChanged: (Area? newValue) {
                       controller.selectedAreaType.value = newValue!;

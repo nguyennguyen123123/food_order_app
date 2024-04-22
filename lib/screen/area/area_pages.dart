@@ -46,8 +46,8 @@ class AreaPages extends GetWidget<AreaController> {
                         onLongPressStart: (details) {
                           showNoSystemWidget(
                             context,
-                            title: 'Xóa khu vực'.tr + '?',
-                            des: 'Bạn có chắc chắn muốn xóa khu vực'.tr + '?',
+                            title: 'delete_area'.tr + '?',
+                            des: 'are_you_sure_you_want_to_delete_this_area'.tr + '?',
                             cancel: 'close'.tr,
                             confirm: 'agree'.tr,
                             ontap: () {

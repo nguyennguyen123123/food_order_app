@@ -27,11 +27,11 @@ class TableDetailsWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(child: Text('Thông tin bàn', style: StyleThemeData.bold16())),
+            Center(child: Text('table_info'.tr, style: StyleThemeData.bold16())),
             SizedBox(height: 12.h),
             Row(
               children: [
-                Text('Số bàn: ', style: StyleThemeData.bold18()),
+                Text('table_number'.tr + ': ', style: StyleThemeData.bold18()),
                 Text(table.tableNumber.toString(), style: StyleThemeData.regular16()),
               ],
             ),
@@ -39,7 +39,7 @@ class TableDetailsWidget extends StatelessWidget {
             if (table.foodOrder != null)
               Row(
                 children: [
-                  Text('Đơn hàng: ', style: StyleThemeData.bold18()),
+                  Text('order'.tr + ': ', style: StyleThemeData.bold18()),
                   Text(table.foodOrder?.totalPrice.toStringAsFixed(2) ?? '', style: StyleThemeData.regular16()),
                 ],
               )
@@ -57,7 +57,7 @@ class TableDetailsWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: appTheme.errorColor),
                         ),
-                        child: Text('Xóa', style: StyleThemeData.bold18(height: 0, color: appTheme.errorColor)),
+                        child: Text('delete'.tr, style: StyleThemeData.bold18(height: 0, color: appTheme.errorColor)),
                       ),
                     ),
                   ),
@@ -73,7 +73,7 @@ class TableDetailsWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           color: appTheme.appColor,
                         ),
-                        child: Text('Chỉnh sửa', style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
+                        child: Text('edit'.tr, style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
                       ),
                     ),
                   ),
