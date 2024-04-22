@@ -7,8 +7,6 @@ import 'package:food_delivery_app/screen/area/view/add_area_view.dart';
 import 'package:food_delivery_app/screen/area/view/edit_area_view.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_binding.dart';
 import 'package:food_delivery_app/screen/auth/sign_in_screen.dart';
-import 'package:food_delivery_app/screen/cart/cart_binding.dart';
-import 'package:food_delivery_app/screen/cart/cart_page.dart';
 import 'package:food_delivery_app/screen/check_in_out/check_in_out_binding.dart';
 import 'package:food_delivery_app/screen/check_in_out/check_in_out_pages.dart';
 import 'package:food_delivery_app/screen/food/edit_food/edit_food_binding.dart';
@@ -121,11 +119,11 @@ abstract class AppPages {
       page: () => ListFoodPage(),
       binding: ListFoodBinding(),
     ),
-    GetPage(
-      name: Routes.CART,
-      page: () => CartPage(),
-      binding: CartBinding(),
-    ),
+    // GetPage(
+    //   name: Routes.CART,
+    //   page: () => CartPage(),
+    //   binding: CartBinding(),
+    // ),
     GetPage(
       name: Routes.MYACCOUNT,
       page: () => MyAccountView(),

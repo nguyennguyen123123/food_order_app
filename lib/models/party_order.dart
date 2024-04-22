@@ -121,4 +121,10 @@ extension PartyOrderExtension on PartyOrder {
     }
     return totalVal - (voucherPrice ?? 0);
   }
+
+  void clearVoucher() {
+    this.voucherPrice = null;
+    this.voucher = null;
+    this.voucherType = null;
+  }
 }

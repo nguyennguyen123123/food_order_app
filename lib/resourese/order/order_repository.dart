@@ -377,6 +377,10 @@ class OrderRepository extends IOrderRepository {
       if (deleteItem.isNotEmpty) {
         await deleteListOrderItem(deleteItem);
       }
+      await baseService.client.from(TABLE_NAME.PARTY_ORDER).update({
+        'voucher_price': partyOrder.voucherPrice,
+        'voucher_type': partyOrder.voucherType,
+      }).eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, partyOrder.partyOrderId ?? '');
       await Future.wait(oldOrderItem.map((item) async {
         return baseService.client
             .from(TABLE_NAME.ORDER_ITEM)
