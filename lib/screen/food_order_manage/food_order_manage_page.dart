@@ -25,7 +25,7 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
         title: Row(
           children: [
             IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
-            Text('Danh sách đơn hàng đang làm'.tr, style: StyleThemeData.bold18(height: 0)),
+            Text('list_of_orders_in_progress'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
       ),

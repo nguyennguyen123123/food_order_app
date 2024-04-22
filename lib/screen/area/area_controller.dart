@@ -68,6 +68,7 @@ class AreaController extends GetxController {
       final delete = await areaRepository.deleteArea(areaId);
       if (delete != null) {
         areaList.removeWhere((table) => table.areaId == areaId);
+        Get.find<TableControlller>().getListArea();
         Get.back();
         DialogUtils.showSuccessDialog(content: "delete_area_successfully".tr);
       } else {
