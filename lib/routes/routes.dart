@@ -20,6 +20,7 @@ abstract class Routes {
   static const EDITPRINTER = '/edit_printer';
   static const MANAGE_ORDER = '/manage-order';
   static const ORDER_DETAIL = '/order-detail';
+  static const TABLEMANAGE = '/table-manage';
   static const TABLE = '/table';
   static const ADDTABLE = '/add_table';
   static const EDITTABLE = '/edit_table';

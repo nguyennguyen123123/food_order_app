@@ -42,6 +42,7 @@ import 'package:food_delivery_app/screen/splash/splash_page.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_binding.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_page.dart';
 import 'package:food_delivery_app/screen/table/edit/edit_table_binding.dart';
+import 'package:food_delivery_app/screen/table/manage/table_manage_binding.dart';
 import 'package:food_delivery_app/screen/table/table_binding.dart';
 import 'package:food_delivery_app/screen/table/table_page.dart';
 import 'package:food_delivery_app/screen/table/view/add_table_view.dart';
@@ -56,6 +57,8 @@ import 'package:food_delivery_app/screen/voucher/voucher_pages.dart';
 import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_binding.dart';
 import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_page.dart';
 import 'package:get/get.dart';
+
+import '../screen/table/manage/table_manage_page.dart';
 
 part 'routes.dart';
 
@@ -151,6 +154,11 @@ abstract class AppPages {
       name: Routes.ORDER_DETAIL,
       page: () => OrderDetailPage(),
       binding: OrderDetailBinding(),
+    ),
+    GetPage(
+      name: Routes.TABLEMANAGE,
+      page: () => TableManagePage(),
+      binding: TableManageBinding(),
     ),
     GetPage(
       name: Routes.TABLE,
