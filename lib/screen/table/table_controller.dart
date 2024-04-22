@@ -4,6 +4,7 @@ import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
+import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
@@ -17,8 +18,14 @@ class TableControlller extends GetxController {
   final ITableRepository tableRepository;
   final IAreaRepository areaRepository;
   final IOrderRepository orderRepository;
+  final OrderCartService cartService;
 
-  TableControlller({required this.tableRepository, required this.areaRepository, required this.orderRepository});
+  TableControlller({
+    required this.tableRepository,
+    required this.areaRepository,
+    required this.orderRepository,
+    required this.cartService,
+  });
 
   final TextEditingController tableNumberController = TextEditingController();
 
@@ -56,6 +63,7 @@ class TableControlller extends GetxController {
     if (table.foodOrder == null) {
       final result =
           await Get.toNamed(Routes.WAITER_CART, arguments: WaiterCartParameter(tableNumber: table.tableNumber ?? ''));
+      cartService.clearCart();
       if (result != null && result is FoodOrder) {
         table.foodOrder = await orderRepository.getOrderDetail(result.orderId ?? '');
         tableList.update((val) {

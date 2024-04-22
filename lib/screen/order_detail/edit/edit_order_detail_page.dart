@@ -5,7 +5,6 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/voucher.dart';
-import 'package:food_delivery_app/screen/cart/dialog/add_item_party_dialog.dart';
 import 'package:food_delivery_app/screen/order_detail/bottom_sheet/change_table_dialog.dart';
 import 'package:food_delivery_app/screen/order_detail/bottom_sheet/order_add_food_bts.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_controller.dart';
@@ -73,8 +72,10 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
           if (order == null) {
             return Center(child: CircularProgressIndicator());
           }
-          final isPartyOrderComplete =
-              order.partyOrders?[controller.currentPartyIndex.value].orderStatus == ORDER_STATUS.DONE;
+          final isNewParty = controller.currentPartyIndex.value == order.partyOrders?.length;
+          final isPartyOrderComplete = isNewParty
+              ? false
+              : order.partyOrders?[controller.currentPartyIndex.value].orderStatus == ORDER_STATUS.DONE;
           return Column(
             children: [
               TabBar(
@@ -117,7 +118,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                     child: BottomButton(
                         isDisableCancel: false,
                         isDisableConfirm: false,
-                        cancelText: 'Cập nhật',
+                        cancelText: isNewParty ? 'Tạo' : 'Cập nhật',
                         confirmText: 'Hoàn thành',
                         onConfirm: controller.onCompleteOrder,
                         onCancel: controller.updatePartyOrder)),
@@ -153,6 +154,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Xử lý chuyển bàn
         if (controller.currentTab.value == 1 && !isPartyOrderComplete) ...[
           Obx(() {
             final isSelectAll = controller.selectOrderItems.length == orderItems.length;
@@ -178,30 +180,22 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
             );
           })
         ],
-        Row(
-          children: [
-            Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
-            if (!isPartyOrderComplete)
-              GestureDetector(
-                  onTap: () async {
-                    final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
-                    if (result != null) {
-                      controller.addFoodToPartyOrder(result);
-                    }
-                  },
-                  child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
-          ],
-        ),
+        Text('party number: $number', style: StyleThemeData.bold18()),
+        // Row(
+        //   children: [
+        //     Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
+        //     if (!isPartyOrderComplete)
+        //       GestureDetector(
+        //           onTap: () async {
+        //             final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
+        //             if (result != null) {
+        //               controller.addFoodToPartyOrder(result);
+        //             }
+        //           },
+        //           child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
+        //   ],
+        // ),
         SizedBox(height: 8.h),
-        // if (partyOrder.numberOfGangs == null)
-        //   ListView.separated(
-        //       shrinkWrap: true,
-        //       physics: NeverScrollableScrollPhysics(),
-        //       itemBuilder: (context, index) =>
-        //           _buildOrderItem(partyIndex, partyOrder.orderItems![index], isPartyOrderComplete),
-        //       separatorBuilder: (context, index) => SizedBox(height: 6.h),
-        //       itemCount: partyOrder.orderItems?.length ?? 0)
-        // else
         _buildOrderItemByGangIndex(partyIndex, partyOrder.numberOfGangs, number, orderItems, isPartyOrderComplete),
         SizedBox(height: 6.h),
         if (partyOrder.voucherPrice != null) ...[Text('Áp dụng mã giảm giá: Giảm ${getVoucherDiscountText()}')],
@@ -230,16 +224,24 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                   children: [
                     Expanded(
                         child: Text('Gang ${gangIndex + 1}', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+                    // GestureDetector(
+                    //   onTap: () async {
+                    //     final result =
+                    //         await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
+                    //     if (result != null && result is List<OrderItem>) {
+                    //       controller.onAddOrderToGang(gangIndex, result);
+                    //     }
+                    //   },
+                    //   child: Icon(Icons.add, size: 24),
+                    // ),
                     GestureDetector(
-                      onTap: () async {
-                        final result =
-                            await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
-                        if (result != null && result is List<OrderItem>) {
-                          controller.onAddOrderToGang(gangIndex, result);
-                        }
-                      },
-                      child: Icon(Icons.add, size: 24),
-                    ),
+                        onTap: () async {
+                          final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
+                          if (result != null) {
+                            controller.addFoodToPartyOrder(result, gangIndex: gangIndex);
+                          }
+                        },
+                        child: Icon(Icons.add, size: 24, color: appTheme.blackColor)),
                     SizedBox(width: 6.w),
                     if (gangIndex > 0)
                       GestureDetector(

@@ -4,14 +4,20 @@ import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
+import 'package:food_delivery_app/screen/type_details/type_details_parameter.dart';
 import 'package:get/get.dart';
 
 class TypeDetailsController extends GetxController {
   final IFoodRepository foodRepository;
   final OrderCartService cartService;
+  final TypeDetailsParamter paramter;
   final orderCartNotifier = ValueNotifier(0);
 
-  TypeDetailsController({required this.foodRepository, required this.cartService});
+  TypeDetailsController({
+    required this.foodRepository,
+    required this.cartService,
+    required this.paramter,
+  });
 
   final foodTypes = Rx<List<FoodType>?>(null);
   final foods = Rx<List<FoodModel>?>(null);
@@ -68,12 +74,12 @@ class TypeDetailsController extends GetxController {
   }
 
   void addItemToCart(FoodModel food) {
-    cartService.onAddItemToCart(food);
+    cartService.onAddItemToCart(food, paramter.gangIndex);
     orderCartNotifier.value += 1;
   }
 
   void updateQuantityCartItem(int quantity, FoodModel food) {
-    cartService.onUpdateQuantityItemInCart(quantity, food);
+    cartService.onUpdateQuantityItemInCart(quantity, food, paramter.gangIndex);
     orderCartNotifier.value += 1;
   }
 

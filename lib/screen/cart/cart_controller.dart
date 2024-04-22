@@ -57,16 +57,16 @@ class CartController extends GetxController {
   }
 
   /// Cập nhật số lượng món ăn trong đơn hàng mà không thuộc party nào
-  void updateQuantityCart(OrderItem item, int quantity) {
-    cartService.items.update((val) {
-      final index =
-          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
-              -1;
-      if (index != -1) {
-        val?[index].quantity = quantity;
-      }
-    });
-  }
+  // void updateQuantityCart(OrderItem item, int quantity) {
+  //   cartService.items.update((val) {
+  //     final index =
+  //         val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+  //             -1;
+  //     if (index != -1) {
+  //       val?[index].quantity = quantity;
+  //     }
+  //   });
+  // }
 
   /// Cập nhật số lượng món ăn thuộc party trong đơn hàng
   void updateQuantityPartyItem(int partyIndex, OrderItem item, int quantity) {
@@ -82,16 +82,16 @@ class CartController extends GetxController {
   }
 
   /// Xóa món ăn trong đơn hàng không thuộc party nào
-  void removeItemInOrder(OrderItem item) {
-    cartService.items.update((val) {
-      final index =
-          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
-              -1;
-      if (index != -1) {
-        val?.removeAt(index);
-      }
-    });
-  }
+  // void removeItemInOrder(OrderItem item) {
+  //   cartService.items.update((val) {
+  //     final index =
+  //         val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+  //             -1;
+  //     if (index != -1) {
+  //       val?.removeAt(index);
+  //     }
+  //   });
+  // }
 
   /// Xóa món ăn của party trong đơn hàng
   void removeItemInPartyOrder(int partyIndex, OrderItem item) {
@@ -107,16 +107,16 @@ class CartController extends GetxController {
   }
 
   /// Cập nhật note cho món ăn không thuộc party
-  void updateCartItemNote(OrderItem item, String note) {
-    cartService.items.update((val) {
-      final index =
-          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
-              -1;
-      if (index != -1) {
-        val?[index].note = note;
-      }
-    });
-  }
+  // void updateCartItemNote(OrderItem item, String note) {
+  //   cartService.items.update((val) {
+  //     final index =
+  //         val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+  //             -1;
+  //     if (index != -1) {
+  //       val?[index].note = note;
+  //     }
+  //   });
+  // }
 
   /// Cập nhật note cho món ăn trong party
   void updatePartyCartItemNote(int partyIndex, OrderItem item, String note) {
@@ -153,28 +153,28 @@ class CartController extends GetxController {
   }
 
   /// Thêm mức độ ưu tiên lên món của món ăn trong party hoặc đơn hàng
-  void updateOrderItemInCart(int gangIndex, List<OrderItem> orderItems, {int? partyIndex}) {
-    if (partyIndex == null) {
-      final list = [...cartService.items.value];
-      for (final item in orderItems) {
-        final index = list.indexWhere((element) => element.foodId == item.foodId);
-        if (index != -1) {
-          list[index].sortOder = gangIndex;
-        }
-      }
-      cartService.items.value = list;
-    } else {
-      final list = [...(cartService.partyOrders.value[partyIndex].orderItems ?? <OrderItem>[])];
-      for (final item in orderItems) {
-        final index = list.indexWhere((element) => element.foodId == item.foodId);
-        if (index != -1) {
-          list[index].sortOder = gangIndex;
-        }
-      }
-      cartService.partyOrders.value[partyIndex].orderItems = list;
-      cartService.partyOrders.refresh();
-    }
-  }
+  // void updateOrderItemInCart(int gangIndex, List<OrderItem> orderItems, {int? partyIndex}) {
+  //   if (partyIndex == null) {
+  //     final list = [...cartService.items.value];
+  //     for (final item in orderItems) {
+  //       final index = list.indexWhere((element) => element.foodId == item.foodId);
+  //       if (index != -1) {
+  //         list[index].sortOder = gangIndex;
+  //       }
+  //     }
+  //     cartService.items.value = list;
+  //   } else {
+  //     final list = [...(cartService.partyOrders.value[partyIndex].orderItems ?? <OrderItem>[])];
+  //     for (final item in orderItems) {
+  //       final index = list.indexWhere((element) => element.foodId == item.foodId);
+  //       if (index != -1) {
+  //         list[index].sortOder = gangIndex;
+  //       }
+  //     }
+  //     cartService.partyOrders.value[partyIndex].orderItems = list;
+  //     cartService.partyOrders.refresh();
+  //   }
+  // }
 
   /// Tạo thêm gang trong party
   void onPartyCreateGang(int partyIndex) {
@@ -183,16 +183,16 @@ class CartController extends GetxController {
     });
   }
 
-  void onRemoveGangIndexOfCartItem(OrderItem item) {
-    cartService.items.update((val) {
-      final index =
-          val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
-              -1;
-      if (index != -1) {
-        val?[index].sortOder = null;
-      }
-    });
-  }
+  // void onRemoveGangIndexOfCartItem(OrderItem item) {
+  //   cartService.items.update((val) {
+  //     final index =
+  //         val?.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId) ??
+  //             -1;
+  //     if (index != -1) {
+  //       val?[index].sortOder = null;
+  //     }
+  //   });
+  // }
 
   void onRemoveGangIndexOfPartyCartItem(int partyIndex, OrderItem item) {
     cartService.partyOrders.update((val) {
@@ -220,20 +220,20 @@ class CartController extends GetxController {
     isLoading.value = true;
     showLoading();
     try {
-      final result = await orderRepository.onPlaceOrder(
-        cartService.items.value,
-        cartService.partyOrders.value,
-        voucher: cartService.currentVoucher.value,
-        tableNumber: (selectedValue.value?.tableNumber ?? 0).toString(),
-        bondNumber: (accountService.myAccount?.numberOfOrder ?? 0) + 1,
-      );
-      if (result != null) {
-        cartService.items.value = [];
-        cartService.partyOrders.value = [];
-        DialogUtils.showSuccessDialog(content: "create_order_success".tr);
-      } else {
-        DialogUtils.showInfoErrorDialog(content: "create_order_fail".tr);
-      }
+      // final result = await orderRepository.onPlaceOrder(
+      //   cartService.items.value,
+      //   cartService.partyOrders.value,
+      //   voucher: cartService.currentVoucher.value,
+      //   tableNumber: (selectedValue.value?.tableNumber ?? 0).toString(),
+      //   bondNumber: (accountService.myAccount?.numberOfOrder ?? 0) + 1,
+      // );
+      // if (result != null) {
+      //   cartService.items.value = [];
+      //   cartService.partyOrders.value = [];
+      //   DialogUtils.showSuccessDialog(content: "create_order_success".tr);
+      // } else {
+      //   DialogUtils.showInfoErrorDialog(content: "create_order_fail".tr);
+      // }
     } catch (e) {
       print(e);
       DialogUtils.showInfoErrorDialog(content: "create_order_fail".tr);

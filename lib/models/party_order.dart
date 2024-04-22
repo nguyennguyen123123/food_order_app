@@ -51,6 +51,7 @@ class PartyOrder {
     String? partyOrderId,
     List<OrderItem>? orderItems,
     double? voucherPrice,
+    String? voucherType,
     double? total,
     String? orderStatus,
     String? orderId,
@@ -63,6 +64,7 @@ class PartyOrder {
       partyOrderId: partyOrderId ?? this.partyOrderId,
       orderItems: orderItems ?? this.orderItems,
       voucherPrice: voucherPrice ?? this.voucherPrice,
+      voucherType: voucherType ?? this.voucherType,
       total: total ?? this.total,
       orderStatus: orderStatus ?? this.orderStatus,
       orderId: orderId ?? this.orderId,
@@ -109,13 +111,14 @@ extension PartyOrderExtension on PartyOrder {
   }
 
   double get orderPrice {
+    final totalVal = total ?? 0.0;
     if (voucherType != null) {
       if (voucherType == DiscountType.amount.toString()) {
-        return (total ?? 0) - (voucherPrice ?? 0);
+        return totalVal - (voucherPrice ?? 0);
       } else {
-        return (total ?? 0) * (1 - ((voucherPrice ?? 100) / 100));
+        return totalVal * (1 - ((voucherPrice ?? 100) / 100));
       }
     }
-    return (total ?? 0) - (voucherPrice ?? 0);
+    return totalVal - (voucherPrice ?? 0);
   }
 }

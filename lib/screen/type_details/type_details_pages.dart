@@ -98,8 +98,14 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
                             items: controller.foods.value!,
                             itemBuilder: (index, item) {
                               final listItems = controller.cartService.currentListItems;
-                              final currentOrderItem =
-                                  listItems.firstWhereOrNull((element) => element.food?.foodId == item.foodId);
+                              final index = listItems.indexWhere((element) =>
+                                  element.food?.foodId == item.foodId &&
+                                  controller.paramter.gangIndex == element.sortOder);
+                              // print(index);
+                              // final currentOrderItem = listItems.firstWhereOrNull((element) =>
+                              //     element.food?.foodId == item.foodId &&
+                              //     controller.paramter.gangIndex == element.sortOder);
+                              final quantity = index != -1 ? listItems[index].quantity : 0;
                               return InkWell(
                                 child: Padding(
                                   padding: padding(vertical: 12),
@@ -107,7 +113,7 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
                                     foodModel: item,
                                     showAddBtn: true,
                                     onAdd: () => controller.addItemToCart(item),
-                                    quantity: currentOrderItem?.quantity ?? 0,
+                                    quantity: quantity,
                                     showChangeOnQuantity: true,
                                     updateQuantity: (quantity) => controller.updateQuantityCartItem(quantity, item),
                                   ),

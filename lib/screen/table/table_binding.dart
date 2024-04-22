@@ -10,6 +10,7 @@ class TableBinding implements Binding {
         orderRepository: Get.find(),
         tableRepository: Get.find(),
         areaRepository: Get.find(),
+        cartService: Get.find(),
       ),
     );
   }

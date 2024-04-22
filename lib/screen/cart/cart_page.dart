@@ -5,7 +5,6 @@ import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/screen/cart/cart_controller.dart';
-import 'package:food_delivery_app/screen/cart/dialog/add_item_party_dialog.dart';
 import 'package:food_delivery_app/screen/cart/dialog/select_voucher_bts.dart';
 import 'package:food_delivery_app/screen/cart/widget/cart_item_view.dart';
 import 'package:food_delivery_app/screen/cart/widget/empty_cart.dart';
@@ -22,12 +21,10 @@ class CartPage extends GetWidget<CartController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final foods = controller.cartService.items.value;
+      // final foods = controller.cartService.items.value;
       final total = controller.cartService.totalCartPrice;
-      final hasOrderInCart = (foods.isEmpty && controller.partyOrders.isEmpty) ||
-          (foods.isEmpty &&
-              controller.partyOrders.isNotEmpty &&
-              (controller.partyOrders.first.orderItems?.isEmpty ?? true));
+      final hasOrderInCart = (controller.partyOrders.isEmpty) ||
+          (controller.partyOrders.isNotEmpty && (controller.partyOrders.first.orderItems?.isEmpty ?? true));
       return Stack(
         children: [
           GestureDetector(
@@ -75,20 +72,20 @@ class CartPage extends GetWidget<CartController> {
                               ),
                               _buildListPartyOrder(),
                               if (controller.partyOrders.length > 0) Divider(height: 1, color: appTheme.borderColor),
-                              _buildListOrderItem(
-                                foods,
-                                numerGangs: controller.cartService.numberOfGang.value,
-                                itemBuilder: (index, item, {int? gangIndex}) => CartItemView(
-                                  item,
-                                  updateQuantity: (quantity) => controller.updateQuantityCart(item, quantity),
-                                  removeCartItem: () => controller.removeItemInOrder(item),
-                                  updateNote: (note) => controller.updateCartItemNote(item, note),
-                                  onRemoveGangIndex: () => controller.onRemoveGangIndexOfCartItem(item),
-                                  canDeleteGang: gangIndex != null,
-                                ),
-                                onCreateGang: controller.cartService.onCreateNewGang,
-                                onRemoveGang: controller.cartService.onRemoveGang,
-                              ),
+                              // _buildListOrderItem(
+                              //   foods,
+                              //   numerGangs: controller.cartService.numberOfGang.value,
+                              //   itemBuilder: (index, item, {int? gangIndex}) => CartItemView(
+                              //     item,
+                              //     updateQuantity: (quantity) => controller.updateQuantityCart(item, quantity),
+                              //     removeCartItem: () => controller.removeItemInOrder(item),
+                              //     updateNote: (note) => controller.updateCartItemNote(item, note),
+                              //     onRemoveGangIndex: () => controller.onRemoveGangIndexOfCartItem(item),
+                              //     canDeleteGang: gangIndex != null,
+                              //   ),
+                              //   onCreateGang: controller.cartService.onCreateNewGang,
+                              //   onRemoveGang: controller.cartService.onRemoveGang,
+                              // ),
                             ],
                           ),
                         ),
@@ -99,11 +96,11 @@ class CartPage extends GetWidget<CartController> {
                                 decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
                                 child: Column(
                                   children: [
-                                    _buildVoucherField(
-                                      controller.cartService.currentVoucher.value,
-                                      updateVoucher: controller.cartService.onAddVoucher,
-                                      clearVoucher: () => controller.cartService.currentVoucher.value = null,
-                                    ),
+                                    // _buildVoucherField(
+                                    //   controller.cartService.currentVoucher.value,
+                                    //   updateVoucher: controller.cartService.onAddVoucher,
+                                    //   clearVoucher: () => controller.cartService.currentVoucher.value = null,
+                                    // ),
                                     Divider(),
                                     Row(
                                       children: [
@@ -209,15 +206,15 @@ class CartPage extends GetWidget<CartController> {
                     }
                   },
                   child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
-              GestureDetector(
-                  onTap: () async {
-                    final result = await DialogUtils.showDialogView(
-                        AddItemPartyDialog(orderItems: controller.cartService.items.value));
-                    if (result != null && result is List<OrderItem>) {
-                      controller.cartService.onAddItemToPartyOrder(partyIndex, result);
-                    }
-                  },
-                  child: Icon(Icons.add, size: 32.w, color: appTheme.blackColor))
+              // GestureDetector(
+              //     onTap: () async {
+              //       final result = await DialogUtils.showDialogView(
+              //           AddItemPartyDialog(orderItems: controller.cartService.items.value));
+              //       if (result != null && result is List<OrderItem>) {
+              //         controller.cartService.onAddItemToPartyOrder(partyIndex, result);
+              //       }
+              //     },
+              //     child: Icon(Icons.add, size: 32.w, color: appTheme.blackColor))
             ],
           ),
           SizedBox(height: 8.h),
@@ -229,8 +226,8 @@ class CartPage extends GetWidget<CartController> {
               updateQuantity: (quantity) => controller.updateQuantityPartyItem(partyIndex, item, quantity),
               removeCartItem: () => controller.removeItemInPartyOrder(partyIndex, item),
               updateNote: (note) => controller.updatePartyCartItemNote(partyIndex, item, note),
-              canDeleteGang: gangIndex != null,
-              onRemoveGangIndex: () => controller.onRemoveGangIndexOfPartyCartItem(partyIndex, item),
+              // canDeleteGang: gangIndex != null,
+              // onRemoveGangIndex: () => controller.onRemoveGangIndexOfPartyCartItem(partyIndex, item),
             ),
             onCreateGang: () => controller.onPartyCreateGang(partyIndex),
             onRemoveGang: (gangIndex) => controller.cartService.onRemoveGangInParty(partyIndex, gangIndex),
@@ -280,16 +277,16 @@ class CartPage extends GetWidget<CartController> {
             final orderItemInGang = foods.where((element) => element.sortOder == index).toList();
             return Column(
               children: [
-                _buildGangView(
-                  gangIndex: index,
-                  onRemoveGang: onRemoveGang,
-                  onAddItemToGang: () async {
-                    final result = await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
-                    if (result != null && result is List<OrderItem>) {
-                      controller.updateOrderItemInCart(index, result, partyIndex: partyIndex);
-                    }
-                  },
-                ),
+                // _buildGangView(
+                //   gangIndex: index,
+                //   onRemoveGang: onRemoveGang,
+                //   onAddItemToGang: () async {
+                //     final result = await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
+                //     if (result != null && result is List<OrderItem>) {
+                //       controller.updateOrderItemInCart(index, result, partyIndex: partyIndex);
+                //     }
+                //   },
+                // ),
                 if (orderItemInGang.isNotEmpty)
                   ListView.separated(
                       shrinkWrap: true,
