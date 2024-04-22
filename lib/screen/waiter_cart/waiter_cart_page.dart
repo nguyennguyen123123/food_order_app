@@ -26,7 +26,8 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
             onTap: () => FocusScope.of(context).unfocus(),
             child: Scaffold(
               appBar: AppBar(
-                title: Text("Lên đơn cho bàn ${controller.parameter.tableNumber}".tr, style: StyleThemeData.bold18()),
+                title: Text("waiter_cart_title".trParams({'number': '${controller.parameter.tableNumber}'}),
+                    style: StyleThemeData.bold18()),
                 centerTitle: true,
                 automaticallyImplyLeading: false,
               ),
@@ -36,20 +37,20 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                     () => DropdownButton<int>(
                         value: controller.currentPartySelected.value,
                         items: <DropdownMenuItem<int>>[
-                          _buildDropdownItem(-2, 'Alles'),
+                          _buildDropdownItem(-2, 'alles'.tr),
                           ...controller.cartService.partyOrders.value.asMap().entries.map((e) => _buildDropdownItem(
                                 e.key,
-                                'Party ${e.key + 1}',
+                                'party_index'.trParams({'number': '${e.key + 1}'}),
                                 canDelete: true && controller.currentPartySelected.value != e.key,
                                 onDelete: () async {
                                   final result = await DialogUtils.showYesNoDialog(
-                                      title: 'Bạn muốn xóa party ${e.key + 1} khỏi đơn không?');
+                                      title: 'delete_party_title'.trParams({'number': '${e.key + 1}'}));
                                   if (result == true) {
                                     controller.onRemovePartyIndex(e.key);
                                   }
                                 },
                               )),
-                          _buildDropdownItem(-1, 'Tạo thêm party'),
+                          _buildDropdownItem(-1, 'create_party'.tr),
                         ],
                         onChanged: (value) => controller.onChangeCurrentPartyOrder(value ?? -2)),
                   ),
@@ -101,7 +102,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                                 .entries
                                 .map((data) => _buildVoucherField(
                                       data.value.voucher,
-                                      title: 'Party ${data.key + 1}',
+                                      title: 'party_index'.trParams({'number': '${data.key + 1}'}),
                                       updateVoucher: (voucher) =>
                                           controller.onAddVoucher(voucher, partyIndex: data.key),
                                       clearVoucher: () => controller.onClearVoucher(partyIndex: data.key),
@@ -182,7 +183,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
       return Row(
         children: [
           Text(title ?? '', style: StyleThemeData.bold12()),
-          Expanded(child: Text('Áp dụng voucher', style: StyleThemeData.bold18())),
+          Expanded(child: Text('apply_voucher'.tr, style: StyleThemeData.bold18())),
           PrimaryButton(
               onPressed: () async {
                 final result = await DialogUtils.showBTSView(SelectVoucherBTS(voucher: voucher));
@@ -193,7 +194,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
               contentPadding: padding(all: 12),
               radius: BorderRadius.circular(1000),
               child: Text(
-                'Chọn',
+                'select'.tr,
                 style: StyleThemeData.bold14(color: appTheme.whiteText),
               ))
         ],
@@ -202,11 +203,11 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
       return Row(
         children: [
           Text(title ?? '', style: StyleThemeData.bold12()),
-          Expanded(child: Text("Mã voucher: ${voucher.code}")),
+          Expanded(child: Text("voucher_code".trParams({'code': '${voucher.code}'}))),
           if (voucher.discountType == DiscountType.amount)
-            Text('Giảm ${Utils.getCurrency(voucher.discountValue)}')
+            Text('voucher_price'.trParams({'number': '${Utils.getCurrency(voucher.discountValue)}'}))
           else
-            Text('Giảm ${voucher.discountValue} %'),
+            Text('voucher_percentage'.trParams({'number': '${voucher.discountValue}'})),
           GestureDetector(onTap: clearVoucher, child: Icon(Icons.clear))
         ],
       );
@@ -278,7 +279,9 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
         padding: padding(all: 12),
         child: Row(
           children: [
-            Expanded(child: Text('Gang ${gangIndex + 1}', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+            Expanded(
+                child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
+                    style: StyleThemeData.bold16(color: appTheme.greyColor))),
             GestureDetector(
                 onTap: onAddItemToGang,
                 behavior: HitTestBehavior.opaque,
@@ -300,7 +303,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
         padding: padding(all: 12),
         child: Row(
           children: [
-            Expanded(child: Text('Tạo Gang', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+            Expanded(child: Text('create_gang'.tr, style: StyleThemeData.bold16(color: appTheme.greyColor))),
             ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 20),
           ],
         ),

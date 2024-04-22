@@ -50,10 +50,10 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                     },
                     child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
               SizedBox(width: 12.w),
-              if (isOrderNonComplete)
+              if (isOrderNonComplete && controller.isAdmin)
                 GestureDetector(
                     onTap: () async {
-                      final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa đơn này không?');
+                      final result = await DialogUtils.showYesNoDialog(title: 'delete_order_title'.tr);
                       if (result == true) {
                         controller.onDeleteOrder();
                       }
@@ -98,7 +98,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                         // buildDropDownItem(-2, content: 'Alles'),
                         ...(order.partyOrders ?? []).asMap().entries.map((e) => buildDropDownItem(e.key)),
                         if (controller.newParty == null)
-                          buildDropDownItem(-1, content: 'Tạo party')
+                          buildDropDownItem(-1, content: 'create_party'.tr)
                         else
                           buildDropDownItem(controller.newParty!.partyNumber ?? 0),
                       ],
@@ -129,8 +129,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                       BottomButton(
                           isDisableCancel: false,
                           isDisableConfirm: false,
-                          cancelText: isNewParty ? 'Tạo' : 'Cập nhật',
-                          confirmText: 'Hoàn thành',
+                          cancelText: isNewParty ? 'create'.tr : 'update'.tr,
+                          confirmText: 'complete'.tr,
                           onConfirm: controller.onCompleteOrder,
                           onCancel: controller.updatePartyOrder),
                     ],
@@ -144,14 +144,14 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
   DropdownMenuItem<int> buildDropDownItem(int index, {String? content}) {
     return DropdownMenuItem<int>(
       value: index,
-      child: Text(content ?? 'Party ${index + 1}'),
+      child: Text(content ?? 'party_index'.trParams({'number': '${index + 1}'})),
     );
   }
 
   Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder) {
     final order = controller.foodOrder.value!;
     final number = partyOrder.partyNumber ?? order.partyOrders?.length ?? 0;
-    final total = partyOrder.totalPrice;
+    // final total = partyOrder.totalPrice;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
     final isPartyOrderComplete = partyOrder.orderStatus == ORDER_STATUS.DONE;
@@ -168,7 +168,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 Checkbox(
                     value: isSelectAll, onChanged: (value) => controller.onUpdateAllOrderItem(isSelectAll, orderItems)),
                 SizedBox(width: 12.w),
-                Text('Chọn tất cả', style: StyleThemeData.regular17()),
+                Text('select_all'.tr, style: StyleThemeData.regular17()),
                 Spacer(),
                 GestureDetector(
                     onTap: () async {
@@ -185,7 +185,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
             );
           })
         ],
-        Text('party number: $number', style: StyleThemeData.bold18()),
+        Text('party_index'.trParams({'number': '$number'}), style: StyleThemeData.bold18()),
         // Row(
         //   children: [
         //     Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
@@ -223,7 +223,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 child: Row(
                   children: [
                     Expanded(
-                        child: Text('Gang ${gangIndex + 1}', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+                        child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
+                            style: StyleThemeData.bold16(color: appTheme.greyColor))),
                     // GestureDetector(
                     //   onTap: () async {
                     //     final result =
@@ -265,7 +266,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
               padding: padding(all: 12),
               child: Row(
                 children: [
-                  Expanded(child: Text('Tạo gang', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+                  Expanded(child: Text('create_gang'.tr, style: StyleThemeData.bold16(color: appTheme.greyColor))),
                   ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 24)
                 ],
               ),
@@ -333,13 +334,13 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 itemData(title: 'total'.tr, data: Utils.getCurrency((item.quantity) * (item.food?.price ?? 0))),
               ],
             )),
-            if (controller.currentTab.value == 0 && !isPartyOrderComplete)
+            if (controller.currentTab.value == 0 && !isPartyOrderComplete && controller.isAdmin)
               Column(
                 children: [
                   GestureDetector(
                       onTap: () async {
                         final result = await DialogUtils.showYesNoDialog(
-                            title: 'Bạn muốn xóa món ăn khỏi party $partyNumber không?');
+                            title: 'delete_party_title'.trParams({'number': '$partyNumber'}));
                         if (result == true) {
                           controller.onRemoveItem(item);
                         }
@@ -380,7 +381,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     if (partyOrder.voucherPrice == null) {
       return Row(
         children: [
-          Expanded(child: Text('Áp dụng voucher', style: StyleThemeData.bold18())),
+          Expanded(child: Text('apply_voucher'.tr, style: StyleThemeData.bold18())),
           PrimaryButton(
               onPressed: () async {
                 final result = await DialogUtils.showBTSView(SelectVoucherBTS(voucher: partyOrder.voucher));
@@ -391,7 +392,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
               contentPadding: padding(all: 12),
               radius: BorderRadius.circular(1000),
               child: Text(
-                'Chọn',
+                'select'.tr,
                 style: StyleThemeData.bold14(color: appTheme.whiteText),
               ))
         ],
@@ -399,7 +400,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     } else {
       return Row(
         children: [
-          Expanded(child: Text('Áp dụng mã giảm giá: Giảm ${getVoucherDiscountText()}')),
+          Expanded(child: Text('apply_voucher_price'.trParams({'number': '${getVoucherDiscountText()}'}))),
           GestureDetector(onTap: () => controller.clearVoucherParty(), child: Icon(Icons.close)),
         ],
       );
