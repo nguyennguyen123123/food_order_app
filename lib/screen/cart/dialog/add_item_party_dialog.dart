@@ -4,7 +4,6 @@ import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/custom_network_image.dart';
 import 'package:food_delivery_app/widgets/primary_button.dart';
-import 'package:food_delivery_app/widgets/quantity_view.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
@@ -99,7 +98,6 @@ class _AddItemPartyDialogState extends State<AddItemPartyDialog> {
   }
 
   Widget _buildOrderItem(int index, OrderItem orderItem, List<OrderItem> items) {
-    // final quantity = orderItem.quantity;
     final food = orderItem.food;
 
     final isSelected = indexSelected.contains(index);
@@ -130,14 +128,14 @@ class _AddItemPartyDialogState extends State<AddItemPartyDialog> {
           food?.name ?? '',
           style: StyleThemeData.bold14(),
         )),
-        if (isSelected)
-          QuantityView(
-            checkUpdateValue: (newQuantity) => newQuantity <= orderItem.quantity,
-            updateQuantity: (quantity) {
-              final index = partyItems.value.indexWhere((element) => element.foodId == food?.foodId);
-              partyItems.value[index].quantity = quantity;
-            },
-          ),
+        // if (isSelected)
+        //   QuantityView(
+        //     checkUpdateValue: (newQuantity) => newQuantity <= orderItem.quantity,
+        //     updateQuantity: (quantity) {
+        //       final index = partyItems.value.indexWhere((element) => element.foodId == food?.foodId);
+        //       partyItems.value[index].quantity = quantity;
+        //     },
+        //   ),
       ],
     );
   }
