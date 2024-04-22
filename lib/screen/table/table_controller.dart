@@ -107,7 +107,8 @@ class TableControlller extends GetxController {
 
   Future<void> getListAreaTable(String areaId) async {
     final result = await tableRepository.getListAreaTable(areaId);
-
-    tableList.value = result;
+    if (result!.isNotEmpty) {
+      tableList.value = result;
+    }
   }
 }
