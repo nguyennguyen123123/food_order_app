@@ -97,7 +97,7 @@ class TablePage extends GetWidget<TableControlller> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: appTheme.appColor.withOpacity(0.5),
+          color: table.foodOrder == null ? appTheme.appColor.withOpacity(0.5) : Colors.green.withOpacity(0.4),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
