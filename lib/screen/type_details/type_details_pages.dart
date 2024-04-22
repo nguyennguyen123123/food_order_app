@@ -24,7 +24,7 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
         title: Row(
           children: [
             IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back, color: appTheme.blackText)),
-            Text('Danh sách phân loại sản phẩm', style: StyleThemeData.bold18(height: 0)),
+            Text('list_of_products'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
       ),

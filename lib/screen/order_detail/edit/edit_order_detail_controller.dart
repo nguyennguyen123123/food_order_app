@@ -6,6 +6,7 @@ import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
+import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_response.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
@@ -15,6 +16,14 @@ import 'package:get/get.dart';
 class EditOrderDetailController extends GetxController with GetSingleTickerProviderStateMixin {
   final EditOrderDetailParameter parameter;
   final IOrderRepository orderRepository;
+  final AccountService accountService;
+
+  EditOrderDetailController({
+    required this.parameter,
+    required this.orderRepository,
+    required this.accountService,
+  });
+
   late FoodOrder originalOrder;
   late Rx<FoodOrder?> foodOrder = Rx(null);
   PartyOrder? newParty = null;
@@ -22,14 +31,11 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   late final tabController = TabController(length: 2, vsync: this);
   final currentTab = 0.obs;
   final currentPartyIndex = 0.obs;
-  List<String> tabItems = ['Edit', 'Chuyển bàn'];
+  List<String> tabItems = ['edit'.tr, 'move_table'.tr];
 
   final selectOrderItems = RxList<String>([]);
 
-  EditOrderDetailController({
-    required this.parameter,
-    required this.orderRepository,
-  });
+  bool get isAdmin => accountService.myAccount?.role == USER_ROLE.ADMIN;
 
   @override
   void onClose() {
@@ -74,7 +80,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
       onUpdateCurrentPartyOrder();
     } catch (e) {
       dissmissLoading();
-      await DialogUtils.showInfoErrorDialog(content: 'Vui lòng thử lại');
+      await DialogUtils.showInfoErrorDialog(content: 'try_again'.tr);
       Get.back();
     }
   }
@@ -271,7 +277,8 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
       final result = await orderRepository.onChangeTableOfOrder(foodOrder.value!, tableModels);
       if (result) {
         dissmissLoading();
-        await DialogUtils.showSuccessDialog(content: 'Đổi sang bàn ${tableModels.tableNumber} thành công');
+        await DialogUtils.showSuccessDialog(
+            content: 'move_table_sucess'.trParams({'number': '${tableModels.tableNumber}'}));
         Get.back(
             result: EditOrderResponse(
                 type: EditType.CHANGE_TABLE,
@@ -281,7 +288,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
         dissmissLoading();
       }
     } catch (e) {
-      DialogUtils.showSuccessDialog(content: 'Đổi bàn thất bại');
+      DialogUtils.showSuccessDialog(content: 'move_table_fail'.tr);
       dissmissLoading();
       print(e);
     }
@@ -294,8 +301,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
           foodOrder.value!.partyOrders![currentPartyIndex.value], selectOrderItems, targetTableNumber);
       if (res) {
         dissmissLoading();
-        await DialogUtils.showSuccessDialog(
-            content: 'Các món ăn đã chuyển sang bàn số $targetTableNumber. Vui lòng kiểm tra lại');
+        await DialogUtils.showSuccessDialog(content: 'move_food_to_table'.trParams({'number': '$targetTableNumber'}));
         Get.back(
             result: EditOrderResponse(
                 type: EditType.CHANGE_TABLE,
@@ -303,12 +309,12 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
                 targetTable: targetTableNumber.tableNumber ?? ''));
       } else {
         dissmissLoading();
-        await DialogUtils.showInfoErrorDialog(content: 'Vui lòng thử lại');
+        await DialogUtils.showInfoErrorDialog(content: 'try_again'.tr);
       }
     } catch (e) {
       print(e);
       dissmissLoading();
-      await DialogUtils.showInfoErrorDialog(content: 'Vui lòng thử lại');
+      await DialogUtils.showInfoErrorDialog(content: 'try_again'.tr);
     }
   }
 
@@ -323,7 +329,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
       newOrder.partyOrders![currentPartyIndex.value].orderStatus = ORDER_STATUS.DONE;
       final newPartyOrder = newOrder.partyOrders![currentPartyIndex.value];
       // final partyNumber = newPartyOrder.partyNumber == null ? newOrder.partyOrders!.length : newPartyOrder.partyNumber!;
-      final isYes = await DialogUtils.showYesNoDialog(title: 'Xác nhận thanh toán đơn hàng');
+      final isYes = await DialogUtils.showYesNoDialog(title: 'finish_payment_order'.tr);
       if (!isYes) return;
       showLoading();
       final isCompleteOrder =
@@ -336,12 +342,12 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
           orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? ''),
         ]);
         dissmissLoading();
-        await DialogUtils.showSuccessDialog(content: 'Đơn hàng đã được hoàn thành');
+        await DialogUtils.showSuccessDialog(content: 'complete_order'.tr);
         Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: newOrder.tableNumber ?? ''));
       } else {
         await orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? '');
         dissmissLoading();
-        await DialogUtils.showSuccessDialog(content: 'Xác nhận hoàn thành đơn hàng');
+        await DialogUtils.showSuccessDialog(content: 'confirm_complete_order'.tr);
       }
       originalOrder = newOrder;
       renewOrder();

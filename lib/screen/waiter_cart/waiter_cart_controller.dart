@@ -226,7 +226,7 @@ class WaiterCartController extends GetxController {
   /// Lên đơn
   Future<void> onPlaceOrder() async {
     if (accountService.myAccount?.role == USER_ROLE.STAFF && accountService.myAccount?.checkInTime == null) {
-      DialogUtils.showInfoErrorDialog(content: 'Bạn chưa checkin nên không thể lên đơn');
+      DialogUtils.showInfoErrorDialog(content: 'not_checkin_error'.tr);
       return;
     }
 

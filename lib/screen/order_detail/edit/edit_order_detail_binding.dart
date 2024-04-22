@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 class EditOrderDetailBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(EditOrderDetailController(parameter: Get.arguments, orderRepository: Get.find()));
+    Get.put(EditOrderDetailController(
+      parameter: Get.arguments,
+      orderRepository: Get.find(),
+      accountService: Get.find(),
+    ));
   }
 }
