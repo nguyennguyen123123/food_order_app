@@ -29,4 +29,5 @@ Map<String, dynamic> _$TableModelsToJson(TableModels instance) => <String, dynam
       'table_number': instance.tableNumber,
       'created_at': instance.createdAt,
       'area_id': instance.areaId,
+      'order': null,
     };
