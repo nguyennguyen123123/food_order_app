@@ -4,6 +4,7 @@ import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
+import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -66,6 +67,7 @@ class TableManageControlller extends GetxController {
         final table = TableModels.fromJson(result);
 
         tableList.value?.add(table);
+        Get.find<TableControlller>().getListAreaTable(selectedAreaType.value?.areaId ?? '');
         Get.back();
         clear();
         DialogUtils.showSuccessDialog(content: "successfully_added_new_table".tr);

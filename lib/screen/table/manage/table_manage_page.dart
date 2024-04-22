@@ -19,9 +19,11 @@ class TableManagePage extends GetWidget<TableManageControlller> {
         backgroundColor: appTheme.transparentColor,
         automaticallyImplyLeading: false,
         titleSpacing: 0,
-        title: Padding(
-          padding: padding(horizontal: 16),
-          child: Text('table_list'.tr, style: StyleThemeData.bold18(height: 0)),
+        title: Row(
+          children: [
+            IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back)),
+            Text('table_list'.tr, style: StyleThemeData.bold18(height: 0)),
+          ],
         ),
         actions: [
           IconButton(onPressed: () => Get.toNamed(Routes.ADDTABLE), icon: Icon(Icons.add)),
