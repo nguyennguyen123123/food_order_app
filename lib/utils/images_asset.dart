@@ -6,4 +6,5 @@ class ImagesAssets {
   static String trash = '${_basePath}trash.png';
   static String waiter = '${_basePath}waiter.png';
   static String appIcon = '${_basePath}ic_launcher.png';
+  static String printer = '${_basePath}printer.png';
 }

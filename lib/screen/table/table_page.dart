@@ -4,6 +4,7 @@ import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/widgets/list_vertical_item.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
@@ -37,7 +38,7 @@ class TablePage extends GetWidget<TableControlller> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: controller.areaTypeList.map((area) {
-                        final isSelected = controller.tableList.value?.first.areaId == area.areaId;
+                        final isSelected = controller.currentAreaId.value == area.areaId;
 
                         return Padding(
                           padding: padding(right: 12),
@@ -69,11 +70,14 @@ class TablePage extends GetWidget<TableControlller> {
                   return Expanded(
                     child: RefreshIndicator(
                       onRefresh: controller.getListTable,
-                      child: GridView.count(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 8,
-                        crossAxisSpacing: 8,
-                        children: controller.tableList.value!.map(itemTableView).toList(),
+                      child: ListVerticalItem<TableModels>(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        items: controller.tableList.value!,
+                        lineItemCount: 2,
+                        paddingBetweenItem: 8.w,
+                        paddingBetweenLine: 8.w,
+                        divider: SizedBox(height: 8.h),
+                        itemBuilder: (index, item) => itemTableView(item),
                       ),
                     ),
                   );
@@ -93,7 +97,7 @@ class TablePage extends GetWidget<TableControlller> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: appTheme.appColor.withOpacity(0.5),
+          color: table.foodOrder == null ? appTheme.appColor.withOpacity(0.5) : Colors.green.withOpacity(0.4),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -103,11 +107,11 @@ class TablePage extends GetWidget<TableControlller> {
               style: StyleThemeData.regular16(height: 0),
               textAlign: TextAlign.center,
             ),
-            if (table.foodOrder != null)
-              Text(
-                'order'.tr + ': ${table.foodOrder?.totalPrice.toStringAsFixed(2)}',
-                style: StyleThemeData.regular10(),
-              )
+            if (table.foodOrder != null) ...[
+              SizedBox(height: 4.h),
+              Text('Đơn hàng: ${table.foodOrder?.totalPrice.toStringAsFixed(2)}',
+                  textAlign: TextAlign.center, style: StyleThemeData.regular10())
+            ]
           ],
         ),
       ),

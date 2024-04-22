@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/widgets/image_asset_custom.dart';
 import 'package:food_delivery_app/widgets/primary_button.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -190,6 +191,35 @@ class DialogUtils {
                   ),
                 ],
               ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static Future showWaitingDialog({
+    String imageWaiting = '',
+    String description = '',
+    double? imageSize,
+  }) async {
+    return await showDialog(
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          surfaceTintColor: appTheme.whiteText,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          child: Padding(
+            padding: padding(all: 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ImageAssetCustom(imagePath: imageWaiting, size: imageSize ?? 300.w),
+                SizedBox(height: 16.h),
+                Text(description, style: StyleThemeData.bold16(), textAlign: TextAlign.center),
+              ],
             ),
           ),
         );

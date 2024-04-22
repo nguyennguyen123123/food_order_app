@@ -146,10 +146,9 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   void onRemoveGangIndex(int gangIndex) {
     final numberGang = currentPartyOrder.value?.numberOfGangs ?? 0;
     final list = currentPartyOrder.value?.orderItems ?? <OrderItem>[];
+    list.removeWhere((element) => element.sortOder == gangIndex);
     for (var i = 0; i < list.length; i++) {
-      if (list[i].sortOder == gangIndex) {
-        list[i].sortOder = null;
-      } else if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
+      if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
         list[i].sortOder = (list[i].sortOder ?? 1) - 1;
       }
     }

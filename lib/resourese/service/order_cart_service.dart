@@ -90,22 +90,10 @@ class OrderCartService extends GetxService {
   // }
 
   void onRemoveGangInParty(int partyIndex, int gangIndex) {
-    // partyOrders.update((val) {
-    //   final list = [...(val?[partyIndex].orderItems ?? <OrderItem>[])];
-    //   for (var i = 0; i < list.length; i++) {
-    //   if (list[i].sortOder == gangIndex) {
-    //     list[i].sortOder = null;
-    //   } else if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
-    //     list[i].sortOder = (list[i].sortOder ?? 1) - 1;
-    //   }
-    // }
-
-    // });
     final list = [...(partyOrders.value[partyIndex].orderItems ?? <OrderItem>[])];
+    list.removeWhere((element) => element.sortOder == gangIndex);
     for (var i = 0; i < list.length; i++) {
-      if (list[i].sortOder == gangIndex) {
-        list[i].sortOder = null;
-      } else if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
+      if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
         list[i].sortOder = (list[i].sortOder ?? 1) - 1;
       }
     }
@@ -116,10 +104,24 @@ class OrderCartService extends GetxService {
     partyOrders.refresh();
   }
 
+  void onRemoveGangIndexInAllParty(int gangIndex) {
+    final partys = [...partyOrders.value];
+    for (var i = 0; i < partys.length; i++) {
+      final list = [...(partys[i].orderItems ?? <OrderItem>[])];
+      list.removeWhere((element) => element.sortOder == gangIndex);
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
+          list[i].sortOder = (list[i].sortOder ?? 1) - 1;
+        }
+      }
+      partys[i].orderItems = list;
+    }
+    partyOrders.value = partys;
+  }
+
   /// Tạo thêm gang ở party order
   void onCreateNewPartyOrder() {
-    final number = partyOrders.value.length + 1;
-    partyOrders.update((val) => val?.add(PartyOrder(partyNumber: number, numberOfGangs: 1)));
+    partyOrders.update((val) => val?.add(PartyOrder(partyNumber: partyOrders.value.length, numberOfGangs: 1)));
   }
 
   /// Cập nhật số lượng món ăn trong đơn hàng mà không thuộc party nào

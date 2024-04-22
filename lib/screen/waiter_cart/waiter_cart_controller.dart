@@ -7,6 +7,7 @@ import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
+import 'package:food_delivery_app/resourese/service/printer_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
@@ -20,13 +21,16 @@ class WaiterCartController extends GetxController {
   final ITableRepository tableRepository;
   final AccountService accountService;
   final WaiterCartParameter parameter;
+  final PrinterService printerService;
 
-  WaiterCartController(
-      {required this.parameter,
-      required this.cartService,
-      required this.orderRepository,
-      required this.tableRepository,
-      required this.accountService});
+  WaiterCartController({
+    required this.parameter,
+    required this.cartService,
+    required this.orderRepository,
+    required this.tableRepository,
+    required this.accountService,
+    required this.printerService,
+  });
 
   final isLoading = false.obs;
 
@@ -199,25 +203,35 @@ class WaiterCartController extends GetxController {
     // }
   }
 
-  void onRemoveGangIndexOfCartItem(OrderItem item) {
-    // if (currentPartySelected.value >= 0) {
-    cartService.onRemoveGangIndexOfPartyCartItem(currentPartySelected.value, item);
-    // } else {
-    //   cartService.onRemoveGangIndexOfCartItem(item);
-    // }
-  }
+  // void onRemoveGangIndexOfCartItem(OrderItem item) {
+  // if (currentPartySelected.value >= 0) {
+  // cartService.onRemoveGangIndexOfPartyCartItem(currentPartySelected.value, item);
+  // } else {
+  //   cartService.onRemoveGangIndexOfCartItem(item);
+  // }
+  // }
 
   void onCreateGang() {
+    if (currentPartySelected.value == -2) {
+      cartService.onPartyCreateGang(0);
+      numberOfGang.value += 1;
+    } else {
+      cartService.onPartyCreateGang(currentPartySelected.value);
+    }
     // if (currentPartySelected.value >= 0) {
-    cartService.onPartyCreateGang(currentPartySelected.value);
     // } else {
     //   cartService.onCreateNewGang();
     // }
   }
 
   void onRemoveGang(int gang) {
+    if (currentPartySelected.value == -2) {
+      cartService.onRemoveGangIndexInAllParty(gang);
+    } else {
+      cartService.onRemoveGangInParty(currentPartySelected.value, gang);
+    }
     // if (currentPartySelected.value >= 0) {
-    cartService.onRemoveGangInParty(currentPartySelected.value, gang);
+    // cartService.onRemoveGangInParty(currentPartySelected.value, gang);
     // } else {
     //   cartService.onRemoveGang(gang);
     // }
@@ -234,16 +248,14 @@ class WaiterCartController extends GetxController {
     showLoading();
     try {
       final result = await orderRepository.onPlaceOrder(
-        [],
         cartService.partyOrders.value,
-        // voucher: cartService.currentVoucher.value,
         tableNumber: parameter.tableNumber.toString(),
         bondNumber: (accountService.myAccount?.numberOfOrder ?? 0) + 1,
       );
       isLoading.value = false;
       dissmissLoading();
       if (result != null) {
-        // cartService.items.value = [];
+        await printerService.onStartPrint(result);
         cartService.partyOrders.value = [];
         currentPartySelected.value = -2;
         cartService.currentPartyOrder = -2;

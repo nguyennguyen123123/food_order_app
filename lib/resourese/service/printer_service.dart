@@ -6,6 +6,9 @@ import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/printer.dart';
 import 'package:food_delivery_app/resourese/printer/iprinter_repository.dart';
+import 'package:food_delivery_app/utils/dialog_util.dart';
+import 'package:food_delivery_app/utils/images_asset.dart';
+import 'package:food_delivery_app/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -32,8 +35,14 @@ class PrinterService extends GetxService {
 
   Future<void> onStartPrint(FoodOrder foodOrder) async {
     if (printers.value.isEmpty) return;
-
-    await Future.wait(printers.value.map((printer) => _printerHandler(foodOrder, printer)));
+    DialogUtils.showWaitingDialog(
+        imageWaiting: ImagesAssets.printer, description: 'Đang in đơn. Vui lòng đợi trong giây lát');
+    try {
+      await Future.wait(printers.value.map((printer) => _printerHandler(foodOrder, printer)));
+    } catch (e) {
+      print(e);
+    }
+    Get.back();
   }
 
   Future<void> _printerHandler(FoodOrder foodOrder, Printer printer) async {
@@ -59,7 +68,16 @@ class PrinterService extends GetxService {
     }
 
     void createOrderItemRow(NetworkPrinter networkPrinter, OrderItem orderItem) {
-      networkPrinter.row([]);
+      networkPrinter.text(orderItem.food?.name ?? '',
+          styles: PosStyles(height: PosTextSize.size5, width: PosTextSize.size5));
+      final price = orderItem.food?.price ?? 0;
+      final quantity = orderItem.quantity;
+      final priceText = Utils.getCurrency(price);
+      networkPrinter.text('($priceText x $quantity) ${Utils.getCurrency(price * quantity)}',
+          styles: PosStyles(align: PosAlign.right));
+      networkPrinter.feed(1);
+      networkPrinter.hr();
+      networkPrinter.feed(1);
     }
 
     final date = DateTime.tryParse(foodOrder.createdAt ?? '') ?? DateTime.now();
@@ -82,7 +100,7 @@ class PrinterService extends GetxService {
     for (final item in orderItem) {
       createOrderItemRow(networkPrinter, item);
     }
-    networkPrinter.feed(4);
+    networkPrinter.feed(2);
     networkPrinter.cut();
   }
 }

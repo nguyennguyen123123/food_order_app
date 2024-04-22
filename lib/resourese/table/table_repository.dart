@@ -87,11 +87,13 @@ class TableRepository extends ITableRepository {
   }
 
   @override
-  Future<List<TableModels>> getListTableInOrder({int page = 0, int limit = LIMIT}) async {
+  Future<List<TableModels>> getListTableInOrder({String? areaId, int page = 0, int limit = LIMIT}) async {
     try {
-      final response = await baseService.client
-          .from(TABLE_NAME.TABLE)
-          .select(fullQueryTableOrder)
+      var query = baseService.client.from(TABLE_NAME.TABLE).select(fullQueryTableOrder);
+      if ((areaId ?? '').isNotEmpty) {
+        query = query.eq('area_id', areaId!);
+      }
+      final response = await query
           .limit(limit)
           .range(page * limit, (page + 1) * limit)
           .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
@@ -122,22 +124,6 @@ class TableRepository extends ITableRepository {
           .eq('table_number', number)
           .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
       return result.first;
-    } catch (error) {
-      handleError(error);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<TableModels>?> getListAreaTable(String areaId) async {
-    try {
-      final result = await baseService.client
-          .from(TABLE_NAME.TABLE)
-          .select()
-          .eq('area_id', areaId)
-          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
-
-      return result;
     } catch (error) {
       handleError(error);
       rethrow;
