@@ -6,11 +6,13 @@ import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/edit_text_field_custom.dart';
+import 'package:food_delivery_app/widgets/load_more_delegate_custom.dart';
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:food_delivery_app/widgets/primary_button.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:food_delivery_app/widgets/two_notifier.dart';
 import 'package:get/get.dart';
+import 'package:loadmore/loadmore.dart';
 
 class ChangeTableDialog extends StatefulWidget {
   const ChangeTableDialog({
@@ -34,18 +36,17 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
 
   final tableNotifier = ValueNotifier<TableModels?>(null);
   final errorTextNotifier = ValueNotifier<String>('');
-  // final tableNotifiers = ValueNotifier<List<TableModels>?>(null);
-  // final currentTable = ValueNotifier<int>(-1);
-  // int page = 0;
-  // int limit = LIMIT;
+  final tableNotifiers = ValueNotifier<List<TableModels>?>(null);
+  int page = 0;
+  int limit = 50;
   final currentArea = ValueNotifier<String>('');
   final isLoading = ValueNotifier<bool>(false);
   final showAreas = ValueNotifier<bool>(false);
   @override
   void initState() {
     super.initState();
-    // onRefresh();
     excute(() async {
+      onRefresh();
       areas.value = await areaRepository.getArea();
     });
   }
@@ -63,24 +64,28 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
     super.dispose();
   }
 
-  // void onRefresh() async {
-  //   tableNotifiers.value = null;
-  //   page = 0;
-  //   tableNotifiers.value = await tableRepository.getListTableInOrder(page: page, limit: limit);
-  // }
+  void onRefresh() async {
+    tableNotifiers.value = null;
+    page = 0;
+    tableNotifiers.value = await tableRepository.getListTableInOrder(page: page, limit: limit);
+  }
 
-  // Future<bool> onLoadMore() async {
-  //   final length = tableNotifiers.value?.length ?? 0;
-  //   if (length < (page + 1) * limit) return false;
+  Future<bool> onLoadMore() async {
+    final length = tableNotifiers.value?.length ?? 0;
+    if (length < (page + 1) * limit) return false;
 
-  //   final result = await tableRepository.getListTableInOrder(page: page, limit: limit);
-  //   tableNotifiers.value = [...tableNotifiers.value!, ...result];
-  //   if (result.length < limit) return false;
+    final result = await tableRepository.getListTableInOrder(page: page, limit: limit);
+    tableNotifiers.value = [...tableNotifiers.value!, ...result];
+    if (result.length < limit) return false;
 
-  //   return true;
-  // }
+    return true;
+  }
 
   void onCheckTable() async {
+    if (tableNotifier.value != null) {
+      Get.back(result: tableNotifier.value);
+      return;
+    }
     isLoading.value = true;
     final number = tableNumberCtrl.text;
     if (number == widget.currentTable) {
@@ -158,6 +163,25 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
                   ),
           ),
           SizedBox(height: 8.h),
+          TwoValueNotifier<List<TableModels>?, TableModels?>(
+            firstNotifier: tableNotifiers,
+            secondNotifier: tableNotifier,
+            itemBuilder: (tables, curTable) => SizedBox(
+                height: 200.h,
+                child: tables == null
+                    ? Center(child: CircularProgressIndicator())
+                    : LoadMore(
+                        onLoadMore: onLoadMore,
+                        delegate: LoadMoreDelegateCustom(),
+                        child: ListView.separated(
+                            itemBuilder: (context, index) => _buildTable(index, tables[index], curTable),
+                            separatorBuilder: (context, index) => Padding(
+                                  padding: padding(vertical: 8),
+                                  child: Divider(height: 1, color: appTheme.borderColor),
+                                ),
+                            itemCount: tables.length))),
+          ),
+          SizedBox(height: 8.h),
           ValueListenableBuilder<bool>(
             valueListenable: isLoading,
             builder: (context, loading, child) => TwoValueNotifier<TextEditingValue, TableModels?>(
@@ -196,24 +220,7 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
               ),
             ),
           ),
-          // TwoValueNotifier<List<TableModels>?, int>(
-          //   firstNotifier: tableNotifiers,
-          //   secondNotifier: currentTable,
-          //   itemBuilder: (tables, currentIndex) => SizedBox(
-          //       height: 200.h,
-          //       child: tables == null
-          //           ? Center(child: CircularProgressIndicator())
-          //           : LoadMore(
-          //               onLoadMore: onLoadMore,
-          //               delegate: LoadMoreDelegateCustom(),
-          //               child: ListView.separated(
-          //                   itemBuilder: (context, index) => _buildTable(index, tables[index], currentIndex),
-          //                   separatorBuilder: (context, index) => Padding(
-          //                         padding: padding(vertical: 8),
-          //                         child: Divider(height: 1, color: appTheme.borderColor),
-          //                       ),
-          //                   itemCount: tables.length))),
-          // ),
+
           // PrimaryButton(
           //     onPressed: () => Get.back(result: tableNotifiers.value![currentTable]),
           //     radius: BorderRadius.circular(100),
@@ -241,27 +248,32 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
     );
   }
 
-  // Widget _buildTable(int index, TableModels table, int currentIndex) {
-  //   final isCurrentTable = widget.currentTable == table.tableNumber;
-  //   if (isCurrentTable) {
-  //     return Opacity(
-  //       opacity: isCurrentTable ? 0.2 : 1,
-  //       child: Center(child: Text(table.tableNumber.toString())),
-  //     );
-  //   }
-  //   final tableHasOrder = widget.isLimitTableHasOrder && table.foodOrder != null;
-  //   return GestureDetector(
-  //     onTap: currentIndex == index || tableHasOrder ? null : () => currentTable.value = index,
-  //     child: Opacity(
-  //       opacity: tableHasOrder ? 0.2 : 1,
-  //       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-  //         if (currentIndex == index) ...[
-  //           Icon(Icons.check, size: 15),
-  //           SizedBox(width: 12.w),
-  //         ],
-  //         Text(table.tableNumber.toString()),
-  //       ]),
-  //     ),
-  //   );
-  // }
+  Widget _buildTable(int index, TableModels table, TableModels? curTable) {
+    final isCurrentTable = widget.currentTable == table.tableNumber;
+    if (isCurrentTable) {
+      return Opacity(
+        opacity: isCurrentTable ? 0.2 : 1,
+        child: Center(child: Text(table.tableNumber.toString())),
+      );
+    }
+    final tableHasOrder = widget.isLimitTableHasOrder && table.foodOrder != null;
+    return GestureDetector(
+      onTap: curTable?.tableId == table.tableId || tableHasOrder
+          ? null
+          : () {
+              tableNotifier.value = table;
+              tableNumberCtrl.text = table.tableNumber ?? '';
+            },
+      child: Opacity(
+        opacity: tableHasOrder ? 0.2 : 1,
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          if (curTable?.tableId == table.tableId) ...[
+            Icon(Icons.check, size: 15),
+            SizedBox(width: 12.w),
+          ],
+          Text(table.tableNumber.toString()),
+        ]),
+      ),
+    );
+  }
 }

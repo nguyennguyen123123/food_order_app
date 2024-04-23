@@ -248,8 +248,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                             //   controller.addFoodToPartyOrder(result, gangIndex);
                             // }
                           },
-                          child: Icon(Icons.add, size: 24, color: appTheme.blackColor)),
-                    SizedBox(width: 6.w),
+                          child: Icon(Icons.add, size: 32, color: appTheme.blackColor)),
+                    SizedBox(width: 12.w),
                     if (gangIndex > 0 &&
                         !isPartyOrderComplete &&
                         controller.isAdmin &&

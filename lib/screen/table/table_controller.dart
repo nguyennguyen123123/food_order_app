@@ -55,7 +55,7 @@ class TableControlller extends GetxController {
 
   Future<void> getListArea() async {
     final result = await areaRepository.getArea();
-    areaTypeList.assignAll(result);
+    areaTypeList.assignAll([Area(areaId: '', areaName: 'all'.tr), ...result]);
   }
 
   void navigateToOrderInTable(TableModels table) async {

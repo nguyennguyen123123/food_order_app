@@ -297,12 +297,15 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
             GestureDetector(
                 onTap: onAddItemToGang,
                 behavior: HitTestBehavior.opaque,
-                child: Icon(Icons.add, color: appTheme.blackColor, size: 24)),
+                child: Icon(Icons.add, color: appTheme.blackColor, size: 32)),
             if (gangIndex > 0)
-              GestureDetector(
-                  onTap: () => onRemoveGang?.call(gangIndex),
-                  behavior: HitTestBehavior.opaque,
-                  child: Icon(Icons.delete, color: appTheme.errorColor, size: 24))
+              Padding(
+                padding: padding(right: 12),
+                child: GestureDetector(
+                    onTap: () => onRemoveGang?.call(gangIndex),
+                    behavior: HitTestBehavior.opaque,
+                    child: Icon(Icons.delete, color: appTheme.errorColor, size: 24)),
+              )
           ],
         ),
       );
