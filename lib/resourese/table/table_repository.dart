@@ -123,6 +123,7 @@ class TableRepository extends ITableRepository {
           .select(fullQueryTableOrder)
           .eq('table_number', number)
           .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+      if (result.isEmpty) return null;
       return result.first;
     } catch (error) {
       handleError(error);

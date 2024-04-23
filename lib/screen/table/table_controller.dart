@@ -92,6 +92,8 @@ class TableControlller extends GetxController {
             final newIndex = tables.indexWhere((element) => element.tableNumber == result.targetTable);
             if (newIndex != -1) {
               tables[newIndex] = targetTable;
+            } else {
+              tables.add(targetTable);
             }
           }
         } else {
