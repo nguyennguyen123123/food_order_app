@@ -25,128 +25,134 @@ import 'package:intl/intl.dart';
 class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: appTheme.transparentColor,
-        titleSpacing: 0,
-        automaticallyImplyLeading: false,
-        title: Obx(() {
+    return WillPopScope(
+      onWillPop: () async {
+        controller.onBack();
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: appTheme.transparentColor,
+          titleSpacing: 0,
+          automaticallyImplyLeading: false,
+          title: Obx(() {
+            final order = controller.foodOrder.value;
+            if (order == null) return SizedBox();
+            final isOrderNonComplete =
+                order.partyOrders!.firstWhereOrNull((element) => element.orderStatus == ORDER_STATUS.DONE) == null;
+            return Row(
+              children: [
+                IconButton(onPressed: controller.onBack, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
+                Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
+                if (isOrderNonComplete)
+                  GestureDetector(
+                      onTap: () async {
+                        final result = await DialogUtils.showDialogView(
+                            ChangeTableDialog(currentTable: controller.foodOrder.value!.tableNumber ?? '0'));
+                        if (result != null) {
+                          controller.onMoveOrderToOtherTable(result);
+                        }
+                      },
+                      child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
+                SizedBox(width: 12.w),
+                if (isOrderNonComplete && controller.isAdmin)
+                  GestureDetector(
+                      onTap: () async {
+                        final result = await DialogUtils.showYesNoDialog(title: 'delete_order_title'.tr);
+                        if (result == true) {
+                          controller.onDeleteOrder();
+                        }
+                      },
+                      child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
+              ],
+            );
+          }),
+        ),
+        body: Obx(() {
           final order = controller.foodOrder.value;
-          if (order == null) return SizedBox();
-          final isOrderNonComplete =
-              order.partyOrders!.firstWhereOrNull((element) => element.orderStatus == ORDER_STATUS.DONE) == null;
-          return Row(
+          if (order == null) {
+            return Center(child: CircularProgressIndicator());
+          }
+          final isNewParty = controller.currentPartyIndex.value >= (order.partyOrders?.length ?? 0);
+          final isPartyOrderComplete = isNewParty || controller.currentPartyIndex.value == -2
+              ? false
+              : controller.newFoodOrder.value!.partyOrders?[controller.currentPartyIndex.value].orderStatus ==
+                  ORDER_STATUS.DONE;
+          return Column(
             children: [
-              IconButton(onPressed: controller.onBack, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
-              Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
-              if (isOrderNonComplete)
-                GestureDetector(
-                    onTap: () async {
-                      final result = await DialogUtils.showDialogView(
-                          ChangeTableDialog(currentTable: controller.foodOrder.value!.tableNumber ?? '0'));
-                      if (result != null) {
-                        controller.onMoveOrderToOtherTable(result);
-                      }
-                    },
-                    child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
-              SizedBox(width: 12.w),
-              if (isOrderNonComplete && controller.isAdmin)
-                GestureDetector(
-                    onTap: () async {
-                      final result = await DialogUtils.showYesNoDialog(title: 'delete_order_title'.tr);
-                      if (result == true) {
-                        controller.onDeleteOrder();
-                      }
-                    },
-                    child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
+              if (!isPartyOrderComplete)
+                TabBar(
+                    controller: controller.tabController,
+                    onTap: controller.onChangeTab,
+                    tabs: controller.tabItems.asMap().entries.map((e) => Tab(child: Text(e.value))).toList()),
+              Expanded(
+                child: ListView(
+                  padding: padding(all: 12),
+                  children: [
+                    itemData(title: 'order_id'.tr, data: order.orderId ?? ''),
+                    SizedBox(height: 4.h),
+                    itemData(title: 'table_number'.tr, data: order.tableNumber ?? ''),
+                    SizedBox(height: 4.h),
+                    itemData(
+                        title: 'time'.tr,
+                        data: DateFormat("yyyy/MM/dd HH:mm")
+                            .format(DateTime.tryParse(order.createdAt ?? '') ?? DateTime.now())),
+                    SizedBox(height: 8.h),
+                    DropdownButton<int>(
+                        value: controller.currentPartyIndex.value,
+                        items: [
+                          buildDropDownItem(-2, content: 'Alles'),
+                          if (controller.currentTab.value == 0) ...[
+                            ...(controller.newFoodOrder.value!.partyOrders ?? []).asMap().entries.map((e) =>
+                                buildDropDownItem(e.key,
+                                    content: 'party_index'.trParams({'number': '${(e.value.partyNumber ?? 0) + 1}'}))),
+                            buildDropDownItem(-1, content: 'create_party'.tr)
+                          ] else ...[
+                            ...(order.partyOrders ?? []).asMap().entries.map((e) => buildDropDownItem(e.key,
+                                content: 'party_index'.trParams({'number': '${(e.value.partyNumber ?? 0) + 1}'}))),
+                          ]
+                        ],
+                        onChanged: (value) => controller.onChangePartyIndex(value ?? 0)),
+                    SizedBox(height: 8.h),
+                    if (controller.currentPartyOrder.value != null)
+                      _buildPartyOrder(controller.currentPartyIndex.value, controller.currentPartyOrder.value!)
+                  ],
+                ),
+              ),
+              if (!isPartyOrderComplete)
+                Container(
+                    padding: padding(all: 8),
+                    decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
+                    child: Column(
+                      children: [
+                        if (controller.currentPartyOrder.value != null) ...[
+                          if (controller.currentTab.value == 0 && controller.currentPartyIndex.value != -2) ...[
+                            SizedBox(height: 6.h),
+                            _buildVoucherField(controller.currentPartyOrder.value!)
+                          ],
+                          Row(
+                            children: [
+                              Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
+                              Text(Utils.getCurrency(controller.currentPartyOrder.value?.totalPrice))
+                            ],
+                          ),
+                          SizedBox(height: 6.h),
+                        ],
+                        if (controller.currentTab.value == 0)
+                          BottomButton(
+                              isDisableCancel: false,
+                              isDisableConfirm: isNewParty,
+                              cancelText: isNewParty ? 'create'.tr : 'update'.tr,
+                              confirmText: 'complete'.tr,
+                              onConfirm: controller.onCompleteOrder,
+                              onCancel: controller.updatePartyOrder),
+                      ],
+                    )),
             ],
           );
         }),
       ),
-      body: Obx(() {
-        final order = controller.foodOrder.value;
-        if (order == null) {
-          return Center(child: CircularProgressIndicator());
-        }
-        final isNewParty = controller.currentPartyIndex.value >= (order.partyOrders?.length ?? 0);
-        final isPartyOrderComplete = isNewParty || controller.currentPartyIndex.value == -2
-            ? false
-            : controller.newFoodOrder.value!.partyOrders?[controller.currentPartyIndex.value].orderStatus ==
-                ORDER_STATUS.DONE;
-        return Column(
-          children: [
-            if (!isPartyOrderComplete)
-              TabBar(
-                  controller: controller.tabController,
-                  onTap: controller.onChangeTab,
-                  tabs: controller.tabItems.asMap().entries.map((e) => Tab(child: Text(e.value))).toList()),
-            Expanded(
-              child: ListView(
-                padding: padding(all: 12),
-                children: [
-                  itemData(title: 'order_id'.tr, data: order.orderId ?? ''),
-                  SizedBox(height: 4.h),
-                  itemData(title: 'table_number'.tr, data: order.tableNumber ?? ''),
-                  SizedBox(height: 4.h),
-                  itemData(
-                      title: 'time'.tr,
-                      data: DateFormat("yyyy/MM/dd HH:mm")
-                          .format(DateTime.tryParse(order.createdAt ?? '') ?? DateTime.now())),
-                  SizedBox(height: 8.h),
-                  DropdownButton<int>(
-                      value: controller.currentPartyIndex.value,
-                      items: [
-                        buildDropDownItem(-2, content: 'Alles'),
-                        if (controller.currentTab.value == 0) ...[
-                          ...(controller.newFoodOrder.value!.partyOrders ?? []).asMap().entries.map((e) =>
-                              buildDropDownItem(e.key,
-                                  content: 'party_index'.trParams({'number': '${(e.value.partyNumber ?? 0) + 1}'}))),
-                          buildDropDownItem(-1, content: 'create_party'.tr)
-                        ] else ...[
-                          ...(order.partyOrders ?? []).asMap().entries.map((e) => buildDropDownItem(e.key,
-                              content: 'party_index'.trParams({'number': '${(e.value.partyNumber ?? 0) + 1}'}))),
-                        ]
-                      ],
-                      onChanged: (value) => controller.onChangePartyIndex(value ?? 0)),
-                  SizedBox(height: 8.h),
-                  if (controller.currentPartyOrder.value != null)
-                    _buildPartyOrder(controller.currentPartyIndex.value, controller.currentPartyOrder.value!)
-                ],
-              ),
-            ),
-            if (!isPartyOrderComplete)
-              Container(
-                  padding: padding(all: 8),
-                  decoration: BoxDecoration(border: Border(top: BorderSide(color: appTheme.borderColor))),
-                  child: Column(
-                    children: [
-                      if (controller.currentPartyOrder.value != null) ...[
-                        if (controller.currentTab.value == 0 && controller.currentPartyIndex.value != -2) ...[
-                          SizedBox(height: 6.h),
-                          _buildVoucherField(controller.currentPartyOrder.value!)
-                        ],
-                        Row(
-                          children: [
-                            Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
-                            Text(Utils.getCurrency(controller.currentPartyOrder.value?.totalPrice))
-                          ],
-                        ),
-                        SizedBox(height: 6.h),
-                      ],
-                      if (controller.currentTab.value == 0)
-                        BottomButton(
-                            isDisableCancel: false,
-                            isDisableConfirm: isNewParty,
-                            cancelText: isNewParty ? 'create'.tr : 'update'.tr,
-                            confirmText: 'complete'.tr,
-                            onConfirm: controller.onCompleteOrder,
-                            onCancel: controller.updatePartyOrder),
-                    ],
-                  )),
-          ],
-        );
-      }),
     );
   }
 

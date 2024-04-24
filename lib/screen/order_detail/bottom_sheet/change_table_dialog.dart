@@ -52,6 +52,8 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
     tableNumberCtrl.addListener(() {
       if (tableNotifier.value != null && tableNumberCtrl.text != tableNotifier.value?.tableNumber) {
         tableNotifier.value = null;
+      } else {
+        errorTextNotifier.value = '';
       }
     });
   }
@@ -151,6 +153,7 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
               textInputType: TextInputType.number,
               errorText: errorText,
               isShowErrorText: errorText.isNotEmpty,
+              isRequire: true,
             ),
           ),
           TwoValueNotifier<List<Area>, bool>(
@@ -202,7 +205,7 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
                             ? createTable
                             : table == null
                                 ? onCheckTable
-                                : () {},
+                                : () => Get.back(result: table),
                     radius: BorderRadius.circular(100),
                     isDisable: text.text.isEmpty,
                     contentPadding: padding(vertical: 4),
