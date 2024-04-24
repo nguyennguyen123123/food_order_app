@@ -111,12 +111,12 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     ),
                     SizedBox(height: 8.h),
                     // if (controller.accountService.myAccount?.role == USER_ROLE.STAFF) ...[
-                    newMethod(
-                      onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
-                      text: "order_management".tr,
-                      icons: IconAssets.cancelIcon,
-                    ),
-                    const Divider(thickness: 1),
+                    // newMethod(
+                    //   onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
+                    //   text: "order_management".tr,
+                    //   icons: IconAssets.cancelIcon,
+                    // ),
+                    // const Divider(thickness: 1),
                     // ],
                     if (controller.accountService.myAccount?.role == USER_ROLE.ADMIN) ...[
                       newMethod(

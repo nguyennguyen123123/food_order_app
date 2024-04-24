@@ -98,7 +98,7 @@ class TablePage extends GetWidget<TableControlller> {
     return GestureDetector(
       onTap: () => controller.navigateToOrderInTable(table),
       child: Container(
-        padding: padding(all: 24),
+        padding: padding(vertical: 38),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),

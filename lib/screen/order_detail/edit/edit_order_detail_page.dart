@@ -214,47 +214,66 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
           final orderItemInGang = orderItem.where((element) => element.sortOder == gangIndex).toList();
           return Column(
             children: [
-              Container(
-                color: appTheme.backgroundContainer,
-                padding: padding(all: 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
-                            style: StyleThemeData.bold16(color: appTheme.greyColor))),
-                    if (!isPartyOrderComplete && controller.currentTab.value == 0)
-                      GestureDetector(
-                          onTap: () async {
-                            Get.toNamed(Routes.TYPEDETAIL,
-                                arguments: TypeDetailsParamter(
-                                  onAddFoodToCart: (food) => controller.addFoodToPartyOrder(food, gangIndex),
-                                  updateQuantityFoodItem: (quantity, food) =>
-                                      controller.addFoodToPartyOrder(food, gangIndex, quantity: quantity),
-                                  getQuantityFoodInCart: (food) {
-                                    final orderWithFood = orderItem.firstWhereOrNull((element) =>
-                                        (element.food?.foodId == food.foodId || element.foodId == food.foodId) &&
-                                        element.sortOder == gangIndex);
-                                    return orderWithFood?.quantity ?? 0;
-                                  },
-                                ));
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  if (!isPartyOrderComplete && controller.currentTab.value == 0) {
+                    Get.toNamed(Routes.TYPEDETAIL,
+                        arguments: TypeDetailsParamter(
+                          onAddFoodToCart: (food) => controller.addFoodToPartyOrder(food, gangIndex),
+                          updateQuantityFoodItem: (quantity, food) =>
+                              controller.addFoodToPartyOrder(food, gangIndex, quantity: quantity),
+                          getQuantityFoodInCart: (food) {
+                            final orderWithFood = orderItem.firstWhereOrNull((element) =>
+                                (element.food?.foodId == food.foodId || element.foodId == food.foodId) &&
+                                element.sortOder == gangIndex);
+                            return orderWithFood?.quantity ?? 0;
                           },
-                          child: Icon(Icons.add, size: 32, color: appTheme.blackColor)),
-                    SizedBox(width: 12.w),
-                    if (gangIndex > 0 &&
-                        !isPartyOrderComplete &&
-                        controller.isAdmin &&
-                        controller.currentTab.value == 0)
-                      GestureDetector(
-                        onTap: () async {
-                          final result =
-                              await DialogUtils.showYesNoDialog(title: 'Bạn có muốn xóa gang ${gangIndex + 1} không?');
-                          if (result == true) {
-                            controller.onRemoveGangIndex(gangIndex);
-                          }
-                        },
-                        child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 24),
-                      )
-                  ],
+                        ));
+                  }
+                },
+                child: Container(
+                  color: appTheme.backgroundContainer,
+                  padding: padding(all: 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
+                              style: StyleThemeData.bold16(color: appTheme.greyColor))),
+                      if (!isPartyOrderComplete && controller.currentTab.value == 0)
+                        GestureDetector(
+                            onTap: () async {
+                              Get.toNamed(Routes.TYPEDETAIL,
+                                  arguments: TypeDetailsParamter(
+                                    onAddFoodToCart: (food) => controller.addFoodToPartyOrder(food, gangIndex),
+                                    updateQuantityFoodItem: (quantity, food) =>
+                                        controller.addFoodToPartyOrder(food, gangIndex, quantity: quantity),
+                                    getQuantityFoodInCart: (food) {
+                                      final orderWithFood = orderItem.firstWhereOrNull((element) =>
+                                          (element.food?.foodId == food.foodId || element.foodId == food.foodId) &&
+                                          element.sortOder == gangIndex);
+                                      return orderWithFood?.quantity ?? 0;
+                                    },
+                                  ));
+                            },
+                            child: Icon(Icons.add, size: 32, color: appTheme.blackColor)),
+                      SizedBox(width: 18.w),
+                      if (gangIndex > 0 &&
+                          !isPartyOrderComplete &&
+                          controller.isAdmin &&
+                          controller.currentTab.value == 0)
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await DialogUtils.showYesNoDialog(
+                                title: 'Bạn có muốn xóa gang ${gangIndex + 1} không?');
+                            if (result == true) {
+                              controller.onRemoveGangIndex(gangIndex);
+                            }
+                          },
+                          child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 24),
+                        )
+                    ],
+                  ),
                 ),
               ),
               ...orderItemInGang

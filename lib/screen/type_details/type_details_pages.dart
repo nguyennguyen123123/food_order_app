@@ -102,14 +102,21 @@ class TypeDetailsPages extends GetWidget<TypeDetailsController> {
                             itemBuilder: (context, index) => buildLineItem(
                               index,
                               itemBuilder: (index, item) {
-                                return InkWell(
+                                final quantity = controller.paramter.getQuantityFoodInCart(item);
+                                return GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    if (quantity == 0) {
+                                      controller.addItemToCart(item);
+                                    }
+                                  },
                                   child: Padding(
                                     padding: padding(vertical: 12),
                                     child: FoodView(
                                       foodModel: item,
                                       showAddBtn: true,
                                       onAdd: () => controller.addItemToCart(item),
-                                      quantity: controller.paramter.getQuantityFoodInCart(item),
+                                      quantity: quantity,
                                       showChangeOnQuantity: true,
                                       updateQuantity: (quantity) => controller.updateQuantityCartItem(quantity, item),
                                     ),

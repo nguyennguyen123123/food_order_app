@@ -43,12 +43,13 @@ class TableRepository extends ITableRepository {
   }
 
   @override
-  Future<List<TableModels>?> getTable() async {
+  Future<List<TableModels>?> getTable({String? areaId}) async {
     try {
-      final response = await baseService.client
-          .from(TABLE_NAME.TABLE)
-          .select("*, area_id(*)")
-          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+      var query = baseService.client.from(TABLE_NAME.TABLE).select("*, area_id(*)");
+      if (areaId != null) {
+        query = query.eq('area_id', areaId);
+      }
+      final response = await query.withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
 
       return response.toList();
     } catch (error) {

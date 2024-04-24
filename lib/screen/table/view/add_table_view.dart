@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/area.dart';
+import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/screen/table/manage/table_manage_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/number_formatter.dart';
@@ -43,9 +44,7 @@ class AddTableView extends GetWidget<TableManageControlller> {
                   child: DropdownButton<Area>(
                     hint: Text('select_area'.tr, style: StyleThemeData.regular16()),
                     value: controller.selectedAreaType.value,
-                    onChanged: (Area? newValue) {
-                      controller.selectedAreaType.value = newValue!;
-                    },
+                    onChanged: (Area? newValue) => controller.onChangeSelectedArea(newValue),
                     items: controller.areaTypeList.map((Area type) {
                       return DropdownMenuItem<Area>(
                         value: type,
@@ -55,6 +54,32 @@ class AddTableView extends GetWidget<TableManageControlller> {
                   ),
                 ),
               ),
+            ),
+            SizedBox(height: 8.h),
+            Obx(
+              () => controller.tablesArea.value == null
+                  ? Center(child: CircularProgressIndicator())
+                  : Container(
+                      width: MediaQuery.of(context).size.width.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: appTheme.blackColor, width: 1),
+                      ),
+                      padding: padding(horizontal: 8),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<TableModels>(
+                          hint: Text('Danh sách bàn'.tr, style: StyleThemeData.regular16()),
+                          onChanged: (TableModels? newValue) {},
+                          items: controller.tablesArea.value?.map((TableModels table) {
+                                return DropdownMenuItem<TableModels>(
+                                  value: table,
+                                  child: Text(table.tableNumber ?? ''),
+                                );
+                              }).toList() ??
+                              [],
+                        ),
+                      ),
+                    ),
             ),
             SizedBox(height: 8.h),
             EditTextFieldCustom(

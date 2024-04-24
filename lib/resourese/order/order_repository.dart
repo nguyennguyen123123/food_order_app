@@ -476,4 +476,42 @@ class OrderRepository extends IOrderRepository {
     }
     return false;
   }
+
+  @override
+  Future<List<PartyOrder>> getListPartyOrderOfOrder(String orderid) async {
+    try {
+      const queryOrder = 'order_item!inner (*, food_id:food!inner(*, typeId(*))))';
+      // var query = baseService.client.from(TABLE_NAME.ORDER_WITH_PARTY).select('''
+      //   *,
+      //   user_order_id(*),
+      //   ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder))),
+      //   ''');
+      final respone = await baseService.client
+          .from(TABLE_NAME.ORDER_WITH_PARTY)
+          .select('*')
+          .eq(_ORDER_COLUMN_KEY.ORDER_ID, orderid)
+          .withConverter((jsons) => jsons.map((e) => e['party_order_id'] as String? ?? '').toList());
+      final partys = <PartyOrder>[];
+      for (final id in respone) {
+        final newParty = await baseService.client
+            .from(TABLE_NAME.PARTY_ORDER)
+            .select('*')
+            .eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, id)
+            .withConverter((data) => data.map((e) => PartyOrder.fromJson(e)).toList());
+        final partyWithOrderItems = await baseService.client
+            .from(TABLE_NAME.PARTY_ORDER)
+            .select('party_order_item!inner($queryOrder)')
+            .eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, id)
+            .withConverter((data) => data.map((e) => PartyOrder.fromJson(e)).toList());
+        if (newParty.isNotEmpty) {
+          partys.add(newParty.first
+              .copyWith(orderItems: partyWithOrderItems.isNotEmpty ? partyWithOrderItems.first.orderItems : []));
+        }
+      }
+      return partys;
+    } catch (e) {
+      print(e);
+    }
+    return [];
+  }
 }

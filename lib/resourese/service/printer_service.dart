@@ -36,7 +36,8 @@ class PrinterService extends GetxService {
     if (printers.value.isEmpty) return;
     showPrinterLoading();
     try {
-      await Future.wait(printers.value.map((printer) => _printerHandler(foodOrder, printer)));
+      Future.wait(printers.value.map((printer) => _printerHandler(foodOrder, printer)));
+      await Future.delayed(const Duration(seconds: 1));
     } catch (e) {
       print(e);
     }
@@ -94,7 +95,7 @@ class PrinterService extends GetxService {
 
     networkPrinter.hr();
     final orderItem = partyOrder.orderItems ?? <OrderItem>[];
-    orderItem.sort((a, b) => (a.sortOder ?? -1) > (b.sortOder ?? -1) ? 1 : -1);
+    orderItem.sort((a, b) => (a.sortOder) > (b.sortOder) ? 1 : -1);
     for (final item in orderItem) {
       createOrderItemRow(networkPrinter, item);
     }

@@ -306,27 +306,31 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
     void Function(int gangIndex)? onRemoveGang,
   }) {
     if (gangIndex != null) {
-      return Container(
-        color: appTheme.backgroundContainer,
-        padding: padding(all: 12),
-        child: Row(
-          children: [
-            Expanded(
-                child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
-                    style: StyleThemeData.bold16(color: appTheme.greyColor))),
-            GestureDetector(
-                onTap: onAddItemToGang,
-                behavior: HitTestBehavior.opaque,
-                child: Icon(Icons.add, color: appTheme.blackColor, size: 32)),
-            if (gangIndex > 0)
-              Padding(
-                padding: padding(right: 12),
-                child: GestureDetector(
-                    onTap: () => onRemoveGang?.call(gangIndex),
-                    behavior: HitTestBehavior.opaque,
-                    child: Icon(Icons.delete, color: appTheme.errorColor, size: 24)),
-              )
-          ],
+      return GestureDetector(
+        onTap: onAddItemToGang,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          color: appTheme.backgroundContainer,
+          padding: padding(all: 12),
+          child: Row(
+            children: [
+              Expanded(
+                  child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
+                      style: StyleThemeData.bold16(color: appTheme.greyColor))),
+              GestureDetector(
+                  onTap: onAddItemToGang,
+                  behavior: HitTestBehavior.opaque,
+                  child: Icon(Icons.add, color: appTheme.blackColor, size: 32)),
+              if (gangIndex > 0)
+                Padding(
+                  padding: padding(right: 12),
+                  child: GestureDetector(
+                      onTap: () => onRemoveGang?.call(gangIndex),
+                      behavior: HitTestBehavior.opaque,
+                      child: Icon(Icons.delete, color: appTheme.errorColor, size: 24)),
+                )
+            ],
+          ),
         ),
       );
     }

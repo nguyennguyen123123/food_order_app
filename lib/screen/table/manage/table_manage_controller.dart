@@ -26,6 +26,8 @@ class TableManageControlller extends GetxController {
 
   var selectedAreaType = Rx<Area?>(null);
 
+  final tablesArea = Rx<List<TableModels>?>([]);
+
   void clear() {
     tableNumberController.clear();
   }
@@ -46,6 +48,12 @@ class TableManageControlller extends GetxController {
     final result = await areaRepository.getArea();
 
     areaTypeList.assignAll(result);
+  }
+
+  void onChangeSelectedArea(Area? area) async {
+    selectedAreaType.value = area;
+    tablesArea.value = null;
+    tablesArea.value = await tableRepository.getTable(areaId: area?.areaId);
   }
 
   void addTable() async {

@@ -68,17 +68,22 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: parameter.foodOrder.tableNumber ?? ''));
   }
 
+  List<PartyOrder> _mapPartyAndOrderItem(List<PartyOrder> partys) => partys
+      .asMap()
+      .entries
+      .map((e) => e.value.copyWith(
+          orderItems: e.value.orderItems
+              ?.map((item) => item.copyWith(partyIndex: e.key, partyOrderStaus: e.value.orderStatus))
+              .toList()))
+      .toList();
+
   Future<void> onInitOrderData() async {
     try {
-      final newPartyOrders = parameter.foodOrder.partyOrders
-          ?.asMap()
-          .entries
-          .map((e) => e.value.copyWith(
-              orderItems: e.value.orderItems
-                  ?.map((item) => item.copyWith(partyIndex: e.key, partyOrderStaus: e.value.orderStatus))
-                  .toList()))
-          .toList();
-      newPartyOrders?.sort((a, b) => (a.partyNumber ?? 0).compareTo(b.partyNumber ?? 0));
+      final listPartys = await orderRepository.getListPartyOrderOfOrder(parameter.foodOrder.orderId ?? '');
+      final newPartyOrders = listPartys.isNotEmpty
+          ? _mapPartyAndOrderItem(listPartys)
+          : _mapPartyAndOrderItem(parameter.foodOrder.partyOrders ?? <PartyOrder>[]);
+      newPartyOrders.sort((a, b) => (a.partyNumber ?? 0).compareTo(b.partyNumber ?? 0));
       final order = parameter.foodOrder.copyWith(partyOrders: newPartyOrders);
       originalOrder = order.copyWith(
           partyOrders: order.partyOrders
@@ -532,11 +537,11 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
       final partys = newFoodOrder.value?.partyOrders ?? <PartyOrder>[];
 
       /// Delete partys in server
-      final deletePartys = partys.where((element) => element.orderItems?.isEmpty ?? true);
-      if (deletePartys.isNotEmpty) {
-        await Future.wait(deletePartys.map((e) => orderRepository.onDeletePartyOrder(e.partyOrderId ?? '')));
-      }
-      partys.removeWhere((element) => element.orderItems?.isEmpty ?? true);
+      // final deletePartys = partys.where((element) => element.orderItems?.isEmpty ?? true);
+      // if (deletePartys.isNotEmpty) {
+      //   await Future.wait(deletePartys.map((e) => orderRepository.onDeletePartyOrder(e.partyOrderId ?? '')));
+      // }
+      // partys.removeWhere((element) => element.orderItems?.isEmpty ?? true);
       var result = await Future.wait(partys.map((party) async {
         if (party.orderStatus == ORDER_STATUS.DONE) return party;
         if (party.partyOrderId == null) {
