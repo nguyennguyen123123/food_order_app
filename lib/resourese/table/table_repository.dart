@@ -131,4 +131,39 @@ class TableRepository extends ITableRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<TableModels?> isTableExist(String tableNumber) async {
+    try {
+      final Map<String, dynamic>? existingTables =
+          await baseService.client.from(TABLE_NAME.TABLE).select().eq('table_number', tableNumber).maybeSingle();
+      if (existingTables != null) {
+        return TableModels.fromJson(existingTables);
+      }
+
+      return null;
+    } catch (e) {
+      print(e);
+    }
+
+    return null;
+  }
+
+  @override
+  Future<List<TableModels>> getListTableHasOrder({int page = 0, int limit = LIMIT}) async {
+    try {
+      final response = await baseService.client
+          .from(TABLE_NAME.TABLE)
+          .select(fullQueryTableOrder)
+          .not('food_id', 'eq', null)
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
+          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+
+      return response;
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
+  }
 }

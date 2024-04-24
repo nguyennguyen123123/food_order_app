@@ -41,6 +41,8 @@ import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_binding.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_page.dart';
+import 'package:food_delivery_app/screen/table/create_and_order/create_and_order_binding.dart';
+import 'package:food_delivery_app/screen/table/create_and_order/create_and_order_page.dart';
 import 'package:food_delivery_app/screen/table/edit/edit_table_binding.dart';
 import 'package:food_delivery_app/screen/table/manage/table_manage_binding.dart';
 import 'package:food_delivery_app/screen/table/table_binding.dart';
@@ -231,6 +233,11 @@ abstract class AppPages {
       name: Routes.EDITAREA,
       page: () => EditAreaView(),
       binding: EditAreaBinding(),
+    ),
+    GetPage(
+      name: Routes.CREATE_ORDER_TABLE,
+      page: () => CreateAndOrderTablePage(),
+      binding: CreateAndOrderTableBinding(),
     ),
   ];
 }

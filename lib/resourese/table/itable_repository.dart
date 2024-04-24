@@ -10,4 +10,6 @@ abstract class ITableRepository extends IBaseRepository {
   Future<List<TableModels>> getListTableInOrder({String? areaId, int page = 0, int limit = LIMIT});
   Future<void> updateTableWithOrder(String tableNumber, {String? orderId});
   Future<TableModels?> getTableByNumber(String number);
+  Future<TableModels?> isTableExist(String tableNumber);
+  Future<List<TableModels>> getListTableHasOrder({int page = 0, int limit = LIMIT});
 }

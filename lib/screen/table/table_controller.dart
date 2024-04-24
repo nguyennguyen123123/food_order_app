@@ -50,12 +50,31 @@ class TableControlller extends GetxController {
   Future<void> getListTable() async {
     tableList.value = null;
     page = 0;
-    tableList.value = await tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
+    tableList.value = currentAreaId.value == '1'
+        ? await tableRepository.getListTableHasOrder(page: page, limit: limit)
+        : await tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
   }
 
   Future<void> getListArea() async {
     final result = await areaRepository.getArea();
-    areaTypeList.assignAll([Area(areaId: '', areaName: 'all'.tr), ...result]);
+    areaTypeList.assignAll([
+      Area(areaId: '', areaName: 'all'.tr),
+      Area(areaId: '1', areaName: 'order_table'.tr),
+      ...result,
+    ]);
+  }
+
+  void onFindTable() async {
+    final result = await Get.toNamed(Routes.CREATE_ORDER_TABLE);
+    if (result != null && result is TableModels) {
+      if (tableList.value != null) {
+        final index = tableList.value!.indexWhere((element) => element.tableNumber == result.tableNumber);
+        if (index == -1) {
+          tableList.update((val) => val?.add(result));
+        }
+      }
+      navigateToOrderInTable(result);
+    }
   }
 
   void navigateToOrderInTable(TableModels table) async {
@@ -134,6 +153,7 @@ class TableControlller extends GetxController {
   }
 
   Future<void> getListAreaTable(String areaId) async {
+    if (currentAreaId.value == areaId) return;
     currentAreaId.value = areaId;
     getListTable();
   }
@@ -142,7 +162,9 @@ class TableControlller extends GetxController {
     final length = tableList.value?.length ?? 0;
     if ((page + 1) * limit > length) return false;
     page += 1;
-    final result = await tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
+    final result = currentAreaId.value == '1'
+        ? await tableRepository.getListTableHasOrder(page: page, limit: limit)
+        : await tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
     tableList.value = [...tableList.value!, ...result];
     if (result.length < limit) return false;
     return true;
