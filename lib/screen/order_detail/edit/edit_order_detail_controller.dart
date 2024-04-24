@@ -10,6 +10,7 @@ import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
+import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_response.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
@@ -20,10 +21,12 @@ import 'package:get/get.dart';
 class EditOrderDetailController extends GetxController with GetSingleTickerProviderStateMixin {
   final EditOrderDetailParameter parameter;
   final IOrderRepository orderRepository;
+  final ITableRepository tableRepository;
   final AccountService accountService;
 
   EditOrderDetailController({
     required this.parameter,
+    required this.tableRepository,
     required this.orderRepository,
     required this.accountService,
   });
@@ -63,7 +66,8 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     final result =
         await DialogUtils.showYesNoDialog(title: 'Bạn có muốn cập nhật đơn hàng với dữ liệu mới nhất không?');
     if (result == true) {
-      await updatePartyOrder();
+      final result = await updatePartyOrder();
+      if (result == true) return;
     }
     Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: parameter.foodOrder.tableNumber ?? ''));
   }
@@ -531,9 +535,9 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
             .toList());
   }
 
-  Future<void> updatePartyOrder() async {
-    if (currentPartyOrder.value == null) return;
-    await excute(() async {
+  Future<bool?> updatePartyOrder() async {
+    if (currentPartyOrder.value == null) return null;
+    final result = await excute<bool>(() async {
       final partys = newFoodOrder.value?.partyOrders ?? <PartyOrder>[];
 
       /// Delete partys in server
@@ -563,6 +567,12 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
         return party;
       }));
       result.removeWhere((element) => element == null);
+      final isEmptyAll = isEmptyAllPartyOrder(result);
+      if (isEmptyAll) {
+        await tableRepository.updateTableWithOrder(parameter.foodOrder.tableNumber ?? '');
+        Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: parameter.foodOrder.tableNumber ?? ''));
+        return true;
+      }
       originalOrder = originalOrder.copyWith(partyOrders: result.map((e) => e!.copyWith()).toList());
       foodOrder.value = originalOrder.copyWith(
           partyOrders: originalOrder.partyOrders
@@ -572,8 +582,9 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
           partyOrders: originalOrder.partyOrders
               ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((e) => e.copyWith()).toList()))
               .toList());
+      return false;
     });
-    return;
+    return result;
 
     // if (currentPartyIndex.value == -2) {
     //   ///Cập nhật món ăn trong đơn với trạng thái là Alles
@@ -650,5 +661,15 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     //     }
     //   });
     // }
+  }
+
+  bool isEmptyAllPartyOrder(List<PartyOrder?> partyOrders) {
+    for (final party in partyOrders) {
+      if ((party?.orderItems?.isNotEmpty ?? false) == true) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

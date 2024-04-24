@@ -109,7 +109,10 @@ class TableRepository extends ITableRepository {
   @override
   Future<void> updateTableWithOrder(String tableNumber, {String? orderId}) async {
     try {
-      await baseService.client.from(TABLE_NAME.TABLE).update({'order': orderId}).eq('table_number', tableNumber);
+      await baseService.client.from(TABLE_NAME.TABLE).update({
+        'order': orderId,
+        'has_order': orderId != null,
+      }).eq('table_number', tableNumber);
     } catch (error) {
       handleError(error);
       rethrow;
@@ -155,7 +158,7 @@ class TableRepository extends ITableRepository {
       final response = await baseService.client
           .from(TABLE_NAME.TABLE)
           .select(fullQueryTableOrder)
-          .not('food_id', 'eq', null)
+          .eq('has_order', true)
           .limit(limit)
           .range(page * limit, (page + 1) * limit)
           .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());

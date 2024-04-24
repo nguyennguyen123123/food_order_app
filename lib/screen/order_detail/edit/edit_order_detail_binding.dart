@@ -6,6 +6,7 @@ class EditOrderDetailBinding implements Bindings {
   void dependencies() {
     Get.put(EditOrderDetailController(
       parameter: Get.arguments,
+      tableRepository: Get.find(),
       orderRepository: Get.find(),
       accountService: Get.find(),
     ));

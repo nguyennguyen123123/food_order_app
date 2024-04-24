@@ -22,6 +22,7 @@ TableModels _$TableModelsFromJson(Map<String, dynamic> json) => TableModels(
           : json['area_id'] is Map
               ? Area.fromJson(json['area_id'])
               : null,
+      hasOrder: json['has_order'] ?? false,
     );
 
 Map<String, dynamic> _$TableModelsToJson(TableModels instance) => <String, dynamic>{
@@ -30,4 +31,5 @@ Map<String, dynamic> _$TableModelsToJson(TableModels instance) => <String, dynam
       'created_at': instance.createdAt,
       'area_id': instance.areaId,
       'order': null,
+      'has_order': instance.hasOrder
     };

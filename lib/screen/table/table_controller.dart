@@ -120,7 +120,15 @@ class TableControlller extends GetxController {
           if (table != null) {
             final oldIndex = tables.indexWhere((element) => element.tableNumber == result.orignalTable);
             if (oldIndex != -1) {
-              tables[oldIndex] = table;
+              if (currentAreaId.value == '1') {
+                if (table.hasOrder == false) {
+                  tables.removeAt(oldIndex);
+                } else {
+                  tables[oldIndex] = table;
+                }
+              } else {
+                tables[oldIndex] = table;
+              }
             }
           }
         }

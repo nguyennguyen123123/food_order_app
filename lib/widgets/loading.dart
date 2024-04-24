@@ -32,14 +32,17 @@ void dissmissLoading() {
   EasyLoading.dismiss();
 }
 
-Future<void> excute(Future<void> Function() function) async {
+Future<T?> excute<T>(Future<T> Function() function) async {
   try {
     showLoading();
-    await function.call();
+    final result = await function.call();
+    return result;
   } catch (e) {
     await DialogUtils.showInfoErrorDialog(content: 'try_again'.tr);
     print(e);
   } finally {
     dissmissLoading();
   }
+
+  return null;
 }
