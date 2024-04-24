@@ -28,15 +28,17 @@ class TableManageControlller extends GetxController {
 
   final tablesArea = Rx<List<TableModels>?>([]);
 
-  void clear() {
-    tableNumberController.clear();
-  }
-
   @override
   void onInit() {
     super.onInit();
     getListArea();
     getListTable();
+  }
+
+  void clearAddTable() {
+    tablesArea.value = [];
+    selectedAreaType.value = null;
+    tableNumberController.clear();
   }
 
   Future<void> getListTable() async {
@@ -77,7 +79,7 @@ class TableManageControlller extends GetxController {
         tableList.value?.add(table);
         Get.find<TableControlller>().getListAreaTable(selectedAreaType.value?.areaId ?? '');
         Get.back();
-        clear();
+        clearAddTable();
         DialogUtils.showSuccessDialog(content: "successfully_added_new_table".tr);
       } else {
         DialogUtils.showInfoErrorDialog(content: "table_number_already_exists_text".tr);
