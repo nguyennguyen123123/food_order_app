@@ -53,7 +53,7 @@ class FoodRepository extends IFoodRepository {
 
       final response = await food
           .limit(limit)
-          .range(page * limit, (page + 1) * limit)
+          .range(page * limit + page, (page + 1) * limit + page)
           .withConverter((data) => data.map((e) => FoodModel.fromJson(e)).toList());
 
       return response.toList();

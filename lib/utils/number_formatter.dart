@@ -8,7 +8,8 @@ class NumericTextFormatter extends TextInputFormatter {
       return newValue.copyWith(text: '');
     } else if (newValue.text.compareTo(oldValue.text) != 0) {
       final selectionIndexFromTheRight = newValue.text.length - newValue.selection.end;
-      final f = NumberFormat('#,###');
+      // final f = NumberFormat('#,###');
+      final f = NumberFormat();
       final number = int.parse(newValue.text.replaceAll(f.symbols.GROUP_SEP, ''));
       final newString = f.format(number);
       return TextEditingValue(

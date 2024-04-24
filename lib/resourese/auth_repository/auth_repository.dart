@@ -84,7 +84,7 @@ class AuthRepository extends IAuthRepository {
           .select()
           .filter("user_id", "neq", accountService.myAccount?.userId ?? '')
           .limit(limit)
-          .range(page * limit, (page + 1) * limit)
+          .range(page * limit + page, (page + 1) * limit + page)
           .withConverter((data) => data.map((e) => Account.fromJson(e)).toList());
       return response;
     } catch (e) {

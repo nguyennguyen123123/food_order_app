@@ -166,7 +166,7 @@ class OrderRepository extends IOrderRepository {
       }
       final response = await query
           .limit(limit)
-          .range(page * limit, (page + 1) * limit)
+          .range(page * limit + page, (page + 1) * limit + page)
           .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
 
       return response.toList();

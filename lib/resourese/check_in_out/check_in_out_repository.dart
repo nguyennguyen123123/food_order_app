@@ -92,7 +92,7 @@ class CheckInOutRepository extends ICheckInOutRepository {
 
         final response = await dataAdmin
             .limit(20)
-            .range(page * limit, (page + 1) * limit)
+            .range(page * limit + page, (page + 1) * limit + page)
             .withConverter((data) => data.map((e) => CheckInOut.fromJson(e)).toList());
 
         return response;
@@ -101,7 +101,7 @@ class CheckInOutRepository extends ICheckInOutRepository {
 
         final response = await dataUser
             .limit(limit)
-            .range(page * limit, (page + 1) * limit)
+            .range(page * limit + page, (page + 1) * limit + page)
             .withConverter((data) => data.map((e) => CheckInOut.fromJson(e)).toList());
 
         return response;
