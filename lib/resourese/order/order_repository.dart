@@ -380,7 +380,10 @@ class OrderRepository extends IOrderRepository {
       final deleteItem = <OrderItem>[];
       final newItem = orderItem.where((element) => element.orderItemId == null).toList();
       for (final item in orignalOrderItem) {
-        final index = orderItem.indexWhere((element) => element.food?.foodId == item.food?.foodId);
+        final index = orderItem.indexWhere((element) =>
+            element.food?.foodId == item.food?.foodId &&
+            item.sortOder == element.sortOder &&
+            item.partyIndex == element.partyIndex);
         if (index == -1) {
           deleteItem.add(item);
         }
@@ -455,5 +458,22 @@ class OrderRepository extends IOrderRepository {
       print(e);
     }
     return null;
+  }
+
+  @override
+  Future<bool> onDeletePartyOrder(String partyOrderId) async {
+    try {
+      await Future.wait([
+        baseService.client
+            .from(TABLE_NAME.ORDER_WITH_PARTY)
+            .delete()
+            .eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, partyOrderId),
+        baseService.client.from(TABLE_NAME.PARTY_ORDER).delete().eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, partyOrderId)
+      ]);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
   }
 }

@@ -49,6 +49,11 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
       onRefresh();
       areas.value = await areaRepository.getArea();
     });
+    tableNumberCtrl.addListener(() {
+      if (tableNotifier.value != null && tableNumberCtrl.text != tableNotifier.value?.tableNumber) {
+        tableNotifier.value = null;
+      }
+    });
   }
 
   @override

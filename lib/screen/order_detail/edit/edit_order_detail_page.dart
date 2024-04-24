@@ -69,10 +69,11 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
         if (order == null) {
           return Center(child: CircularProgressIndicator());
         }
-        final isNewParty = controller.currentPartyIndex.value == order.partyOrders?.length;
+        final isNewParty = controller.currentPartyIndex.value >= (order.partyOrders?.length ?? 0);
         final isPartyOrderComplete = isNewParty || controller.currentPartyIndex.value == -2
             ? false
-            : order.partyOrders?[controller.currentPartyIndex.value].orderStatus == ORDER_STATUS.DONE;
+            : controller.newFoodOrder.value!.partyOrders?[controller.currentPartyIndex.value].orderStatus ==
+                ORDER_STATUS.DONE;
         return Column(
           children: [
             if (!isPartyOrderComplete)
@@ -97,11 +98,15 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                       value: controller.currentPartyIndex.value,
                       items: [
                         buildDropDownItem(-2, content: 'Alles'),
-                        ...(order.partyOrders ?? []).asMap().entries.map((e) => buildDropDownItem(e.key)),
-                        if (controller.newParty == null)
+                        if (controller.currentTab.value == 0) ...[
+                          ...(controller.newFoodOrder.value!.partyOrders ?? []).asMap().entries.map((e) =>
+                              buildDropDownItem(e.key,
+                                  content: 'party_index'.trParams({'number': '${(e.value.partyNumber ?? 0) + 1}'}))),
                           buildDropDownItem(-1, content: 'create_party'.tr)
-                        else
-                          buildDropDownItem(controller.newParty!.partyNumber ?? 0),
+                        ] else ...[
+                          ...(order.partyOrders ?? []).asMap().entries.map((e) => buildDropDownItem(e.key,
+                              content: 'party_index'.trParams({'number': '${(e.value.partyNumber ?? 0) + 1}'}))),
+                        ]
                       ],
                       onChanged: (value) => controller.onChangePartyIndex(value ?? 0)),
                   SizedBox(height: 8.h),
@@ -132,7 +137,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                       if (controller.currentTab.value == 0)
                         BottomButton(
                             isDisableCancel: false,
-                            isDisableConfirm: false,
+                            isDisableConfirm: isNewParty,
                             cancelText: isNewParty ? 'create'.tr : 'update'.tr,
                             confirmText: 'complete'.tr,
                             onConfirm: controller.onCompleteOrder,
@@ -153,7 +158,6 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
   }
 
   Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder) {
-    final order = controller.foodOrder.value!;
     final number = (partyOrder.partyNumber ?? 0) + 1;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
@@ -175,6 +179,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 Spacer(),
                 GestureDetector(
                     onTap: () async {
+                      final order = controller.foodOrder.value!;
                       final result = await DialogUtils.showDialogView(ChangeTableDialog(
                         currentTable: order.tableNumber ?? '',
                         isLimitTableHasOrder: false,
@@ -189,20 +194,6 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
           })
         ],
         if (partyIndex != -2) Text('party_index'.trParams({'number': '$number'}), style: StyleThemeData.bold18()),
-        // Row(
-        //   children: [
-        //     Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
-        //     if (!isPartyOrderComplete)
-        //       GestureDetector(
-        //           onTap: () async {
-        //             final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
-        //             if (result != null) {
-        //               controller.addFoodToPartyOrder(result);
-        //             }
-        //           },
-        //           child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
-        //   ],
-        // ),
         SizedBox(height: 8.h),
         _buildOrderItemByGangIndex(partyIndex, partyOrder.numberOfGangs, number, orderItems, isPartyOrderComplete),
       ],
@@ -211,11 +202,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
 
   Widget _buildOrderItemByGangIndex(
       int partyIndex, int maxGang, int partyNumber, List<OrderItem> orderItem, bool isPartyOrderComplete) {
-    // final orderItemNoGang = orderItem.where((element) => element.sortOder == null).toList();
-
     return Column(
       children: [
-        // ...orderItemNoGang.map((e) => _buildOrderItem(partyIndex, partyNumber, e, isPartyOrderComplete)),
         ...List.generate(maxGang + 1, (gangIndex) {
           final orderItemInGang = orderItem.where((element) => element.sortOder == gangIndex).toList();
           return Column(
@@ -243,10 +231,6 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                                     return orderWithFood?.quantity ?? 0;
                                   },
                                 ));
-                            // final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
-                            // if (result != null) {
-                            //   controller.addFoodToPartyOrder(result, gangIndex);
-                            // }
                           },
                           child: Icon(Icons.add, size: 32, color: appTheme.blackColor)),
                     SizedBox(width: 12.w),

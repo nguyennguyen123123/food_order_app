@@ -20,4 +20,5 @@ abstract class IOrderRepository extends IBaseRepository {
   Future<List<OrderItem>> updateListOrderInParty(
       PartyOrder partyOrder, List<OrderItem> orignalOrderItem, List<OrderItem> orderItem);
   Future<PartyOrder?> uploadNewPartyOrder(String orderId, PartyOrder partyOrder);
+  Future<bool> onDeletePartyOrder(String partyOrderId);
 }

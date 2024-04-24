@@ -97,16 +97,36 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                               clearVoucher: controller.onClearVoucher,
                             )
                           ] else ...[
-                            ...controller.cartService.partyOrders.value
-                                .asMap()
-                                .entries
-                                .map((data) => _buildVoucherField(
-                                      data.value.voucher,
-                                      title: 'party_index'.trParams({'number': '${data.key + 1}'}),
-                                      updateVoucher: (voucher) =>
-                                          controller.onAddVoucher(voucher, partyIndex: data.key),
-                                      clearVoucher: () => controller.onClearVoucher(partyIndex: data.key),
-                                    ))
+                            if (controller.cartService.partyOrders.value.length == 3) ...[
+                              ...controller.cartService.partyOrders.value
+                                  .asMap()
+                                  .entries
+                                  .map((data) => _buildVoucherField(
+                                        data.value.voucher,
+                                        title: 'party_index'.trParams({'number': '${data.key + 1}'}),
+                                        updateVoucher: (voucher) =>
+                                            controller.onAddVoucher(voucher, partyIndex: data.key),
+                                        clearVoucher: () => controller.onClearVoucher(partyIndex: data.key),
+                                      ))
+                            ] else ...[
+                              SizedBox(
+                                height: 90.h,
+                                width: double.infinity,
+                                child: ListView.separated(
+                                  itemCount: controller.cartService.partyOrders.value.length,
+                                  separatorBuilder: (context, index) => Divider(),
+                                  itemBuilder: (context, index) {
+                                    final data = controller.cartService.partyOrders.value[index];
+                                    return _buildVoucherField(
+                                      data.voucher,
+                                      title: 'party_index'.trParams({'number': '${index + 1}'}),
+                                      updateVoucher: (voucher) => controller.onAddVoucher(voucher, partyIndex: index),
+                                      clearVoucher: () => controller.onClearVoucher(partyIndex: index),
+                                    );
+                                  },
+                                ),
+                              )
+                            ]
                           ],
                           Divider(),
                           Row(

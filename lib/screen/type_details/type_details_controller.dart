@@ -50,11 +50,13 @@ class TypeDetailsController extends GetxController {
   }
 
   Future<bool> onLoadMoreFoods() async {
+    print('onLoadMoreFoods');
     final length = (foods.value ?? []).length;
     if (length < LIMIT * (page + 1)) return false;
     page += 1;
+    final lastId = selectedFoodTypes.isNotEmpty ? selectedFoodTypes.last.typeId : null;
 
-    final result = await foodRepository.getFood(page: page, limit: limit);
+    final result = await foodRepository.getListFoodByKeyword(limit: limit, keyword: '', page: page, typeId: lastId);
 
     foods.update((val) => val?.addAll(result));
     if (result.length < limit) return false;

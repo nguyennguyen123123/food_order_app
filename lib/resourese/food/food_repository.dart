@@ -152,7 +152,6 @@ class FoodRepository extends IFoodRepository {
     try {
       var query = baseService.client.from(TABLE_NAME.FOOD).select("*, typeId (*)");
       if (keyword.isNotEmpty) {
-        // query = query.textSearch("name", "'$keyword'");
         query = query.like("name", "%$keyword%");
       }
       if (typeId != null) {
@@ -160,7 +159,7 @@ class FoodRepository extends IFoodRepository {
       }
       final response = await query
           .limit(limit)
-          .range(page * limit, (page + 1) * limit)
+          .range(page * limit + page, (page + 1) * limit + page)
           .withConverter((data) => data.map((e) => FoodModel.fromJson(e)).toList());
       return response.toList();
     } catch (e) {

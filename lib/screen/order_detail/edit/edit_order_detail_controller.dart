@@ -30,7 +30,8 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
 
   late FoodOrder originalOrder;
   late Rx<FoodOrder?> foodOrder = Rx(null);
-  PartyOrder? newParty = null;
+  late Rx<FoodOrder?> newFoodOrder = Rx(null);
+  // late PartyOrder? newParty = null;
   final currentPartyOrder = Rx<PartyOrder?>(null);
   late final tabController = TabController(length: 2, vsync: this);
   final currentTab = 0.obs;
@@ -64,20 +65,28 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
 
   Future<void> onInitOrderData() async {
     try {
-      final order = parameter.foodOrder.copyWith(
-          partyOrders: parameter.foodOrder.partyOrders
-              ?.asMap()
-              .entries
-              .map((e) => e.value.copyWith(
-                  orderItems: e.value.orderItems
-                      ?.map((item) => item.copyWith(partyIndex: e.key, partyOrderStaus: e.value.orderStatus))
-                      .toList()))
-              .toList());
+      final newPartyOrders = parameter.foodOrder.partyOrders
+          ?.asMap()
+          .entries
+          .map((e) => e.value.copyWith(
+              orderItems: e.value.orderItems
+                  ?.map((item) => item.copyWith(partyIndex: e.key, partyOrderStaus: e.value.orderStatus))
+                  .toList()))
+          .toList();
+      newPartyOrders?.sort((a, b) => (a.partyNumber ?? 0).compareTo(b.partyNumber ?? 0));
+      final order = parameter.foodOrder.copyWith(partyOrders: newPartyOrders);
       originalOrder = order.copyWith(
           partyOrders: order.partyOrders
               ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((item) => item.copyWith()).toList()))
               .toList());
-      renewOrder();
+      foodOrder.value = originalOrder.copyWith(
+          partyOrders: originalOrder.partyOrders
+              ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((e) => e.copyWith()).toList()))
+              .toList());
+      newFoodOrder.value = originalOrder.copyWith(
+          partyOrders: originalOrder.partyOrders
+              ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((e) => e.copyWith()).toList()))
+              .toList());
       onUpdateCurrentPartyOrder();
     } catch (e) {
       dissmissLoading();
@@ -87,12 +96,17 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   }
 
   void onChangePartyIndex(int partyIndex) {
-    if (partyIndex == -1 && newParty == null) {
-      final newPartyIndex = foodOrder.value?.partyOrders?.length ?? 0;
-      newParty = PartyOrder(partyNumber: foodOrder.value?.partyOrders?.length ?? 0);
-      currentPartyIndex.value = newPartyIndex;
-      renewOrder();
+    if (partyIndex == -1) {
+      /// Tạo thêm một part order mới
+      var newPartyIndex = 0;
+      for (final partyOrder in newFoodOrder.value?.partyOrders ?? <PartyOrder>[]) {
+        newPartyIndex = max(newPartyIndex, partyOrder.partyNumber ?? 0);
+      }
+      newPartyIndex += 1;
+      final newParty = PartyOrder(partyNumber: newPartyIndex, orderItems: [], orderStatus: ORDER_STATUS.CREATED);
+      newFoodOrder.value!.partyOrders!.add(newParty);
       currentPartyOrder.value = newParty;
+      currentPartyIndex.value = (newFoodOrder.value!.partyOrders?.length ?? 1) - 1;
       return;
     }
 
@@ -102,15 +116,30 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
       _createAllesPartyOrder();
       return;
     }
-    renewOrder();
-    if (partyIndex == newParty?.partyNumber) {
-      currentPartyOrder.value = newParty;
-      return;
+    if (currentTab.value == 0) {
+      onUpdateCurrentPartyOrder();
+    } else {
+      selectOrderItems.value = [];
+      onChangeToCurrentFoodPartyOrder();
     }
-    onUpdateCurrentPartyOrder();
   }
 
   void onUpdateCurrentPartyOrder() {
+    final partyOrder = newFoodOrder.value!.partyOrders![currentPartyIndex.value];
+    final maxGang = partyOrder.orderItems?.fold<int?>(null, (a, b) {
+      if (a == null) {
+        return b.sortOder;
+      } else {
+        return (b.sortOder) > a ? b.sortOder : a;
+      }
+    });
+    currentPartyOrder.value = partyOrder.copyWith(
+      orderItems: partyOrder.orderItems?.map((e) => e.copyWith()).toList(),
+      numberOfGangs: maxGang,
+    );
+  }
+
+  void onChangeToCurrentFoodPartyOrder() {
     final partyOrder = foodOrder.value!.partyOrders![currentPartyIndex.value];
     final maxGang = partyOrder.orderItems?.fold<int?>(null, (a, b) {
       if (a == null) {
@@ -162,21 +191,13 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     updateNewPartyWithCurrentParty();
   }
 
-  // void onAddOrderToGang(int gangIndex, List<OrderItem> orderItems) {
-  //   final list = currentPartyOrder.value?.orderItems ?? <OrderItem>[];
-  //   for (final item in orderItems) {
-  //     final index = findOrderItemInList(list, item);
-  //     if (index != -1) {
-  //       list[index].sortOder = gangIndex;
-  //     }
-  //   }
-
-  //   currentPartyOrder.value = currentPartyOrder.value?.copyWith(orderItems: list);
-  // }
-
   void addFoodToPartyOrder(FoodModel food, int gangIndex, {int? quantity}) {
     final list = currentPartyOrder.value?.orderItems ?? <OrderItem>[];
-    final item = OrderItem(food: food, foodId: food.foodId, quantity: quantity ?? 1);
+    final item = OrderItem(
+        food: food,
+        foodId: food.foodId,
+        quantity: quantity ?? 1,
+        partyIndex: currentPartyIndex.value == -2 ? 0 : currentPartyIndex.value);
     final index = findOrderItemInList(list, item, gangIndex: gangIndex);
     if (index != -1) {
       list[index].sortOder = gangIndex;
@@ -190,24 +211,8 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     }
 
     currentPartyOrder.value = currentPartyOrder.value?.copyWith(orderItems: list);
-    updateNewPartyWithCurrentParty();
+    updateNewPartyWithCurrentParty(item: item);
   }
-
-  // void addFoodToPartyOrder(List<OrderItem> orderItems, int gangIndex) {
-  //   final list = currentPartyOrder.value?.orderItems ?? <OrderItem>[];
-  //   for (final item in orderItems) {
-  //     final index = findOrderItemInList(list, item, gangIndex: gangIndex);
-  //     if (index != -1) {
-  //       list[index].sortOder = gangIndex;
-  //       list[index].quantity += item.quantity;
-  //     } else {
-  //       list.add(item.copyWith(sortOder: gangIndex));
-  //     }
-  //   }
-
-  //   currentPartyOrder.value = currentPartyOrder.value?.copyWith(orderItems: list);
-  //   updateNewPartyWithCurrentParty();
-  // }
 
   void updateQuantityList(int partyIndex, OrderItem item, int quantity, int gangIndex) {
     final list = currentPartyOrder.value?.orderItems ?? <OrderItem>[];
@@ -217,18 +222,18 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     }
 
     currentPartyOrder.value = currentPartyOrder.value?.copyWith(orderItems: list);
-    updateNewPartyWithCurrentParty();
+    updateNewPartyWithCurrentParty(item: item);
   }
 
   void onRemoveItem(OrderItem item) {
     final list = currentPartyOrder.value?.orderItems ?? <OrderItem>[];
-    final index = findOrderItemInList(list, item);
+    final index = findOrderItemInList(list, item, gangIndex: item.sortOder);
     if (index != -1) {
       list.removeAt(index);
     }
 
     currentPartyOrder.value = currentPartyOrder.value?.copyWith(orderItems: list);
-    updateNewPartyWithCurrentParty();
+    updateNewPartyWithCurrentParty(item: item.copyWith(quantity: 0));
   }
 
   int findOrderItemInList(List<OrderItem> list, OrderItem item, {int? gangIndex}) => list.indexWhere((element) {
@@ -241,23 +246,77 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
         return query;
       });
 
-  void updateNewPartyWithCurrentParty() {
-    if (newParty != null && currentPartyOrder.value?.partyNumber == newParty?.partyNumber) {
-      newParty = currentPartyOrder.value;
+  void updateNewPartyWithCurrentParty({OrderItem? item}) {
+    if (currentPartyIndex.value == -2) {
+      if (item != null) {
+        for (var i = 0; i < newFoodOrder.value!.partyOrders!.length; i++) {
+          final partyOrder = newFoodOrder.value!.partyOrders![i];
+          final index = partyOrder.orderItems?.indexWhere((element) =>
+                  element.partyIndex == item.partyIndex &&
+                  element.sortOder == item.sortOder &&
+                  element.food?.foodId == item.food?.foodId) ??
+              -1;
+          if (index != -1) {
+            if (item.quantity == 0) {
+              newFoodOrder.value!.partyOrders![i].orderItems!.removeAt(index);
+            } else {
+              newFoodOrder.value!.partyOrders![i].orderItems![index] = item;
+            }
+            return;
+          }
+        }
+      }
+      return;
+    }
+    if (currentPartyOrder.value != null &&
+        currentPartyIndex.value != -2 &&
+        currentPartyIndex.value < newFoodOrder.value!.partyOrders!.length) {
+      newFoodOrder.value!.partyOrders![currentPartyIndex.value] = currentPartyOrder.value!;
     }
   }
 
   void onChangeTab(int tab) {
+    if (tab == currentTab.value) return;
     currentTab.value = tab;
-    if (currentPartyIndex.value == -2) {
-      _createAllesPartyOrder();
+
+    if (tab == 0) {
+      if (currentPartyIndex.value == -2) {
+        _createAllesPartyOrder();
+      } else {
+        onUpdateCurrentPartyOrder();
+      }
     } else {
-      onUpdateCurrentPartyOrder();
+      if (currentPartyIndex.value == -2) {
+        _createAllesFoodPartyOrder();
+      } else {
+        onChangeToCurrentFoodPartyOrder();
+      }
     }
+
     selectOrderItems.value = [];
   }
 
   void _createAllesPartyOrder() {
+    final orderItems = <OrderItem>[];
+    var numberOfGang = 0;
+    for (final party in newFoodOrder.value!.partyOrders!) {
+      final items = (party.orderItems ?? []).map((e) => e.copyWith()).toList();
+      orderItems.addAll(items);
+      final maxGang = items.fold<int?>(null, (a, b) {
+            if (a == null) {
+              return b.sortOder;
+            } else {
+              return (b.sortOder) > a ? b.sortOder : a;
+            }
+          }) ??
+          0;
+      numberOfGang = max(numberOfGang, maxGang);
+    }
+
+    currentPartyOrder.value = PartyOrder(numberOfGangs: numberOfGang, orderItems: orderItems);
+  }
+
+  void _createAllesFoodPartyOrder() {
     final orderItems = <OrderItem>[];
     var numberOfGang = 0;
     for (final party in foodOrder.value!.partyOrders!) {
@@ -425,6 +484,12 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
           await orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? '');
           dissmissLoading();
           await DialogUtils.showSuccessDialog(content: 'confirm_complete_order'.tr);
+          final index = newFoodOrder.value?.partyOrders
+                  ?.indexWhere((element) => element.partyOrderId == newPartyOrder.partyOrderId) ??
+              -1;
+          if (index != -1) {
+            newFoodOrder.value!.partyOrders![index] = newPartyOrder;
+          }
         }
         originalOrder = newOrder;
         renewOrder();
@@ -445,6 +510,55 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
 
   void updatePartyOrder() {
     if (currentPartyOrder.value == null) return;
+    excute(() async {
+      final partys = newFoodOrder.value?.partyOrders ?? <PartyOrder>[];
+
+      /// Delete partys in server
+      final deletePartys = partys.where((element) => element.orderItems?.isEmpty ?? true);
+      if (deletePartys.isNotEmpty) {
+        await Future.wait(deletePartys.map((e) => orderRepository.onDeletePartyOrder(e.partyOrderId ?? '')));
+      }
+      partys.removeWhere((element) => element.orderItems?.isEmpty ?? true);
+      var result = await Future.wait(partys.map((party) async {
+        if (party.orderStatus == ORDER_STATUS.DONE) return party;
+        if (party.partyOrderId == null) {
+          final newParty = await orderRepository.uploadNewPartyOrder(foodOrder.value!.orderId ?? '', party);
+          return newParty;
+        } else {
+          final originalPartyIndex =
+              foodOrder.value!.partyOrders?.indexWhere((element) => element.partyOrderId == party.partyOrderId) ?? -1;
+          if (originalPartyIndex != -1) {
+            final result = await orderRepository.updateListOrderInParty(
+                party,
+                foodOrder.value!.partyOrders![originalPartyIndex].orderItems ?? <OrderItem>[],
+                party.orderItems ?? <OrderItem>[]);
+            if (result.isNotEmpty) {
+              party.orderItems = result;
+            }
+          }
+        }
+        return party;
+      }));
+      result.removeWhere((element) => element == null);
+      // int currentPartyNumber = result.first?.partyNumber ?? 0;
+      // for (var i = 1; i < result.length; i++) {
+      //   currentPartyNumber += 1;
+      //   if (result[i]!.partyNumber != currentPartyNumber) {
+      //     result[i]!.partyNumber = currentPartyNumber;
+      //   }
+      // }
+      originalOrder = originalOrder.copyWith(partyOrders: result.map((e) => e!.copyWith()).toList());
+      foodOrder.value = originalOrder.copyWith(
+          partyOrders: originalOrder.partyOrders
+              ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((e) => e.copyWith()).toList()))
+              .toList());
+      newFoodOrder.value = originalOrder.copyWith(
+          partyOrders: originalOrder.partyOrders
+              ?.map((e) => e.copyWith(orderItems: e.orderItems?.map((e) => e.copyWith()).toList()))
+              .toList());
+    });
+    return;
+
     if (currentPartyIndex.value == -2) {
       ///Cập nhật món ăn trong đơn với trạng thái là Alles
       excute(() async {
@@ -491,19 +605,21 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
         renewOrder();
         _createAllesPartyOrder();
       });
-    } else if (newParty != null && currentPartyOrder.value?.partyNumber == newParty?.partyNumber) {
-      ///Cập nhật món ăn ở party mới tạo và chưa tạo trên server
-      excute(() async {
-        final newParty =
-            await orderRepository.uploadNewPartyOrder(foodOrder.value!.orderId ?? '', currentPartyOrder.value!);
-        if (newParty != null) {
-          originalOrder.partyOrders?.add(newParty);
-          this.newParty = null;
-          renewOrder();
-          currentPartyOrder.value = originalOrder.partyOrders?.last;
-        }
-      });
-    } else {
+    }
+    // else if (newParty != null && currentPartyOrder.value?.partyNumber == newParty?.partyNumber) {
+    //   ///Cập nhật món ăn ở party mới tạo và chưa tạo trên server
+    //   excute(() async {
+    //     final newParty =
+    //         await orderRepository.uploadNewPartyOrder(foodOrder.value!.orderId ?? '', currentPartyOrder.value!);
+    //     if (newParty != null) {
+    //       originalOrder.partyOrders?.add(newParty);
+    //       this.newParty = null;
+    //       renewOrder();
+    //       currentPartyOrder.value = originalOrder.partyOrders?.last;
+    //     }
+    //   });
+    // }
+    else {
       ///Cập nhật món ăn ở một party đang có trong giỏ hàng
       excute(() async {
         final result = await orderRepository.updateListOrderInParty(
