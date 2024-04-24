@@ -15,6 +15,7 @@ import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_par
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_response.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
+import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
@@ -472,14 +473,21 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
       final newOrder = foodOrder.value!.copyWith();
       if (currentPartyIndex.value == -2) {
         /// Cập nhật trạng thái của cả order thành hoàn thành
-        newOrder.partyOrders = newOrder.partyOrders?.map((e) => e.copyWith(orderStatus: ORDER_STATUS.DONE)).toList();
+        var totalPrice = 0.0;
+        for (var i = 0; i < (newOrder.partyOrders?.length ?? 0); i++) {
+          if (newOrder.partyOrders![i].orderStatus == ORDER_STATUS.CREATED) {
+            totalPrice += newOrder.partyOrders?[i].orderPrice ?? 0.0;
+          }
+          newOrder.partyOrders![i] = newOrder.partyOrders![i].copyWith(orderStatus: ORDER_STATUS.DONE);
+        }
         newOrder.orderStatus = ORDER_STATUS.DONE;
         await Future.wait([
+          accountService.onUpdateTotalPriceInAccount(totalPrice),
           orderRepository.completeOrder(newOrder.orderId ?? '', newOrder.tableNumber ?? ''),
           orderRepository.completeListPartyOrder(newOrder.partyOrders?.map((e) => e.partyOrderId ?? '').toList() ?? []),
         ]);
         dissmissLoading();
-        await DialogUtils.showSuccessDialog(content: 'complete_order'.tr);
+        await _showCompleteOrder(totalPrice);
         Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: newOrder.tableNumber ?? ''));
       } else {
         /// Cập nhật trạng thái của một party thành hoàn thành
@@ -497,17 +505,22 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
           /// Trường hợp order còn một party là hoàn thành
           newOrder.orderStatus = ORDER_STATUS.DONE;
           await Future.wait([
+            accountService.onUpdateTotalPriceInAccount(newPartyOrder.orderPrice),
             orderRepository.completeOrder(newOrder.orderId ?? '', newOrder.tableNumber ?? ''),
             orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? ''),
           ]);
           dissmissLoading();
-          await DialogUtils.showSuccessDialog(content: 'complete_order'.tr);
+          await _showCompleteOrder(newPartyOrder.orderPrice);
           Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: newOrder.tableNumber ?? ''));
         } else {
           /// Trường hợp order có nhiều hơn một party chưa hoàn thành
-          await orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? '');
+          await Future.wait([
+            orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? ''),
+            accountService.onUpdateTotalPriceInAccount(newPartyOrder.orderPrice)
+          ]);
+
           dissmissLoading();
-          await DialogUtils.showSuccessDialog(content: 'confirm_complete_order'.tr);
+          await _showCompleteOrder(newPartyOrder.orderPrice);
           final index = newFoodOrder.value?.partyOrders
                   ?.indexWhere((element) => element.partyOrderId == newPartyOrder.partyOrderId) ??
               -1;
@@ -528,6 +541,11 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     }
   }
 
+  Future<void> _showCompleteOrder(double price) => DialogUtils.showSuccessDialog(
+      content: 'complete_order'.tr +
+          '\n' +
+          'confirm_complete_order_description'.trParams({'number': Utils.getCurrency(price)}));
+
   void renewOrder() {
     foodOrder.value = originalOrder.copyWith(
         partyOrders: originalOrder.partyOrders
@@ -540,12 +558,6 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     final result = await excute<bool>(() async {
       final partys = newFoodOrder.value?.partyOrders ?? <PartyOrder>[];
 
-      /// Delete partys in server
-      // final deletePartys = partys.where((element) => element.orderItems?.isEmpty ?? true);
-      // if (deletePartys.isNotEmpty) {
-      //   await Future.wait(deletePartys.map((e) => orderRepository.onDeletePartyOrder(e.partyOrderId ?? '')));
-      // }
-      // partys.removeWhere((element) => element.orderItems?.isEmpty ?? true);
       var result = await Future.wait(partys.map((party) async {
         if (party.orderStatus == ORDER_STATUS.DONE) return party;
         if (party.partyOrderId == null) {

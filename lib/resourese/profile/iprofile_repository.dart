@@ -6,4 +6,5 @@ abstract class IProfileRepository extends IBaseRepository {
   Future<Account?> getProfile();
   Future<Account?> updateProfile(String name, String gender);
   Future<void> updateNumberOfOrder(String userId, int number);
+  Future<Account?> updateTotalPriceInWorkingTime(String userId, double totalPrice);
 }

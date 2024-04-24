@@ -12,6 +12,9 @@ import 'package:food_delivery_app/screen/waiter_cart/waiter_cart_parameter.dart'
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
+const TABLE_HAS_ORDER = '1';
+const ALL_TABLE = '';
+
 class TableControlller extends GetxController {
   final ITableRepository tableRepository;
   final IAreaRepository areaRepository;
@@ -28,7 +31,7 @@ class TableControlller extends GetxController {
   final tableList = Rx<List<TableModels>?>(null);
 
   final areaTypeList = <Area>[].obs;
-  final currentAreaId = Rx<String>('');
+  final currentAreaId = Rx<String>(TABLE_HAS_ORDER);
   int page = 0;
   final limit = 50;
 
@@ -50,16 +53,14 @@ class TableControlller extends GetxController {
   Future<void> getListTable() async {
     tableList.value = null;
     page = 0;
-    tableList.value = currentAreaId.value == '1'
-        ? await tableRepository.getListTableHasOrder(page: page, limit: limit)
-        : await tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
+    tableList.value = await getListTableFromAPI();
   }
 
   Future<void> getListArea() async {
     final result = await areaRepository.getArea();
     areaTypeList.assignAll([
-      Area(areaId: '', areaName: 'all'.tr),
-      Area(areaId: '1', areaName: 'order_table'.tr),
+      Area(areaId: TABLE_HAS_ORDER, areaName: 'order_table'.tr),
+      Area(areaId: ALL_TABLE, areaName: 'all'.tr),
       ...result,
     ]);
   }
@@ -120,7 +121,7 @@ class TableControlller extends GetxController {
           if (table != null) {
             final oldIndex = tables.indexWhere((element) => element.tableNumber == result.orignalTable);
             if (oldIndex != -1) {
-              if (currentAreaId.value == '1') {
+              if (currentAreaId.value == TABLE_HAS_ORDER) {
                 if (table.hasOrder == false) {
                   tables.removeAt(oldIndex);
                 } else {
@@ -170,11 +171,13 @@ class TableControlller extends GetxController {
     final length = tableList.value?.length ?? 0;
     if ((page + 1) * limit > length) return false;
     page += 1;
-    final result = currentAreaId.value == '1'
-        ? await tableRepository.getListTableHasOrder(page: page, limit: limit)
-        : await tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
+    final result = await getListTableFromAPI();
     tableList.value = [...tableList.value!, ...result];
     if (result.length < limit) return false;
     return true;
   }
+
+  Future<List<TableModels>> getListTableFromAPI() => currentAreaId.value == TABLE_HAS_ORDER
+      ? tableRepository.getListTableHasOrder(page: page, limit: limit)
+      : tableRepository.getListTableInOrder(areaId: currentAreaId.value, page: page, limit: limit);
 }

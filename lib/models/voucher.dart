@@ -34,7 +34,5 @@ class Voucher {
 
   Map<String, dynamic> toJson() => _$VoucherToJson(this);
 
-  Map toMap(Voucher voucher) => _$VoucherToJson(this);
-
   factory Voucher.fromJson(Map<String, dynamic> json) => _$VoucherFromJson(json);
 }

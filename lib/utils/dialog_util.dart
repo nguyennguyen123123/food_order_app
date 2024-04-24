@@ -162,7 +162,7 @@ class DialogUtils {
                 children: [
                   Padding(
                     padding: padding(top: 16, right: 19),
-                    child: GestureDetector(onTap: Get.back, child: Icon(Icons.close, size: 12)),
+                    child: GestureDetector(onTap: Get.back, child: Icon(Icons.close, size: 24)),
                   ),
                   SizedBox(
                     width: 305.w,
