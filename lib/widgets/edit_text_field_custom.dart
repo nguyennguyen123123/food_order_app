@@ -123,15 +123,18 @@ class EditTextFieldCustom extends StatelessWidget {
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: controller,
             builder: (context, value, child) {
-              return Text(
-                  value.text.isEmpty
-                      ? emptyErrorText ?? 'Không được để trống'
-                      : validateText != null
-                          ? !(validateText?.call(value.text) ?? false)
-                              ? errorText
-                              : ''
-                          : '',
-                  style: StyleThemeData.regular14(color: appTheme.rejectColor));
+              final error = value.text.isEmpty
+                  ? emptyErrorText ?? 'Không được để trống'
+                  : validateText != null
+                      ? !(validateText?.call(value.text) ?? false)
+                          ? errorText
+                          : ''
+                      : errorText;
+
+              return Visibility(
+                visible: error.isNotEmpty,
+                child: Text(error, style: StyleThemeData.regular14(color: appTheme.rejectColor)),
+              );
             },
           )
         ]

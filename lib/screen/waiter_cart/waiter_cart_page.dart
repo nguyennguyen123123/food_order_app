@@ -97,16 +97,36 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                               clearVoucher: controller.onClearVoucher,
                             )
                           ] else ...[
-                            ...controller.cartService.partyOrders.value
-                                .asMap()
-                                .entries
-                                .map((data) => _buildVoucherField(
-                                      data.value.voucher,
-                                      title: 'party_index'.trParams({'number': '${data.key + 1}'}),
-                                      updateVoucher: (voucher) =>
-                                          controller.onAddVoucher(voucher, partyIndex: data.key),
-                                      clearVoucher: () => controller.onClearVoucher(partyIndex: data.key),
-                                    ))
+                            if (controller.cartService.partyOrders.value.length == 3) ...[
+                              ...controller.cartService.partyOrders.value
+                                  .asMap()
+                                  .entries
+                                  .map((data) => _buildVoucherField(
+                                        data.value.voucher,
+                                        title: 'party_index'.trParams({'number': '${data.key + 1}'}),
+                                        updateVoucher: (voucher) =>
+                                            controller.onAddVoucher(voucher, partyIndex: data.key),
+                                        clearVoucher: () => controller.onClearVoucher(partyIndex: data.key),
+                                      ))
+                            ] else ...[
+                              SizedBox(
+                                height: 90.h,
+                                width: double.infinity,
+                                child: ListView.separated(
+                                  itemCount: controller.cartService.partyOrders.value.length,
+                                  separatorBuilder: (context, index) => Divider(),
+                                  itemBuilder: (context, index) {
+                                    final data = controller.cartService.partyOrders.value[index];
+                                    return _buildVoucherField(
+                                      data.voucher,
+                                      title: 'party_index'.trParams({'number': '${index + 1}'}),
+                                      updateVoucher: (voucher) => controller.onAddVoucher(voucher, partyIndex: index),
+                                      clearVoucher: () => controller.onClearVoucher(partyIndex: index),
+                                    );
+                                  },
+                                ),
+                              )
+                            ]
                           ],
                           Divider(),
                           Row(
@@ -235,15 +255,27 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
         //     separatorBuilder: (context, index) => SizedBox(height: 6.h),
         //     itemCount: orderItemNoGang.length),
         if (numerGangs > 0) ...[
-          ...List.generate(numerGangs, (index) {
-            final orderItemInGang = foods.where((element) => element.sortOder == index).toList();
+          ...List.generate(numerGangs, (gangIndex) {
+            final orderItemInGang = foods.where((element) => element.sortOder == gangIndex).toList();
             return Column(
               children: [
                 _buildGangView(
-                  gangIndex: index,
+                  gangIndex: gangIndex,
                   onRemoveGang: onRemoveGang,
                   onAddItemToGang: () async {
-                    Get.toNamed(Routes.TYPEDETAIL, arguments: TypeDetailsParamter(gangIndex: index));
+                    Get.toNamed(Routes.TYPEDETAIL,
+                        arguments: TypeDetailsParamter(
+                          // gangIndex: index,
+                          onAddFoodToCart: (food) => controller.cartService.onAddItemToCart(food, gangIndex),
+                          updateQuantityFoodItem: (quantity, food) =>
+                              controller.cartService.onUpdateQuantityItemInCart(quantity, food, gangIndex),
+                          getQuantityFoodInCart: (item) {
+                            final listItems = controller.cartService.currentListItems;
+                            final i = listItems.indexWhere(
+                                (element) => element.food?.foodId == item.foodId && gangIndex == element.sortOder);
+                            return i != -1 ? listItems[i].quantity : 0;
+                          },
+                        ));
                     // final result = await DialogUtils.showDialogView(AddItemPartyDialog(orderItems: orderItemNoGang));
                     // if (result != null && result is List<OrderItem>) {
                     //   controller.cartService.updateOrderItemInCart(index, result, partyIndex: partyIndex);
@@ -255,7 +287,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       padding: paddingView ?? padding(all: 12),
-                      itemBuilder: (context, i) => itemBuilder(i, orderItemInGang[i], index),
+                      itemBuilder: (context, i) => itemBuilder(i, orderItemInGang[i], gangIndex),
                       separatorBuilder: (context, index) => SizedBox(height: 6.h),
                       itemCount: orderItemInGang.length),
               ],
@@ -274,24 +306,31 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
     void Function(int gangIndex)? onRemoveGang,
   }) {
     if (gangIndex != null) {
-      return Container(
-        color: appTheme.backgroundContainer,
-        padding: padding(all: 12),
-        child: Row(
-          children: [
-            Expanded(
-                child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
-                    style: StyleThemeData.bold16(color: appTheme.greyColor))),
-            GestureDetector(
-                onTap: onAddItemToGang,
-                behavior: HitTestBehavior.opaque,
-                child: Icon(Icons.add, color: appTheme.blackColor, size: 24)),
-            if (gangIndex > 0)
+      return GestureDetector(
+        onTap: onAddItemToGang,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          color: appTheme.backgroundContainer,
+          padding: padding(all: 12),
+          child: Row(
+            children: [
+              Expanded(
+                  child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
+                      style: StyleThemeData.bold16(color: appTheme.greyColor))),
               GestureDetector(
-                  onTap: () => onRemoveGang?.call(gangIndex),
+                  onTap: onAddItemToGang,
                   behavior: HitTestBehavior.opaque,
-                  child: Icon(Icons.delete, color: appTheme.errorColor, size: 24))
-          ],
+                  child: Icon(Icons.add, color: appTheme.blackColor, size: 32)),
+              if (gangIndex > 0)
+                Padding(
+                  padding: padding(right: 12, left: 24),
+                  child: GestureDetector(
+                      onTap: () => onRemoveGang?.call(gangIndex),
+                      behavior: HitTestBehavior.opaque,
+                      child: Icon(Icons.delete, color: appTheme.errorColor, size: 24)),
+                )
+            ],
+          ),
         ),
       );
     }

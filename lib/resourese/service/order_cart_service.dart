@@ -93,8 +93,8 @@ class OrderCartService extends GetxService {
     final list = [...(partyOrders.value[partyIndex].orderItems ?? <OrderItem>[])];
     list.removeWhere((element) => element.sortOder == gangIndex);
     for (var i = 0; i < list.length; i++) {
-      if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
-        list[i].sortOder = (list[i].sortOder ?? 1) - 1;
+      if (list[i].sortOder > gangIndex) {
+        list[i].sortOder = list[i].sortOder - 1;
       }
     }
     partyOrders.value[partyIndex] = partyOrders.value[partyIndex].copyWith(
@@ -110,8 +110,8 @@ class OrderCartService extends GetxService {
       final list = [...(partys[i].orderItems ?? <OrderItem>[])];
       list.removeWhere((element) => element.sortOder == gangIndex);
       for (var i = 0; i < list.length; i++) {
-        if (list[i].sortOder != null && (list[i].sortOder ?? 0) > gangIndex) {
-          list[i].sortOder = (list[i].sortOder ?? 1) - 1;
+        if (list[i].sortOder > gangIndex) {
+          list[i].sortOder = list[i].sortOder - 1;
         }
       }
       partys[i].orderItems = list;
@@ -272,17 +272,17 @@ class OrderCartService extends GetxService {
   //   });
   // }
 
-  void onRemoveGangIndexOfPartyCartItem(int partyIndex, OrderItem item) {
-    partyOrders.update((val) {
-      final items = val?[partyIndex].orderItems ?? <OrderItem>[];
-      final index =
-          items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
-      if (index != -1) {
-        items[index].sortOder = null;
-        val?[partyIndex].orderItems = items;
-      }
-    });
-  }
+  // void onRemoveGangIndexOfPartyCartItem(int partyIndex, OrderItem item) {
+  //   partyOrders.update((val) {
+  //     final items = val?[partyIndex].orderItems ?? <OrderItem>[];
+  //     final index =
+  //         items.indexWhere((element) => element.food?.foodId == item.food?.foodId || element.foodId == item.foodId);
+  //     if (index != -1) {
+  //       items[index].sortOder = null;
+  //       val?[partyIndex].orderItems = items;
+  //     }
+  //   });
+  // }
 
   double get totalCartPrice {
     var total = 0.0;

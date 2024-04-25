@@ -21,6 +21,8 @@ class TableModels {
   String? areaId;
   @JsonKey(includeToJson: false, includeFromJson: true, name: 'area_id')
   Area? area;
+  @JsonKey(name: 'has_order')
+  bool hasOrder;
 
   TableModels({
     this.tableId,
@@ -30,6 +32,7 @@ class TableModels {
     this.foodOrderId,
     this.areaId,
     this.area,
+    this.hasOrder = false,
   });
 
   Map<String, dynamic> toJson() => _$TableModelsToJson(this);

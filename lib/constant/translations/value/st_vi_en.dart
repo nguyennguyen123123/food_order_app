@@ -147,10 +147,14 @@ const Map<String, String> enUS = {
   "finish_payment_order": "Xác nhận thanh toán đơn hàng",
   "complete_order": "Đơn hàng đã được hoàn thành",
   "confirm_complete_order": "Xác nhận hoàn thành đơn hàng",
+  "confirm_complete_order_description": "Giá đơn hàng: @number",
   "delete_area": "Delete area",
   "are_you_sure_you_want_to_delete_this_area": "Are you sure you want to delete this area",
   "list_of_orders_in_progress": "List of orders in progress",
   "order": "Order",
   "select_area": "Select area",
-  "table_info": "Table information"
+  "table_info": "Table information",
+  "order_table": "Table order",
+  "all": "All",
+  "total_profit": "Tổng doanh thu",
 };

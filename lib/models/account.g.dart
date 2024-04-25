@@ -15,6 +15,7 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       userId: json['user_id'] as String?,
       checkInTime: json['check_in_time'] as String?,
       numberOfOrder: json['number_of_order'] as int?,
+      totalOrderPrice: (json['total_order_price'] as num? ?? 0.0).toDouble(),
     );
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
@@ -26,4 +27,5 @@ Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'user_id': instance.userId,
       'check_in_time': instance.checkInTime,
       'number_of_order': instance.numberOfOrder,
+      'total_order_price': instance.totalOrderPrice,
     };

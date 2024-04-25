@@ -75,11 +75,10 @@ class OrderRepository extends IOrderRepository {
       // Tạo dữ liệu cho các party
       Future.wait([
         _uploadPartyOrderItem(partyOrders, orderId),
-        profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1),
+        profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber),
         tableRepository.updateTableWithOrder(tableNumber, orderId: orderId),
       ]);
-      // await profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1);
-      accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber + 1);
+      accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber);
       return foodOrder;
     } catch (e) {
       handleError(e);
@@ -166,7 +165,7 @@ class OrderRepository extends IOrderRepository {
       }
       final response = await query
           .limit(limit)
-          .range(page * limit, (page + 1) * limit)
+          .range(page * limit + page, (page + 1) * limit + page)
           .withConverter((data) => data.map((e) => FoodOrder.fromJson(e)).toList());
 
       return response.toList();
@@ -279,6 +278,7 @@ class OrderRepository extends IOrderRepository {
                 PartyOrder(orderItems: selectOrderItems, partyNumber: newPartyNumber), orderId);
           }
         }
+        return true;
       }
       return false;
     } catch (e) {
@@ -341,6 +341,24 @@ class OrderRepository extends IOrderRepository {
   }
 
   @override
+  Future<bool> completeListPartyOrder(List<String> partyIds) async {
+    try {
+      await Future.wait(partyIds.map((id) async {
+        if (id.isNotEmpty) {
+          await baseService.client
+              .from(TABLE_NAME.PARTY_ORDER)
+              .update({_ORDER_COLUMN_KEY.ORDER_STATUS: ORDER_STATUS.DONE}).eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, id);
+        }
+      }));
+      return true;
+    } catch (e) {
+      print(e);
+    }
+
+    return false;
+  }
+
+  @override
   Future<bool> completePartyOrder(String partyOrderId) async {
     try {
       await baseService.client.from(TABLE_NAME.PARTY_ORDER).update(
@@ -361,7 +379,10 @@ class OrderRepository extends IOrderRepository {
       final deleteItem = <OrderItem>[];
       final newItem = orderItem.where((element) => element.orderItemId == null).toList();
       for (final item in orignalOrderItem) {
-        final index = orderItem.indexWhere((element) => element.food?.foodId == item.food?.foodId);
+        final index = orderItem.indexWhere((element) =>
+            element.food?.foodId == item.food?.foodId &&
+            item.sortOder == element.sortOder &&
+            item.partyIndex == element.partyIndex);
         if (index == -1) {
           deleteItem.add(item);
         }
@@ -436,5 +457,60 @@ class OrderRepository extends IOrderRepository {
       print(e);
     }
     return null;
+  }
+
+  @override
+  Future<bool> onDeletePartyOrder(String partyOrderId) async {
+    try {
+      await Future.wait([
+        baseService.client
+            .from(TABLE_NAME.ORDER_WITH_PARTY)
+            .delete()
+            .eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, partyOrderId),
+        baseService.client.from(TABLE_NAME.PARTY_ORDER).delete().eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, partyOrderId)
+      ]);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+  @override
+  Future<List<PartyOrder>> getListPartyOrderOfOrder(String orderid) async {
+    try {
+      const queryOrder = 'order_item!inner (*, food_id:food!inner(*, typeId(*))))';
+      // var query = baseService.client.from(TABLE_NAME.ORDER_WITH_PARTY).select('''
+      //   *,
+      //   user_order_id(*),
+      //   ${TABLE_NAME.ORDER_WITH_PARTY}!inner(party_order!inner(*, party_order_item!inner($queryOrder))),
+      //   ''');
+      final respone = await baseService.client
+          .from(TABLE_NAME.ORDER_WITH_PARTY)
+          .select('*')
+          .eq(_ORDER_COLUMN_KEY.ORDER_ID, orderid)
+          .withConverter((jsons) => jsons.map((e) => e['party_order_id'] as String? ?? '').toList());
+      final partys = <PartyOrder>[];
+      for (final id in respone) {
+        final newParty = await baseService.client
+            .from(TABLE_NAME.PARTY_ORDER)
+            .select('*')
+            .eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, id)
+            .withConverter((data) => data.map((e) => PartyOrder.fromJson(e)).toList());
+        final partyWithOrderItems = await baseService.client
+            .from(TABLE_NAME.PARTY_ORDER)
+            .select('party_order_item!inner($queryOrder)')
+            .eq(_ORDER_COLUMN_KEY.PARTY_ORDER_ID, id)
+            .withConverter((data) => data.map((e) => PartyOrder.fromJson(e)).toList());
+        if (newParty.isNotEmpty) {
+          partys.add(newParty.first
+              .copyWith(orderItems: partyWithOrderItems.isNotEmpty ? partyWithOrderItems.first.orderItems : []));
+        }
+      }
+      return partys;
+    } catch (e) {
+      print(e);
+    }
+    return [];
   }
 }

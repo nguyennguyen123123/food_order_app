@@ -66,4 +66,28 @@ class ProfileRepository extends IProfileRepository {
   Future<void> updateNumberOfOrder(String userId, int number) async {
     await baseService.client.from(TABLE_NAME.ACCOUNT).update({'number_of_order': number}).eq('user_id', userId);
   }
+
+  @override
+  Future<Account?> updateTotalPriceInWorkingTime(String userId, double totalPrice) async {
+    try {
+      final account = await baseService.client
+          .from(TABLE_NAME.ACCOUNT)
+          .select()
+          .eq('user_id', userId)
+          .single()
+          .withConverter((data) => Account.fromJson(data));
+      final price = account.totalOrderPrice + totalPrice;
+      final result = await baseService.client
+          .from(TABLE_NAME.ACCOUNT)
+          .update({'total_order_price': price})
+          .eq('user_id', userId)
+          .select('*')
+          .single()
+          .withConverter((data) => Account.fromJson(data));
+      return result;
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
 }

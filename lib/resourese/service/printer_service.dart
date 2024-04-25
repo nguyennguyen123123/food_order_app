@@ -6,9 +6,8 @@ import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:food_delivery_app/models/printer.dart';
 import 'package:food_delivery_app/resourese/printer/iprinter_repository.dart';
-import 'package:food_delivery_app/utils/dialog_util.dart';
-import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/utils/utils.dart';
+import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -35,14 +34,14 @@ class PrinterService extends GetxService {
 
   Future<void> onStartPrint(FoodOrder foodOrder) async {
     if (printers.value.isEmpty) return;
-    DialogUtils.showWaitingDialog(
-        imageWaiting: ImagesAssets.printer, description: 'Đang in đơn. Vui lòng đợi trong giây lát');
+    showPrinterLoading();
     try {
-      await Future.wait(printers.value.map((printer) => _printerHandler(foodOrder, printer)));
+      Future.wait(printers.value.map((printer) => _printerHandler(foodOrder, printer)));
+      await Future.delayed(const Duration(seconds: 1));
     } catch (e) {
       print(e);
     }
-    Get.back();
+    dissmissLoading();
   }
 
   Future<void> _printerHandler(FoodOrder foodOrder, Printer printer) async {
@@ -96,7 +95,7 @@ class PrinterService extends GetxService {
 
     networkPrinter.hr();
     final orderItem = partyOrder.orderItems ?? <OrderItem>[];
-    orderItem.sort((a, b) => (a.sortOder ?? -1) > (b.sortOder ?? -1) ? 1 : -1);
+    orderItem.sort((a, b) => (a.sortOder) > (b.sortOder) ? 1 : -1);
     for (final item in orderItem) {
       createOrderItemRow(networkPrinter, item);
     }

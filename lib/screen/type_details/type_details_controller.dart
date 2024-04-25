@@ -50,11 +50,13 @@ class TypeDetailsController extends GetxController {
   }
 
   Future<bool> onLoadMoreFoods() async {
+    print('onLoadMoreFoods');
     final length = (foods.value ?? []).length;
     if (length < LIMIT * (page + 1)) return false;
     page += 1;
+    final lastId = selectedFoodTypes.isNotEmpty ? selectedFoodTypes.last.typeId : null;
 
-    final result = await foodRepository.getFood(page: page, limit: limit);
+    final result = await foodRepository.getListFoodByKeyword(limit: limit, keyword: '', page: page, typeId: lastId);
 
     foods.update((val) => val?.addAll(result));
     if (result.length < limit) return false;
@@ -74,25 +76,20 @@ class TypeDetailsController extends GetxController {
   }
 
   void addItemToCart(FoodModel food) {
-    cartService.onAddItemToCart(food, paramter.gangIndex);
+    paramter.onAddFoodToCart(food);
+    // cartService.onAddItemToCart(food, paramter.gangIndex);
     orderCartNotifier.value += 1;
   }
 
   void updateQuantityCartItem(int quantity, FoodModel food) {
-    cartService.onUpdateQuantityItemInCart(quantity, food, paramter.gangIndex);
+    paramter.updateQuantityFoodItem(quantity, food);
+    // cartService.onUpdateQuantityItemInCart(quantity, food, paramter.gangIndex);
     orderCartNotifier.value += 1;
   }
 
   void updateFoodTypeToList(FoodType foodType) async {
     final foodTypeIndex = selectedFoodTypes.indexWhere((element) => element.typeId == foodType.typeId);
     if (foodTypeIndex != -1) {
-      // removeFoodType(foodType);
-
-      // if (selectedFoodTypes.first.parentTypeId != null) {
-      //   onRefresh(selectedFoodTypes.first.parentTypeId ?? '');
-      // } else {
-      //   onRefresh(selectedFoodTypes.first.typeId ?? '');
-      // }
       return;
     } else {
       addFoodType(foodType);

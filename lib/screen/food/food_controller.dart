@@ -84,6 +84,15 @@ class FoodController extends GetxController {
   final nameTypeController = TextEditingController();
   final desTypeController = TextEditingController();
 
+  void clearField() {
+    nameController.text = '';
+    desController.text = '';
+    priceController.text = '';
+    nameTypeController.text = '';
+    desTypeController.text = '';
+    pickedImageNotifier.value = null;
+  }
+
   void onSubmit() async {
     if (nameController.text.isEmpty ||
         desController.text.isEmpty ||

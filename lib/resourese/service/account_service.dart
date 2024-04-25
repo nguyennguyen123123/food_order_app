@@ -45,4 +45,11 @@ class AccountService {
     cartService.clearCart();
     printerService.clear();
   }
+
+  Future<void> onUpdateTotalPriceInAccount(double price) async {
+    final newAccount = await profileRepository.updateTotalPriceInWorkingTime(myAccount?.userId ?? '', price);
+    if (newAccount != null) {
+      account.value = newAccount;
+    }
+  }
 }

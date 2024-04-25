@@ -38,7 +38,10 @@ class SignInScreen extends GetWidget<SignInController> {
             SizedBox(height: 24),
             ConfirmationButtonWidget(
               isLoading: false,
-              onTap: controller.onSubmit,
+              onTap: () {
+                FocusScope.of(context).unfocus();
+                controller.onSubmit();
+              },
               text: 'login'.tr,
             ),
           ],

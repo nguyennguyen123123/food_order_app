@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
-import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/list_vertical_item.dart';
@@ -25,7 +24,7 @@ class TablePage extends GetWidget<TableControlller> {
             child: Text('table_list'.tr, style: StyleThemeData.bold18(height: 0)),
           ),
           actions: [
-            IconButton(onPressed: () => Get.toNamed(Routes.ADDTABLE), icon: Icon(Icons.add)),
+            IconButton(onPressed: controller.onFindTable, icon: Icon(Icons.add)),
             SizedBox(width: 12.w),
           ],
         ),
@@ -98,7 +97,7 @@ class TablePage extends GetWidget<TableControlller> {
     return GestureDetector(
       onTap: () => controller.navigateToOrderInTable(table),
       child: Container(
-        padding: padding(all: 24),
+        padding: padding(vertical: 38),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),

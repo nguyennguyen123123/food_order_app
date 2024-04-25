@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:loadmore/loadmore.dart';
 
+import 'load_more_list_vertical_view.dart' as loadmore;
+
 const double LOADMORE_INDICATOR_SIZE = 24;
 const double HEIGHT_LOADMORE_WIDGET = 80;
 
@@ -12,6 +14,37 @@ class LoadMoreDelegateCustom extends LoadMoreDelegate {
 
   @override
   Widget buildChild(LoadMoreStatus status, {LoadMoreTextBuilder builder = DefaultLoadMoreTextBuilder.chinese}) {
+    if (status == LoadMoreStatus.loading) {
+      return Container(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: LOADMORE_INDICATOR_SIZE,
+              height: LOADMORE_INDICATOR_SIZE,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(color ?? appTheme.primaryColor),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container();
+  }
+}
+
+class LoadMoreDelegateCustom2 extends loadmore.LoadMoreDelegate {
+  const LoadMoreDelegateCustom2({this.color});
+  final Color? color;
+  double widgetHeight(loadmore.LoadMoreStatus status) =>
+      status == loadmore.LoadMoreStatus.loading ? HEIGHT_LOADMORE_WIDGET : 0;
+
+  @override
+  Widget buildChild(loadmore.LoadMoreStatus status,
+      {loadmore.LoadMoreTextBuilder builder = loadmore.DefaultLoadMoreTextBuilder.chinese}) {
     if (status == LoadMoreStatus.loading) {
       return Container(
         alignment: Alignment.center,

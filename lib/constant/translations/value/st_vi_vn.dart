@@ -163,10 +163,14 @@ const Map<String, String> viVN = {
   "finish_payment_order": "Xác nhận thanh toán đơn hàng",
   "complete_order": "Đơn hàng đã được hoàn thành",
   "confirm_complete_order": "Xác nhận hoàn thành đơn hàng",
+  "confirm_complete_order_description": "Giá đơn hàng: @number",
   "delete_area": "Xóa khu vực",
   "are_you_sure_you_want_to_delete_this_area": "Bạn có chắc chắn muốn xóa khu vực",
   "list_of_orders_in_progress": "Danh sách đơn hàng đang làm",
   "order": "Đơn hàng",
   "select_area": "Chọn khu",
-  "table_info": "Thông tin bàn"
+  "table_info": "Thông tin bàn",
+  "order_table": "Bàn có đơn",
+  "all": "Tất cả",
+  "total_profit": "Tổng doanh thu",
 };

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
-import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/table/manage/table_manage_controller.dart';
@@ -81,11 +80,11 @@ class TableManagePage extends GetWidget<TableManageControlller> {
               style: StyleThemeData.regular16(height: 0),
               textAlign: TextAlign.center,
             ),
-            if (table.foodOrder != null)
-              Text(
-                'order'.tr + ': ${table.foodOrder?.totalPrice.toStringAsFixed(2)}',
-                style: StyleThemeData.regular10(),
-              )
+            // if (table.foodOrder != null)
+            //   Text(
+            //     'order'.tr + ': ${table.foodOrder?.totalPrice.toStringAsFixed(2)}',
+            //     style: StyleThemeData.regular10(),
+            //   )
           ],
         ),
       ),

@@ -11,7 +11,7 @@ OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
       food: json['food_id'] == null ? null : FoodModel.fromJson(json['food_id'] as Map<String, dynamic>),
       quantity: json['quantity'] as int? ?? 1,
       note: json['note'] as String?,
-      sortOder: json['sort_order'] as int?,
+      sortOder: json['sort_order'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{

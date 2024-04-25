@@ -43,12 +43,13 @@ class TableRepository extends ITableRepository {
   }
 
   @override
-  Future<List<TableModels>?> getTable() async {
+  Future<List<TableModels>?> getTable({String? areaId}) async {
     try {
-      final response = await baseService.client
-          .from(TABLE_NAME.TABLE)
-          .select("*, area_id(*)")
-          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+      var query = baseService.client.from(TABLE_NAME.TABLE).select("*, area_id(*)");
+      if (areaId != null) {
+        query = query.eq('area_id', areaId);
+      }
+      final response = await query.withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
 
       return response.toList();
     } catch (error) {
@@ -108,7 +109,10 @@ class TableRepository extends ITableRepository {
   @override
   Future<void> updateTableWithOrder(String tableNumber, {String? orderId}) async {
     try {
-      await baseService.client.from(TABLE_NAME.TABLE).update({'order': orderId}).eq('table_number', tableNumber);
+      await baseService.client.from(TABLE_NAME.TABLE).update({
+        'order': orderId,
+        'has_order': orderId != null,
+      }).eq('table_number', tableNumber);
     } catch (error) {
       handleError(error);
       rethrow;
@@ -123,7 +127,43 @@ class TableRepository extends ITableRepository {
           .select(fullQueryTableOrder)
           .eq('table_number', number)
           .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+      if (result.isEmpty) return null;
       return result.first;
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<TableModels?> isTableExist(String tableNumber) async {
+    try {
+      final Map<String, dynamic>? existingTables =
+          await baseService.client.from(TABLE_NAME.TABLE).select().eq('table_number', tableNumber).maybeSingle();
+      if (existingTables != null) {
+        return TableModels.fromJson(existingTables);
+      }
+
+      return null;
+    } catch (e) {
+      print(e);
+    }
+
+    return null;
+  }
+
+  @override
+  Future<List<TableModels>> getListTableHasOrder({int page = 0, int limit = LIMIT}) async {
+    try {
+      final response = await baseService.client
+          .from(TABLE_NAME.TABLE)
+          .select(fullQueryTableOrder)
+          .eq('has_order', true)
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
+          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+
+      return response;
     } catch (error) {
       handleError(error);
       rethrow;

@@ -16,6 +16,8 @@ class CheckInOut {
   final int? totalOrders;
   @JsonKey(includeToJson: false, includeFromJson: true, name: 'user_id')
   Account? users;
+  @JsonKey(name: 'total_price')
+  double totalPrice;
 
   CheckInOut({
     this.id,
@@ -24,11 +26,10 @@ class CheckInOut {
     this.checkOutTime,
     this.totalOrders,
     this.users,
+    this.totalPrice = 0,
   });
 
   Map<String, dynamic> toJson() => _$CheckInOutToJson(this);
-
-  Map toMap(CheckInOut checkInOut) => _$CheckInOutToJson(this);
 
   factory CheckInOut.fromJson(Map<String, dynamic> json) => _$CheckInOutFromJson(json);
 }
