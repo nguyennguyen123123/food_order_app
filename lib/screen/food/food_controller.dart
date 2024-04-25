@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
+import 'package:food_delivery_app/models/printer.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
+import 'package:food_delivery_app/resourese/printer/iprinter_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -14,8 +16,9 @@ import 'package:image_picker/image_picker.dart';
 class FoodController extends GetxController {
   final IFoodRepository foodRepository;
   final AccountService accountService;
+  final IPrinterRepository printerRepository;
 
-  FoodController({required this.foodRepository, required this.accountService});
+  FoodController({required this.foodRepository, required this.accountService, required this.printerRepository});
 
   int page = 0;
   int limit = LIMIT;
@@ -28,14 +31,17 @@ class FoodController extends GetxController {
     super.onInit();
     onRefresh();
     getListFoodType();
+    getPrinter();
   }
 
   var isLoadingFood = false.obs;
   var isLoadingAddFoodType = false.obs;
 
   var foodTypeList = <FoodType>[].obs;
-
   var selectedFoodType = Rx<FoodType?>(null);
+
+  var printerList = <Printer>[].obs;
+  List<Printer> selectedPrintersList = [];
 
   final ValueNotifier<File?> pickedImageNotifier = ValueNotifier<File?>(null);
   final ImagePicker imagePicker = ImagePicker();
@@ -75,6 +81,20 @@ class FoodController extends GetxController {
     } else {
       foodTypeList.clear();
     }
+  }
+
+  Future<void> getPrinter() async {
+    final result = await printerRepository.getPrinter();
+
+    printerList.assignAll(result);
+  }
+
+  void addSelectedPrinter(Printer printer) {
+    selectedPrintersList.add(printer);
+  }
+
+  void removeSelectedPrinter(Printer printer) {
+    selectedPrintersList.remove(printer);
   }
 
   final nameController = TextEditingController();
