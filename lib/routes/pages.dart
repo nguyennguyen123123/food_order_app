@@ -13,6 +13,8 @@ import 'package:food_delivery_app/screen/food/edit_food/edit_food_binding.dart';
 import 'package:food_delivery_app/screen/food/edit_food/edit_food_view.dart';
 import 'package:food_delivery_app/screen/food/food_binding.dart';
 import 'package:food_delivery_app/screen/food/food_screen.dart';
+import 'package:food_delivery_app/screen/food/type_food/upsert_type_food_binding.dart';
+import 'package:food_delivery_app/screen/food/type_food/upsert_type_food_page.dart';
 import 'package:food_delivery_app/screen/food/view/add_food_view.dart';
 import 'package:food_delivery_app/screen/food/view/add_type_food_view.dart';
 import 'package:food_delivery_app/screen/food_order_manage/food_order_manage_binding.dart';
@@ -238,6 +240,11 @@ abstract class AppPages {
       name: Routes.CREATE_ORDER_TABLE,
       page: () => CreateAndOrderTablePage(),
       binding: CreateAndOrderTableBinding(),
+    ),
+    GetPage(
+      name: Routes.UPSERT_TYPE_FOOD,
+      page: () => UpsertTypeFoodPage(),
+      binding: UpsertTypeFoodBinding(),
     ),
   ];
 }

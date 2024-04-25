@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/models/printer.dart';
-import 'package:food_delivery_app/screen/food/food_controller.dart';
+import 'package:food_delivery_app/screen/food/type_food/upsert_type_food_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/confirmation_button_widget.dart';
 import 'package:food_delivery_app/widgets/edit_text_field_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
-class AddTypeFoodView extends GetWidget<FoodController> {
+class UpsertTypeFoodPage extends GetWidget<UpsertTypeFoodController> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -25,7 +25,7 @@ class AddTypeFoodView extends GetWidget<FoodController> {
           title: Row(
             children: [
               IconButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: Get.back,
                 icon: Icon(Icons.arrow_back, color: appTheme.blackColor),
               ),
               Text('add_category'.tr, style: StyleThemeData.bold18(height: 0)),
@@ -112,7 +112,6 @@ class AddTypeFoodView extends GetWidget<FoodController> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<Printer>(
                       hint: Text('Chọn máy in'.tr, style: StyleThemeData.regular16()),
-                      // value: controller.selectedPrinterType.value,
                       onChanged: (Printer? newValue) {
                         if (newValue != null) {
                           controller.addSelectedPrinter(newValue);
@@ -134,9 +133,10 @@ class AddTypeFoodView extends GetWidget<FoodController> {
                           children: controller.printerSelected.value
                               .map(
                                 (print) => Stack(
+                                  clipBehavior: Clip.none,
                                   children: [
                                     Container(
-                                      padding: padding(all: 8),
+                                      padding: padding(all: 16),
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Colors.grey[200],
@@ -144,8 +144,8 @@ class AddTypeFoodView extends GetWidget<FoodController> {
                                       child: Text(print.name ?? '', style: StyleThemeData.bold14()),
                                     ),
                                     Positioned(
-                                      top: 0,
-                                      right: 0,
+                                      top: -15,
+                                      right: -15,
                                       child: IconButton(
                                         onPressed: () {
                                           controller.removeSelectedPrinter(print);

@@ -14,6 +14,7 @@ FoodType _$FoodTypeFromJson(Map<String, dynamic> json) => FoodType(
       parentTypeId: json['parent_type_id'] as String?,
       order: json['order'] as int?,
       createdAt: json['created_at'] as String?,
+      printersIs: (json['printers'] as List? ?? []).map((e) => e.toString()).toList(),
     );
 
 Map<String, dynamic> _$FoodTypeToJson(FoodType instance) => <String, dynamic>{
@@ -24,4 +25,5 @@ Map<String, dynamic> _$FoodTypeToJson(FoodType instance) => <String, dynamic>{
       'parent_type_id': instance.parentTypeId,
       'order': instance.order,
       'created_at': instance.createdAt,
+      'printers': instance.printersIs,
     };

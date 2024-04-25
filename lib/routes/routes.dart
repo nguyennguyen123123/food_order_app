@@ -37,4 +37,5 @@ abstract class Routes {
   static const ADDAREA = '/add-area';
   static const EDITAREA = '/edit-area';
   static const CREATE_ORDER_TABLE = '/create-order';
+  static const UPSERT_TYPE_FOOD = '/upsert-type-food';
 }
