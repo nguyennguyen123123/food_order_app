@@ -7,6 +7,7 @@ class FoodBinding implements Bindings {
     Get.put(FoodController(
       foodRepository: Get.find(),
       accountService: Get.find(),
+      printerRepository: Get.find(),
     ));
   }
 }
