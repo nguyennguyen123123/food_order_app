@@ -171,5 +171,6 @@ const Map<String, String> viVN = {
   "select_area": "Chọn khu",
   "table_info": "Thông tin bàn",
   "order_table": "Bàn có đơn",
-  "all": "Tất cả"
+  "all": "Tất cả",
+  "total_profit": "Tổng doanh thu",
 };

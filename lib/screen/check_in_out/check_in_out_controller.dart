@@ -12,6 +12,8 @@ class CheckInOutController extends GetxController {
   final IProfileRepository profileRepository;
   final AccountService accountService;
 
+  Account? get account => accountService.myAccount;
+
   CheckInOutController(
       {required this.checkInOutRepository, required this.profileRepository, required this.accountService});
 
@@ -19,7 +21,6 @@ class CheckInOutController extends GetxController {
   var isLoadingCheckOut = false.obs;
 
   var listCheckInOut = Rx<List<CheckInOut>?>([]);
-  var account = Account().obs;
 
   int page = 0;
   int limit = LIMIT;
@@ -27,25 +28,15 @@ class CheckInOutController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getProfile();
     onRefresh();
   }
 
-  void getProfile() async {
-    Account? data = await profileRepository.getProfile();
-    if (data != null) {
-      account.value = data;
-    }
-  }
-
   Future<void> onRefresh() async {
-    final user = await profileRepository.getProfile();
-
     page = 0;
     listCheckInOut.value = null;
 
     final result =
-        await checkInOutRepository.getListCheckInOut(user?.role == USER_ROLE.ADMIN, page: page, limit: limit);
+        await checkInOutRepository.getListCheckInOut(account?.role == USER_ROLE.ADMIN, page: page, limit: limit);
 
     listCheckInOut.value = result;
   }
@@ -72,10 +63,7 @@ class CheckInOutController extends GetxController {
       final result = await checkInOutRepository.checkInUser();
 
       if (result != null) {
-        final data = await profileRepository.getProfile();
-        if (data != null) {
-          accountService.account.value = data;
-        }
+        accountService.account.value = result;
 
         DialogUtils.showSuccessDialog(content: "check_in_successful".tr);
       }
@@ -96,7 +84,7 @@ class CheckInOutController extends GetxController {
       final result = await checkInOutRepository.checkOutUser();
 
       if (result != null) {
-        getProfile();
+        accountService.account.value = result;
         onRefresh();
 
         DialogUtils.showSuccessDialog(content: "check_out_successful".tr);

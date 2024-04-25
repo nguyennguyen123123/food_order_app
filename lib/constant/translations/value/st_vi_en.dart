@@ -155,5 +155,6 @@ const Map<String, String> enUS = {
   "select_area": "Select area",
   "table_info": "Table information",
   "order_table": "Table order",
-  "all": "All"
+  "all": "All",
+  "total_profit": "Tổng doanh thu",
 };

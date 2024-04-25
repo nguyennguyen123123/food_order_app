@@ -12,16 +12,21 @@ class CheckInOutRepository extends ICheckInOutRepository {
   CheckInOutRepository({required this.baseService});
 
   @override
-  Future<Map<String, dynamic>?> checkInUser() async {
+  Future<Account?> checkInUser() async {
     try {
       final userId = baseService.client.auth.currentSession!.user.id;
 
-      final result = await baseService.client.from(TABLE_NAME.ACCOUNT).upsert({
-        'user_id': userId,
-        'check_in_time': DateTime.now().toString(),
-      }).select();
+      final result = await baseService.client
+          .from(TABLE_NAME.ACCOUNT)
+          .update({
+            'check_in_time': DateTime.now().toString(),
+          })
+          .eq('user_id', userId)
+          .select('*')
+          .single()
+          .withConverter((data) => Account.fromJson(data));
 
-      return result.first;
+      return result;
     } catch (error) {
       handleError(error);
       return null;
@@ -29,7 +34,7 @@ class CheckInOutRepository extends ICheckInOutRepository {
   }
 
   @override
-  Future<Map<String, dynamic>?> checkOutUser() async {
+  Future<Account?> checkOutUser() async {
     try {
       final userId = baseService.client.auth.currentSession!.user.id;
 
@@ -46,34 +51,42 @@ class CheckInOutRepository extends ICheckInOutRepository {
         return int.parse(randomString, radix: 36);
       }
 
-      final checkInUser = await baseService.client
+      final myUser = await baseService.client
           .from(TABLE_NAME.ACCOUNT)
-          .select('check_in_time')
+          .select('*')
           .eq('user_id', userId)
           .select()
-          .withConverter((data) => data.map((e) => Account.fromJson(e)));
+          .single()
+          .withConverter((map) => Account.fromJson(map));
 
       final CheckInOut checkInOutModel = CheckInOut(
         id: generateRandomIntFromString(),
         userId: userId,
-        checkInTime: checkInUser.first.checkInTime,
+        checkInTime: myUser.checkInTime,
         checkOutTime: DateTime.now().toString(),
-        totalOrders: 0,
+        totalOrders: myUser.numberOfOrder,
+        totalPrice: myUser.totalOrderPrice,
       );
 
       final response = await baseService.client.from(TABLE_NAME.CHECKINOUT).insert(checkInOutModel.toJson()).select();
 
       if (response.isNotEmpty) {
-        await baseService.client.from(TABLE_NAME.ACCOUNT).upsert({
-          'user_id': userId,
-          'check_in_time': null,
-          'number_of_order': null,
-        });
+        final account = await baseService.client
+            .from(TABLE_NAME.ACCOUNT)
+            .update({
+              'check_in_time': null,
+              'number_of_order': 0,
+              'total_order_price': 0,
+            })
+            .eq('user_id', userId)
+            .select('*')
+            .single()
+            .withConverter((data) => Account.fromJson(data));
 
-        return response.first;
+        return account;
       }
 
-      return response.first;
+      return null;
     } catch (error) {
       handleError(error);
 

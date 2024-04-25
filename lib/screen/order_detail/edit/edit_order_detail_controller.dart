@@ -46,6 +46,14 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
 
   bool get isAdmin => accountService.myAccount?.role == USER_ROLE.ADMIN;
 
+  bool get hasCheckin {
+    if (isAdmin) {
+      return true;
+    } else {
+      return accountService.myAccount?.checkInTime != null;
+    }
+  }
+
   @override
   void onClose() {
     selectOrderItems.close();
@@ -64,11 +72,13 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   }
 
   void onBack() async {
-    final result =
-        await DialogUtils.showYesNoDialog(title: 'Bạn có muốn cập nhật đơn hàng với dữ liệu mới nhất không?');
-    if (result == true) {
-      final result = await updatePartyOrder();
-      if (result == true) return;
+    if (hasCheckin) {
+      final result =
+          await DialogUtils.showYesNoDialog(title: 'Bạn có muốn cập nhật đơn hàng với dữ liệu mới nhất không?');
+      if (result == true) {
+        final result = await updatePartyOrder();
+        if (result == true) return;
+      }
     }
     Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: parameter.foodOrder.tableNumber ?? ''));
   }

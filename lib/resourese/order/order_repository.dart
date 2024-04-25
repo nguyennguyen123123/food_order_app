@@ -75,11 +75,10 @@ class OrderRepository extends IOrderRepository {
       // Tạo dữ liệu cho các party
       Future.wait([
         _uploadPartyOrderItem(partyOrders, orderId),
-        profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1),
+        profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber),
         tableRepository.updateTableWithOrder(tableNumber, orderId: orderId),
       ]);
-      // await profileRepository.updateNumberOfOrder(accountService.myAccount?.userId ?? '', bondNumber + 1);
-      accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber + 1);
+      accountService.account.value = accountService.myAccount?.copyWith(numberOfOrder: bondNumber);
       return foodOrder;
     } catch (e) {
       handleError(e);

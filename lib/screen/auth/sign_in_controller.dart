@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:food_delivery_app/resourese/auth_repository/iauth_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/routes/pages.dart';
+import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
@@ -28,9 +29,11 @@ class SignInController extends GetxController {
       }
       await accountService.login(account);
       dissmissLoading();
-      Get.toNamed(Routes.MAIN);
+      Get.offAllNamed(Routes.MAIN);
     } catch (e) {
       print(e);
+      dissmissLoading();
+      DialogUtils.showInfoErrorDialog(content: 'Lỗi đăng nhập. Vui lòng kiểm tra mật khẩu');
     }
   }
 

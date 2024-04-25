@@ -45,7 +45,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
               children: [
                 IconButton(onPressed: controller.onBack, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
                 Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
-                if (isOrderNonComplete)
+                if (isOrderNonComplete && controller.hasCheckin)
                   GestureDetector(
                       onTap: () async {
                         final result = await DialogUtils.showDialogView(
@@ -81,7 +81,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                   ORDER_STATUS.DONE;
           return Column(
             children: [
-              if (!isPartyOrderComplete)
+              if (!isPartyOrderComplete && controller.hasCheckin)
                 TabBar(
                     controller: controller.tabController,
                     onTap: controller.onChangeTab,
@@ -139,7 +139,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                           ),
                           SizedBox(height: 6.h),
                         ],
-                        if (controller.currentTab.value == 0)
+                        if (controller.currentTab.value == 0 && controller.hasCheckin)
                           BottomButton(
                               isDisableCancel: false,
                               isDisableConfirm: isNewParty,
@@ -235,45 +235,44 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 child: Container(
                   color: appTheme.backgroundContainer,
                   padding: padding(all: 12),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
-                              style: StyleThemeData.bold16(color: appTheme.greyColor))),
-                      if (!isPartyOrderComplete && controller.currentTab.value == 0)
-                        GestureDetector(
-                            onTap: () async {
-                              Get.toNamed(Routes.TYPEDETAIL,
-                                  arguments: TypeDetailsParamter(
-                                    onAddFoodToCart: (food) => controller.addFoodToPartyOrder(food, gangIndex),
-                                    updateQuantityFoodItem: (quantity, food) =>
-                                        controller.addFoodToPartyOrder(food, gangIndex, quantity: quantity),
-                                    getQuantityFoodInCart: (food) {
-                                      final orderWithFood = orderItem.firstWhereOrNull((element) =>
-                                          (element.food?.foodId == food.foodId || element.foodId == food.foodId) &&
-                                          element.sortOder == gangIndex);
-                                      return orderWithFood?.quantity ?? 0;
-                                    },
-                                  ));
-                            },
-                            child: Icon(Icons.add, size: 32, color: appTheme.blackColor)),
-                      SizedBox(width: 18.w),
-                      if (gangIndex > 0 &&
-                          !isPartyOrderComplete &&
-                          controller.isAdmin &&
-                          controller.currentTab.value == 0)
-                        GestureDetector(
+                  child: Row(children: [
+                    Expanded(
+                        child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
+                            style: StyleThemeData.bold16(color: appTheme.greyColor))),
+                    if (!isPartyOrderComplete && controller.currentTab.value == 0 && controller.hasCheckin)
+                      GestureDetector(
                           onTap: () async {
-                            final result = await DialogUtils.showYesNoDialog(
-                                title: 'Bạn có muốn xóa gang ${gangIndex + 1} không?');
-                            if (result == true) {
-                              controller.onRemoveGangIndex(gangIndex);
-                            }
+                            Get.toNamed(Routes.TYPEDETAIL,
+                                arguments: TypeDetailsParamter(
+                                  onAddFoodToCart: (food) => controller.addFoodToPartyOrder(food, gangIndex),
+                                  updateQuantityFoodItem: (quantity, food) =>
+                                      controller.addFoodToPartyOrder(food, gangIndex, quantity: quantity),
+                                  getQuantityFoodInCart: (food) {
+                                    final orderWithFood = orderItem.firstWhereOrNull((element) =>
+                                        (element.food?.foodId == food.foodId || element.foodId == food.foodId) &&
+                                        element.sortOder == gangIndex);
+                                    return orderWithFood?.quantity ?? 0;
+                                  },
+                                ));
                           },
-                          child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 24),
-                        )
+                          child: Icon(Icons.add, size: 32, color: appTheme.blackColor)),
+                    if (gangIndex > 0 &&
+                        !isPartyOrderComplete &&
+                        controller.isAdmin &&
+                        controller.currentTab.value == 0) ...[
+                      SizedBox(width: 24.w),
+                      GestureDetector(
+                        onTap: () async {
+                          final result =
+                              await DialogUtils.showYesNoDialog(title: 'Bạn có muốn xóa gang ${gangIndex + 1} không?');
+                          if (result == true) {
+                            controller.onRemoveGangIndex(gangIndex);
+                          }
+                        },
+                        child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 24),
+                      )
                     ],
-                  ),
+                  ]),
                 ),
               ),
               ...orderItemInGang
@@ -281,7 +280,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
             ],
           );
         }),
-        if (!isPartyOrderComplete && controller.currentTab.value == 0)
+        if (!isPartyOrderComplete && controller.currentTab.value == 0 && controller.hasCheckin)
           GestureDetector(
             onTap: controller.onAddNewGang,
             child: Container(
@@ -405,6 +404,19 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
         return Utils.getCurrency((partyOrder.voucherPrice ?? 0));
       } else {
         return '${partyOrder.voucherPrice}%';
+      }
+    }
+
+    if (!controller.hasCheckin) {
+      if (partyOrder.voucherPrice != null) {
+        return Row(
+          children: [
+            Expanded(child: Text('apply_voucher_price'.trParams({'number': '${getVoucherDiscountText()}'}))),
+            GestureDetector(onTap: () => controller.clearVoucherParty(), child: Icon(Icons.close)),
+          ],
+        );
+      } else {
+        return SizedBox();
       }
     }
 

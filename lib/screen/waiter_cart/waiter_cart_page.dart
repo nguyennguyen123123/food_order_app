@@ -323,7 +323,7 @@ class WaiterCartPage extends GetWidget<WaiterCartController> {
                   child: Icon(Icons.add, color: appTheme.blackColor, size: 32)),
               if (gangIndex > 0)
                 Padding(
-                  padding: padding(right: 12),
+                  padding: padding(right: 12, left: 24),
                   child: GestureDetector(
                       onTap: () => onRemoveGang?.call(gangIndex),
                       behavior: HitTestBehavior.opaque,

@@ -4,6 +4,7 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/check_in_out.dart';
 import 'package:food_delivery_app/screen/check_in_out/check_in_out_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/load_more_delegate_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -31,70 +32,83 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
         child: Column(
           children: [
             Obx(
-              () => controller.account.value.role == USER_ROLE.STAFF
+              () => controller.account?.role == USER_ROLE.STAFF
                   ? Padding(
                       padding: padding(horizontal: 16),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Opacity(
-                              opacity: controller.account.value.checkInTime != null ? 0.5 : 1,
-                              child: InkWell(
-                                onTap: controller.account.value.checkInTime != null ? null : controller.checkInUser,
-                                child: Container(
-                                  width: Get.size.width.w,
-                                  height: 40.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: appTheme.whiteText,
-                                    border: Border.all(color: appTheme.appColor),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Opacity(
+                                opacity: controller.account?.checkInTime != null ? 0.5 : 1,
+                                child: InkWell(
+                                  onTap: controller.account?.checkInTime != null ? null : controller.checkInUser,
+                                  child: Container(
+                                    width: Get.size.width.w,
+                                    padding: padding(vertical: 12),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: appTheme.whiteText,
+                                      border: Border.all(color: appTheme.appColor),
+                                    ),
+                                    child: controller.isLoadingCheckIn.isTrue
+                                        ? Container(
+                                            width: 20.w,
+                                            height: 20.h,
+                                            child: CircularProgressIndicator(color: appTheme.appColor),
+                                          )
+                                        : Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text('Check In',
+                                                  style: StyleThemeData.bold18(height: 0, color: appTheme.appColor)),
+                                              if (controller.account?.checkInTime != null) ...[
+                                                SizedBox(height: 5.h),
+                                                Text(DateFormat(PRINTER_DAY_FORMAT).format(
+                                                    DateTime.tryParse(controller.account?.checkInTime ?? '') ??
+                                                        DateTime.now()))
+                                              ]
+                                            ],
+                                          ),
                                   ),
-                                  child: controller.isLoadingCheckIn.isTrue
-                                      ? Container(
-                                          width: 20.w,
-                                          height: 20.h,
-                                          child: CircularProgressIndicator(color: appTheme.appColor),
-                                        )
-                                      : Text('Check In',
-                                          style: StyleThemeData.bold18(height: 0, color: appTheme.appColor)),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Flexible(
-                            child: Opacity(
-                              opacity: controller.account.value.checkInTime == null ? 0.5 : 1,
-                              child: InkWell(
-                                onTap: controller.account.value.checkInTime == null ? null : controller.checkOutUser,
-                                child: Container(
-                                  width: Get.size.width.w,
-                                  height: 40.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: appTheme.appColor,
-                                    border: Border.all(color: appTheme.appColor),
+                            SizedBox(width: 12.w),
+                            Flexible(
+                              child: Opacity(
+                                opacity: controller.account?.checkInTime == null ? 0.5 : 1,
+                                child: InkWell(
+                                  onTap: controller.account?.checkInTime == null ? null : controller.checkOutUser,
+                                  child: Container(
+                                    width: Get.size.width.w,
+                                    padding: padding(vertical: 12),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: appTheme.appColor,
+                                      border: Border.all(color: appTheme.appColor),
+                                    ),
+                                    child: controller.isLoadingCheckOut.isTrue
+                                        ? Container(
+                                            width: 20.w,
+                                            height: 20.h,
+                                            child: CircularProgressIndicator(color: appTheme.whiteText),
+                                          )
+                                        : Text('Check Out',
+                                            style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
                                   ),
-                                  child: controller.isLoadingCheckOut.isTrue
-                                      ? Container(
-                                          width: 20.w,
-                                          height: 20.h,
-                                          child: CircularProgressIndicator(color: appTheme.whiteText),
-                                        )
-                                      : Text('Check Out',
-                                          style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )
                   : Container(),
             ),
-            Obx(() => (controller.account.value.role == USER_ROLE.STAFF) ? SizedBox(height: 24.h) : SizedBox()),
+            Obx(() => (controller.account?.role == USER_ROLE.STAFF) ? SizedBox(height: 24.h) : SizedBox()),
             Obx(
               () => Expanded(
                 child: controller.listCheckInOut.value == null
@@ -152,7 +166,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                     Text(
                       data.checkInTime != null
                           ? DateFormat("yyyy/MM/dd HH:mm").format(DateTime.tryParse(data.checkInTime ?? '')!)
-                          : 'Null',
+                          : '',
                       style: StyleThemeData.regular14(),
                     ),
                   ],
@@ -167,7 +181,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                     Text(
                       data.checkOutTime != null
                           ? DateFormat("yyyy/MM/dd HH:mm").format(DateTime.tryParse(data.checkOutTime ?? '')!)
-                          : 'Null',
+                          : '',
                       style: StyleThemeData.regular14(),
                     ),
                   ],
@@ -176,6 +190,13 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
             ],
           ),
           Divider(color: appTheme.blackText),
+          Row(
+            children: [
+              Text('total_profit'.tr + ': ', style: StyleThemeData.bold16()),
+              Text(Utils.getCurrency(data.totalPrice), style: StyleThemeData.bold14()),
+            ],
+          ),
+          SizedBox(height: 4.h),
           Row(
             children: [
               Text('total_order'.tr + ': ', style: StyleThemeData.bold16()),
