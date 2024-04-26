@@ -94,8 +94,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 child: ListView(
                   padding: padding(all: 12),
                   children: [
-                    itemData(title: 'order_id'.tr, data: order.orderId ?? ''),
-                    SizedBox(height: 4.h),
+                    // itemData(title: 'order_id'.tr, data: order.orderId ?? ''),
+                    // SizedBox(height: 4.h),
                     itemData(title: 'table_number'.tr, data: order.tableNumber ?? ''),
                     SizedBox(height: 4.h),
                     itemData(
@@ -136,13 +136,29 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                             SizedBox(height: 6.h),
                             _buildVoucherField(controller.currentPartyOrder.value!)
                           ],
-                          Row(
-                            children: [
-                              Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
-                              Text(controller.currentPartyIndex.value == -2
-                                  ? Utils.getCurrency(controller.currentPartyOrder.value?.totalPriceWithoutPartyDone)
-                                  : Utils.getCurrency(controller.currentPartyOrder.value?.totalPrice))
-                            ],
+                          Obx(
+                            () {
+                              double price = 0;
+                              if (controller.currentPartyIndex.value == -2) {
+                                if (controller.currentTab.value == 0) {
+                                  for (final party in (controller.newFoodOrder.value?.partyOrders ?? <PartyOrder>[])) {
+                                    if (party.orderStatus != ORDER_STATUS.DONE) price += party.totalPrice;
+                                  }
+                                } else {
+                                  for (final party in (controller.foodOrder.value?.partyOrders ?? <PartyOrder>[])) {
+                                    if (party.orderStatus != ORDER_STATUS.DONE) price += party.totalPrice;
+                                  }
+                                }
+                              } else {
+                                price = controller.currentPartyOrder.value?.totalPrice ?? 0;
+                              }
+                              return Row(
+                                children: [
+                                  Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
+                                  Text(Utils.getCurrency(price))
+                                ],
+                              );
+                            },
                           ),
                           SizedBox(height: 6.h),
                         ],
@@ -407,7 +423,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
 
   Widget _buildVoucherField(PartyOrder partyOrder) {
     String getVoucherDiscountText() {
-      if (partyOrder.voucherType == DiscountType.amount) {
+      if (partyOrder.voucherType == DiscountType.amount.toString()) {
         return Utils.getCurrency((partyOrder.voucherPrice ?? 0));
       } else {
         return '${partyOrder.voucherPrice}%';

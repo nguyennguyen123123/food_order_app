@@ -95,11 +95,16 @@ extension PartyOrderExtension on PartyOrder {
       if (voucher?.discountType == DiscountType.amount) {
         total -= voucher?.discountValue ?? 0;
       } else {
-        total = total * ((voucher?.discountValue ?? 100) / 100);
+        total -= total * ((voucher?.discountValue ?? 100) / 100);
       }
+      return total;
     }
-    if (voucherPrice != null) {
-      total -= (voucherPrice ?? 0);
+    if (voucherPrice != null && voucherType != null) {
+      if (voucherType == DiscountType.amount.toString()) {
+        total -= (voucherPrice ?? 0);
+      } else {
+        total -= total * ((voucherPrice ?? 100) / 100);
+      }
     }
     return total;
   }
@@ -115,8 +120,9 @@ extension PartyOrderExtension on PartyOrder {
       if (voucher?.discountType == DiscountType.amount) {
         total -= voucher?.discountValue ?? 0;
       } else {
-        total = total * ((voucher?.discountValue ?? 100) / 100);
+        total -= total * ((voucher?.discountValue ?? 100) / 100);
       }
+      return total;
     }
     if (voucherPrice != null) {
       total -= (voucherPrice ?? 0);
