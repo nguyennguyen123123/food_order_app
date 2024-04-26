@@ -7,6 +7,7 @@ class TableBinding implements Binding {
   void dependencies() {
     Get.put(
       TableControlller(
+        accountService: Get.find(),
         orderRepository: Get.find(),
         tableRepository: Get.find(),
         areaRepository: Get.find(),

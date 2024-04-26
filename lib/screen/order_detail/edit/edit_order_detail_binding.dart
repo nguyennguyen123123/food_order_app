@@ -9,6 +9,7 @@ class EditOrderDetailBinding implements Bindings {
       tableRepository: Get.find(),
       orderRepository: Get.find(),
       accountService: Get.find(),
+      summarizeRepository: Get.find(),
     ));
   }
 }

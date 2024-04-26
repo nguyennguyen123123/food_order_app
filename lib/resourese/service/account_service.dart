@@ -30,6 +30,8 @@ class AccountService {
     return baseService.client.auth.currentSession != null;
   }
 
+  bool get hasCheckIn => myAccount?.checkInTime != null;
+
   Future<void> initAccount() async {
     account.value = await profileRepository.getProfile();
     await printerService.init();

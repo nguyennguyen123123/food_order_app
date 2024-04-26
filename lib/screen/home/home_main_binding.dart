@@ -21,6 +21,7 @@ class HomeMainBinding implements Bindings {
       orderRepository: Get.find(),
       areaRepository: Get.find(),
       cartService: Get.find(),
+      accountService: Get.find(),
     ));
     // Get.put(TableManageControlller(
     //   areaRepository: Get.find(),

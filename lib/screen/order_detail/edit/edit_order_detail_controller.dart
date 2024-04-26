@@ -10,6 +10,7 @@ import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
+import 'package:food_delivery_app/resourese/summarize/isummarize_repository.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_response.dart';
@@ -23,6 +24,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   final EditOrderDetailParameter parameter;
   final IOrderRepository orderRepository;
   final ITableRepository tableRepository;
+  final ISummarizeRepository summarizeRepository;
   final AccountService accountService;
 
   EditOrderDetailController({
@@ -30,6 +32,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     required this.tableRepository,
     required this.orderRepository,
     required this.accountService,
+    required this.summarizeRepository,
   });
 
   late FoodOrder originalOrder;
@@ -484,14 +487,17 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
       if (currentPartyIndex.value == -2) {
         /// Cập nhật trạng thái của cả order thành hoàn thành
         var totalPrice = 0.0;
+        var total = 0.0;
         for (var i = 0; i < (newOrder.partyOrders?.length ?? 0); i++) {
           if (newOrder.partyOrders![i].orderStatus == ORDER_STATUS.CREATED) {
             totalPrice += newOrder.partyOrders?[i].orderPrice ?? 0.0;
           }
+          total += newOrder.partyOrders?[i].orderPrice ?? 0.0;
           newOrder.partyOrders![i] = newOrder.partyOrders![i].copyWith(orderStatus: ORDER_STATUS.DONE);
         }
         newOrder.orderStatus = ORDER_STATUS.DONE;
         await Future.wait([
+          summarizeRepository.increaseTodayRecord(total),
           accountService.onUpdateTotalPriceInAccount(totalPrice),
           orderRepository.completeOrder(newOrder.orderId ?? '', newOrder.tableNumber ?? ''),
           orderRepository.completeListPartyOrder(newOrder.partyOrders?.map((e) => e.partyOrderId ?? '').toList() ?? []),
@@ -513,8 +519,13 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
 
         if (isCompleteOrder) {
           /// Trường hợp order còn một party là hoàn thành
+          var total = 0.0;
+          for (var i = 0; i < (newOrder.partyOrders?.length ?? 0); i++) {
+            total += newOrder.partyOrders?[i].orderPrice ?? 0.0;
+          }
           newOrder.orderStatus = ORDER_STATUS.DONE;
           await Future.wait([
+            summarizeRepository.increaseTodayRecord(total),
             accountService.onUpdateTotalPriceInAccount(newPartyOrder.orderPrice),
             orderRepository.completeOrder(newOrder.orderId ?? '', newOrder.tableNumber ?? ''),
             orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? ''),

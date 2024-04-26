@@ -51,12 +51,13 @@ class PrinterService extends GetxService {
 
     final res = await networkPrinter.connect(printer.ip ?? '', port: int.tryParse(printer.port ?? '9100') ?? 9100);
     if (res == PosPrintResult.success) {
-      await Future.wait((foodOrder.partyOrders ?? []).map((e) => _printReceipt(foodOrder, e, networkPrinter)));
+      await Future.wait((foodOrder.partyOrders ?? []).map((e) => _printReceipt(foodOrder, e, printer, networkPrinter)));
       networkPrinter.disconnect();
     }
   }
 
-  Future<void> _printReceipt(FoodOrder foodOrder, PartyOrder partyOrder, NetworkPrinter networkPrinter) async {
+  Future<void> _printReceipt(
+      FoodOrder foodOrder, PartyOrder partyOrder, Printer printer, NetworkPrinter networkPrinter) async {
     void createRowTitle(NetworkPrinter networkPrinter, String title, String content,
         {PosTextSize contentSize = PosTextSize.size1, PosColumn? custom}) {
       networkPrinter.row([
@@ -94,7 +95,11 @@ class PrinterService extends GetxService {
     }
 
     networkPrinter.hr();
-    final orderItem = partyOrder.orderItems ?? <OrderItem>[];
+    final orderItem = (partyOrder.orderItems ?? <OrderItem>[]).where((element) {
+      final printerIds = element.food?.foodType?.printersIs ?? <String>[];
+      return printerIds.isEmpty || printerIds.contains(printer.id);
+    }).toList();
+
     orderItem.sort((a, b) => (a.sortOder) > (b.sortOder) ? 1 : -1);
     for (final item in orderItem) {
       createOrderItemRow(networkPrinter, item);

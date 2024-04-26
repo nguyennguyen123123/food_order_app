@@ -3,6 +3,7 @@ import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
+import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/routes/pages.dart';
@@ -20,8 +21,10 @@ class TableControlller extends GetxController {
   final IAreaRepository areaRepository;
   final IOrderRepository orderRepository;
   final OrderCartService cartService;
+  final AccountService accountService;
 
   TableControlller({
+    required this.accountService,
     required this.tableRepository,
     required this.areaRepository,
     required this.orderRepository,

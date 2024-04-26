@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/constant/app_constant_key.dart';
-import 'package:food_delivery_app/constant/translations/localization_service.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/profile/profile_controller.dart';
@@ -126,16 +125,16 @@ class ProfileScreen extends GetWidget<ProfileController> {
                       ),
                       const Divider(thickness: 1),
                       newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.adminIcon),
-                      const Divider(thickness: 1),
+                      // const Divider(thickness: 1),
                     ],
-                    newMethod(
-                      onTap: () {
-                        Get.toNamed(Routes.LANGUAGE);
-                      },
-                      text: 'language'.tr,
-                      lable: LocalizationService.locale.languageCode == 'en' ? 'english'.tr : 'vietnamese'.tr,
-                      icons: IconAssets.languageIcon,
-                    ),
+                    // newMethod(
+                    //   onTap: () {
+                    //     Get.toNamed(Routes.LANGUAGE);
+                    //   },
+                    //   text: 'language'.tr,
+                    //   lable: LocalizationService.locale.languageCode == 'en' ? 'english'.tr : 'vietnamese'.tr,
+                    //   icons: IconAssets.languageIcon,
+                    // ),
                   ],
                 ),
               ),

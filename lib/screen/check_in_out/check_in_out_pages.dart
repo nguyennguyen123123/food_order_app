@@ -32,83 +32,80 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
         child: Column(
           children: [
             Obx(
-              () => controller.account?.role == USER_ROLE.STAFF
-                  ? Padding(
-                      padding: padding(horizontal: 16),
-                      child: IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: Opacity(
-                                opacity: controller.account?.checkInTime != null ? 0.5 : 1,
-                                child: InkWell(
-                                  onTap: controller.account?.checkInTime != null ? null : controller.checkInUser,
-                                  child: Container(
-                                    width: Get.size.width.w,
-                                    padding: padding(vertical: 12),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: appTheme.whiteText,
-                                      border: Border.all(color: appTheme.appColor),
-                                    ),
-                                    child: controller.isLoadingCheckIn.isTrue
-                                        ? Container(
-                                            width: 20.w,
-                                            height: 20.h,
-                                            child: CircularProgressIndicator(color: appTheme.appColor),
-                                          )
-                                        : Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text('Check In',
-                                                  style: StyleThemeData.bold18(height: 0, color: appTheme.appColor)),
-                                              if (controller.account?.checkInTime != null) ...[
-                                                SizedBox(height: 5.h),
-                                                Text(DateFormat(PRINTER_DAY_FORMAT).format(
-                                                    DateTime.tryParse(controller.account?.checkInTime ?? '') ??
-                                                        DateTime.now()))
-                                              ]
-                                            ],
-                                          ),
-                                  ),
-                                ),
+              () => Padding(
+                padding: padding(horizontal: 16, bottom: 24),
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Opacity(
+                          opacity: controller.account?.checkInTime != null ? 0.5 : 1,
+                          child: InkWell(
+                            onTap: controller.account?.checkInTime != null ? null : controller.checkInUser,
+                            child: Container(
+                              width: Get.size.width.w,
+                              padding: padding(vertical: 12),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: appTheme.whiteText,
+                                border: Border.all(color: appTheme.appColor),
                               ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Flexible(
-                              child: Opacity(
-                                opacity: controller.account?.checkInTime == null ? 0.5 : 1,
-                                child: InkWell(
-                                  onTap: controller.account?.checkInTime == null ? null : controller.checkOutUser,
-                                  child: Container(
-                                    width: Get.size.width.w,
-                                    padding: padding(vertical: 12),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: appTheme.appColor,
-                                      border: Border.all(color: appTheme.appColor),
+                              child: controller.isLoadingCheckIn.isTrue
+                                  ? Container(
+                                      width: 20.w,
+                                      height: 20.h,
+                                      child: CircularProgressIndicator(color: appTheme.appColor),
+                                    )
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('Check In',
+                                            style: StyleThemeData.bold18(height: 0, color: appTheme.appColor)),
+                                        if (controller.account?.checkInTime != null) ...[
+                                          SizedBox(height: 5.h),
+                                          Text(DateFormat(PRINTER_DAY_FORMAT).format(
+                                              DateTime.tryParse(controller.account?.checkInTime ?? '') ??
+                                                  DateTime.now()))
+                                        ]
+                                      ],
                                     ),
-                                    child: controller.isLoadingCheckOut.isTrue
-                                        ? Container(
-                                            width: 20.w,
-                                            height: 20.h,
-                                            child: CircularProgressIndicator(color: appTheme.whiteText),
-                                          )
-                                        : Text('Check Out',
-                                            style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
-                                  ),
-                                ),
-                              ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    )
-                  : Container(),
+                      SizedBox(width: 12.w),
+                      Flexible(
+                        child: Opacity(
+                          opacity: controller.account?.checkInTime == null ? 0.5 : 1,
+                          child: InkWell(
+                            onTap: controller.account?.checkInTime == null ? null : controller.checkOutUser,
+                            child: Container(
+                              width: Get.size.width.w,
+                              padding: padding(vertical: 12),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: appTheme.appColor,
+                                border: Border.all(color: appTheme.appColor),
+                              ),
+                              child: controller.isLoadingCheckOut.isTrue
+                                  ? Container(
+                                      width: 20.w,
+                                      height: 20.h,
+                                      child: CircularProgressIndicator(color: appTheme.whiteText),
+                                    )
+                                  : Text('Check Out',
+                                      style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-            Obx(() => (controller.account?.role == USER_ROLE.STAFF) ? SizedBox(height: 24.h) : SizedBox()),
             Obx(
               () => Expanded(
                 child: controller.listCheckInOut.value == null
