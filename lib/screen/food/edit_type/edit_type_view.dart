@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/models/printer.dart';
-import 'package:food_delivery_app/screen/food/type_food/upsert_type_food_controller.dart';
+import 'package:food_delivery_app/screen/food/edit_type/edit_type_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/confirmation_button_widget.dart';
 import 'package:food_delivery_app/widgets/edit_text_field_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
-class UpsertTypeFoodPage extends GetWidget<UpsertTypeFoodController> {
+class EditTypeView extends GetWidget<EditTypeController> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -25,10 +25,10 @@ class UpsertTypeFoodPage extends GetWidget<UpsertTypeFoodController> {
           title: Row(
             children: [
               IconButton(
-                onPressed: Get.back,
+                onPressed: () => Navigator.pop(context),
                 icon: Icon(Icons.arrow_back, color: appTheme.blackColor),
               ),
-              Text('add_category'.tr, style: StyleThemeData.bold18(height: 0)),
+              Text('edit_food_type'.tr, style: StyleThemeData.bold18(height: 0)),
             ],
           ),
         ),
@@ -54,17 +54,31 @@ class UpsertTypeFoodPage extends GetWidget<UpsertTypeFoodController> {
                               ),
                             ),
                           )
-                        : Container(
-                            width: 150.w,
-                            height: 150.h,
-                            alignment: Alignment.center,
-                            padding: padding(vertical: 32, horizontal: 24),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: appTheme.backgroundContainer,
-                            ),
-                            child: Text('select_image'.tr, style: StyleThemeData.regular14()),
-                          );
+                        : controller.editType?.image != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: SizedBox(
+                                  width: 150.w,
+                                  height: 150.h,
+                                  child: Image.network(
+                                    controller.editType?.image ?? '',
+                                    width: 24.w,
+                                    height: 24.h,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                width: 150.w,
+                                height: 150.h,
+                                alignment: Alignment.center,
+                                padding: padding(vertical: 32, horizontal: 24),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: appTheme.backgroundContainer,
+                                ),
+                                child: Text('select_image'.tr, style: StyleThemeData.regular14()),
+                              );
                   },
                 ),
                 ElevatedButton(
@@ -112,6 +126,7 @@ class UpsertTypeFoodPage extends GetWidget<UpsertTypeFoodController> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<Printer>(
                       hint: Text('select_printer'.tr, style: StyleThemeData.regular16()),
+                      // value: controller.selectedPrinterType.value,
                       onChanged: (Printer? newValue) {
                         if (newValue != null) {
                           controller.addSelectedPrinter(newValue);
@@ -133,10 +148,9 @@ class UpsertTypeFoodPage extends GetWidget<UpsertTypeFoodController> {
                           children: controller.printerSelected.value
                               .map(
                                 (print) => Stack(
-                                  clipBehavior: Clip.none,
                                   children: [
                                     Container(
-                                      padding: padding(all: 16),
+                                      padding: padding(all: 8),
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Colors.grey[200],
@@ -144,8 +158,8 @@ class UpsertTypeFoodPage extends GetWidget<UpsertTypeFoodController> {
                                       child: Text(print.name ?? '', style: StyleThemeData.bold14()),
                                     ),
                                     Positioned(
-                                      top: -15,
-                                      right: -15,
+                                      top: 0,
+                                      right: 0,
                                       child: IconButton(
                                         onPressed: () {
                                           controller.removeSelectedPrinter(print);
@@ -179,9 +193,9 @@ class UpsertTypeFoodPage extends GetWidget<UpsertTypeFoodController> {
                 SizedBox(height: 24.h),
                 Obx(
                   () => ConfirmationButtonWidget(
-                    isLoading: controller.isLoadingAddFoodType.isTrue,
-                    onTap: controller.addTypeFood,
-                    text: 'confirm'.tr,
+                    isLoading: controller.isLoadingEditType.isTrue,
+                    onTap: controller.editTypeFood,
+                    text: 'edit'.tr,
                   ),
                 ),
               ],

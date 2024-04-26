@@ -1,55 +1,37 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/models/printer.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/resourese/service/printer_service.dart';
+import 'package:food_delivery_app/screen/food/edit_type/edit_type_pramater.dart';
 import 'package:food_delivery_app/screen/food/food_controller.dart';
-import 'package:food_delivery_app/screen/food/type_food/upsert_type_food_parameter.dart';
-import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UpsertTypeFoodController extends GetxController {
+class EditTypeController extends GetxController {
   final IFoodRepository foodRepository;
   final AccountService accountService;
   final PrinterService printerService;
-  final UpsertTypeFoodParameter? parameter;
+  final EditTypeParameter? parameter;
 
-  UpsertTypeFoodController({
+  FoodType? get editType => parameter?.foodType;
+
+  EditTypeController({
     required this.foodRepository,
     required this.accountService,
     required this.printerService,
     this.parameter,
   });
 
-  int page = 0;
-  int limit = LIMIT;
-
   List<Printer> get printers => printerService.printers.value;
-  final printerSelected = Rx<List<Printer>>([]);
-
-  final nameTypeController = TextEditingController();
-  final desTypeController = TextEditingController();
-
-  @override
-  void onInit() {
-    super.onInit();
-    getListFoodType();
-    if (parameter?.foodType != null) {
-      nameTypeController.text = parameter?.foodType?.name ?? '';
-      desTypeController.text = parameter?.foodType?.description ?? '';
-    }
-  }
-
-  var isLoadingFood = false.obs;
-  var isLoadingAddFoodType = false.obs;
 
   var foodTypeList = <FoodType>[].obs;
   var selectedFoodType = Rx<FoodType?>(null);
+
+  final printerSelected = Rx<List<Printer>>([]);
 
   final ValueNotifier<File?> pickedImageNotifier = ValueNotifier<File?>(null);
   final ImagePicker imagePicker = ImagePicker();
@@ -61,19 +43,31 @@ class UpsertTypeFoodController extends GetxController {
     }
   }
 
+  late TextEditingController nameTypeController;
+  late TextEditingController desTypeController;
+
+  var isLoadingEditType = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    getListFoodType();
+
+    nameTypeController = TextEditingController(text: editType?.name);
+    desTypeController = TextEditingController(text: editType?.description);
+
+    printerSelected.value =
+        editType?.printersIs.map((e) => printers.firstWhere((element) => element.id == e)).toList() ?? [];
+  }
+
   Future<void> getListFoodType() async {
     final data = await foodRepository.getTypeFood();
 
-    if (data != null) {
-      foodTypeList.assignAll(data);
-    } else {
-      foodTypeList.clear();
-    }
+    foodTypeList.value = data ?? <FoodType>[];
+    selectedFoodType.value = foodTypeList.firstWhereOrNull((element) => element.typeId == parameter?.foodType?.typeId);
   }
 
   void addSelectedPrinter(Printer printer) {
-    final index = printerSelected.value.indexWhere((element) => element.id == printer.id);
-    if (index != -1) return;
     printerSelected.update((val) => val?.add(printer));
   }
 
@@ -81,48 +75,45 @@ class UpsertTypeFoodController extends GetxController {
     printerSelected.update((val) => val?.removeWhere((ele) => ele.id == printer.id));
   }
 
-  void addTypeFood() async {
-    if (nameTypeController.text.isEmpty || desTypeController.text.isEmpty) return;
+  void editTypeFood() async {
     try {
-      isLoadingAddFoodType(true);
+      isLoadingEditType(true);
 
-      final typeId = getUuid();
+      final typeId = editType?.typeId ?? '';
 
-      final url = pickedImageNotifier.value != null
-          ? await foodRepository.updateImages(
-              pickedImageNotifier.value!.path,
-              pickedImageNotifier.value!,
-              fileName: typeId,
-            )
-          : '';
+      if (typeId.isEmpty) return;
+      late String url;
+
+      if (pickedImageNotifier.value?.path != null) {
+        url = await foodRepository.updateImages(
+          pickedImageNotifier.value!.path,
+          pickedImageNotifier.value!,
+          fileName: typeId,
+        );
+      }
 
       FoodType foodType = FoodType(
         typeId: typeId,
         parentTypeId: selectedFoodType.value?.typeId,
         name: nameTypeController.text,
         description: desTypeController.text,
-        image: url,
+        image: pickedImageNotifier.value?.path != null ? url : editType?.image,
         createdAt: DateTime.now().toString(),
         printersIs: printerSelected.value.map((e) => e.id ?? '').toList(),
       );
 
-      await foodRepository.addTypeFood(foodType);
+      await foodRepository.editTypeFood(typeId, foodType);
 
-      Get.find<FoodController>().foodTypeList.add(foodType);
+      int index = Get.find<FoodController>().foodTypeList.indexWhere((element) => element.typeId == foodType.typeId);
+      if (index != -1) {
+        Get.find<FoodController>().foodTypeList[index] = foodType;
+      }
 
       Get.back();
     } catch (error) {
       print('Error add type $error');
     } finally {
-      isLoadingAddFoodType(false);
+      isLoadingEditType(false);
     }
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-    nameTypeController.dispose();
-    desTypeController.dispose();
-    pickedImageNotifier.value?.delete();
   }
 }

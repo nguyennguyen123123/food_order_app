@@ -11,6 +11,8 @@ import 'package:food_delivery_app/screen/check_in_out/check_in_out_binding.dart'
 import 'package:food_delivery_app/screen/check_in_out/check_in_out_pages.dart';
 import 'package:food_delivery_app/screen/food/edit_food/edit_food_binding.dart';
 import 'package:food_delivery_app/screen/food/edit_food/edit_food_view.dart';
+import 'package:food_delivery_app/screen/food/edit_type/edit_type_binding.dart';
+import 'package:food_delivery_app/screen/food/edit_type/edit_type_view.dart';
 import 'package:food_delivery_app/screen/food/food_binding.dart';
 import 'package:food_delivery_app/screen/food/food_screen.dart';
 import 'package:food_delivery_app/screen/food/type_food/upsert_type_food_binding.dart';
@@ -245,6 +247,11 @@ abstract class AppPages {
       name: Routes.UPSERT_TYPE_FOOD,
       page: () => UpsertTypeFoodPage(),
       binding: UpsertTypeFoodBinding(),
+    ),
+    GetPage(
+      name: Routes.EDITTYPE,
+      page: () => EditTypeView(),
+      binding: EditTypeBinding(),
     ),
   ];
 }

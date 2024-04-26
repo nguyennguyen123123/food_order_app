@@ -173,4 +173,7 @@ const Map<String, String> viVN = {
   "order_table": "Bàn có đơn",
   "all": "Tất cả",
   "total_profit": "Tổng doanh thu",
+  "edit_food_type": "Chỉnh sửa phân loại",
+  "printer": "Máy in",
+  "select_printer": "Chọn máy in"
 };

@@ -5,6 +5,7 @@ import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/food/edit_food/edit_food_parameter.dart';
+import 'package:food_delivery_app/screen/food/edit_type/edit_type_pramater.dart';
 import 'package:food_delivery_app/screen/food/food_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
@@ -85,13 +86,16 @@ class FoodScreen extends GetWidget<FoodController> {
                     itemCount: controller.foodTypeList.length,
                     itemBuilder: (context, index) {
                       FoodType foodType = controller.foodTypeList[index];
-                      return Container(
-                        margin: EdgeInsets.all(8),
-                        width: 50.w,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(image: NetworkImage(foodType.image ?? '')),
+                      return InkWell(
+                        onTap: () => Get.toNamed(Routes.EDITTYPE, arguments: EditTypeParameter(foodType: foodType)),
+                        child: Container(
+                          margin: EdgeInsets.all(8),
+                          width: 50.w,
+                          height: 50.h,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(image: NetworkImage(foodType.image ?? '')),
+                          ),
                         ),
                       );
                     },

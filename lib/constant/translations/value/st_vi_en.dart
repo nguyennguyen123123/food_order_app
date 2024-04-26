@@ -156,5 +156,8 @@ const Map<String, String> enUS = {
   "table_info": "Table information",
   "order_table": "Table order",
   "all": "All",
-  "total_profit": "Tổng doanh thu",
+  "total_profit": "Total profit",
+  "edit_food_type": "Edit food type",
+  "printer": "Printer",
+  "select_printer": "Select printer"
 };
