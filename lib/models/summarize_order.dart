@@ -26,8 +26,8 @@ class SummarizeOrder {
       'day': day,
       'month': month,
       'year': year,
-      'totalOrder': totalOrder,
-      'totalOrderPrice': totalOrderPrice,
+      'total_order': totalOrder,
+      'total_order_price': totalOrderPrice,
     };
   }
 

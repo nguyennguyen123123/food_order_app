@@ -10,6 +10,7 @@ class EditOrderDetailBinding implements Bindings {
       orderRepository: Get.find(),
       accountService: Get.find(),
       summarizeRepository: Get.find(),
+      printerService: Get.find(),
     ));
   }
 }

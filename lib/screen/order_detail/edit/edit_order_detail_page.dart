@@ -45,6 +45,10 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
               children: [
                 IconButton(onPressed: controller.onBack, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
                 Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
+                if (isOrderNonComplete)
+                  GestureDetector(
+                      onTap: () => controller.printerService.onStartPrint(controller.parameter.foodOrder),
+                      child: Icon(Icons.print, size: 30)),
                 if (isOrderNonComplete && controller.hasCheckin)
                   GestureDetector(
                       onTap: () async {

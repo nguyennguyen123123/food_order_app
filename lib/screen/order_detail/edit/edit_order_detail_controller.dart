@@ -10,6 +10,7 @@ import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
+import 'package:food_delivery_app/resourese/service/printer_service.dart';
 import 'package:food_delivery_app/resourese/summarize/isummarize_repository.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/screen/order_detail/edit/edit_order_detail_parameter.dart';
@@ -26,6 +27,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   final ITableRepository tableRepository;
   final ISummarizeRepository summarizeRepository;
   final AccountService accountService;
+  final PrinterService printerService;
 
   EditOrderDetailController({
     required this.parameter,
@@ -33,6 +35,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
     required this.orderRepository,
     required this.accountService,
     required this.summarizeRepository,
+    required this.printerService,
   });
 
   late FoodOrder originalOrder;

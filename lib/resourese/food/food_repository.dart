@@ -121,10 +121,6 @@ class FoodRepository extends IFoodRepository {
           .select()
           .withConverter((data) => data.map((e) => FoodModel.fromJson(e)).toList());
 
-      // if (response.error != null) {
-      //   throw response.error!;
-      // }
-
       return response.first;
     } catch (error) {
       print(error);
@@ -213,4 +209,24 @@ class FoodRepository extends IFoodRepository {
       return null;
     }
   }
+
+  // @override
+  // Future<void> upsertListPrinterInType(String typeId, List<String> printerIds) async {
+  //   try {
+  //     await Future.wait(printerIds.map(
+  //         (id) => baseService.client.from(TABLE_NAME.FOODTYPE).insert({'printer_id': id, 'food_type_id': typeId})));
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
+
+  // @override
+  // Future<void> deleteListPrinterInType(String typeId, List<String> printerIds) async {
+  //   try {
+  //     await Future.wait(printerIds.map((id) =>
+  //         baseService.client.from(TABLE_NAME.FOODTYPE).delete().eq('printer_id', id).eq('food_type_id', typeId)));
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
 }

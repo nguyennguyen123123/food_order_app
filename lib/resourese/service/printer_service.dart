@@ -36,7 +36,10 @@ class PrinterService extends GetxService {
     if (printers.value.isEmpty) return;
     showPrinterLoading();
     try {
-      Future.wait(printers.value.map((printer) => _printerHandler(foodOrder, printer)));
+      for (final printer in printers.value) {
+        _printerHandler(foodOrder, printer);
+      }
+
       await Future.delayed(const Duration(seconds: 1));
     } catch (e) {
       print(e);
