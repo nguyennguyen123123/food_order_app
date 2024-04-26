@@ -125,4 +125,26 @@ class CheckInOutRepository extends ICheckInOutRepository {
       return [];
     }
   }
+
+  @override
+  Future<bool> onDeleteAll() async {
+    try {
+      await baseService.client.from(TABLE_NAME.CHECKINOUT).delete().neq('id', 0);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> onDeleteCheckinOut(List<int> ids) async {
+    try {
+      await baseService.client.from(TABLE_NAME.CHECKINOUT).delete().inFilter('id', ids);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
 }

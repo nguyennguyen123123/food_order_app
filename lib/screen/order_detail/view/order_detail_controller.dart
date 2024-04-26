@@ -1,6 +1,8 @@
 import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/resourese/order/iorder_repository.dart';
+import 'package:food_delivery_app/resourese/service/account_service.dart';
+import 'package:food_delivery_app/screen/history_order/history_order_controller.dart';
 import 'package:food_delivery_app/screen/order_detail/view/order_detail_parameter.dart';
 import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
@@ -9,9 +11,11 @@ class OrderDetailController extends GetxController {
   final OrderDetailParameter parameter;
   final IOrderRepository orderRepository;
   late Rx<FoodOrder> foodOrder;
+  final AccountService accountService;
 
   OrderDetailController({
     required this.parameter,
+    required this.accountService,
     required this.orderRepository,
   });
 
@@ -61,7 +65,10 @@ class OrderDetailController extends GetxController {
   }
 
   void onDeleteOrder() async {
-    excute(() => orderRepository.onDeleteOrder(foodOrder.value));
+    await excute(() => orderRepository.onDeleteOrder(foodOrder.value));
+    if (Get.isRegistered<HistoryOrderController>()) {
+      Get.find<HistoryOrderController>().onRemoveFoodOrder(foodOrder.value);
+    }
     Get.back();
   }
 }

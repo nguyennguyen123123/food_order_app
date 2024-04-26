@@ -23,7 +23,7 @@ class SummarizeRepository extends ISummarizeRepository {
         final record = records.first;
         final totalOrder = (record.totalOrder ?? 0) + 1;
         final totalOrderPrice = (record.totalOrderPrice ?? 0) + orderPrice;
-        await baseService.client.from(TABLE_NAME.SUMMARIZE_ORDER).insert({
+        await baseService.client.from(TABLE_NAME.SUMMARIZE_ORDER).update({
           'total_order': totalOrder,
           'total_order_price': totalOrderPrice,
         }).eq('id', record.id ?? 0);

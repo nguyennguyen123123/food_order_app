@@ -6,6 +6,7 @@ class HistoryOrderBinding implements Bindings {
   void dependencies() {
     Get.put(
       HistoryOrderController(
+        accountService: Get.find(),
         orderRepository: Get.find(),
       ),
     );

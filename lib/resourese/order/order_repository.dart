@@ -513,4 +513,26 @@ class OrderRepository extends IOrderRepository {
     }
     return [];
   }
+
+  @override
+  Future<bool> onDeletaAll() async {
+    try {
+      await baseService.client.from(TABLE_NAME.FOOD_ORDER).delete().neq('order_id', '');
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> onDeleteListOrder(List<String> orderIds) async {
+    try {
+      await baseService.client.from(TABLE_NAME.FOOD_ORDER).delete().inFilter(_ORDER_COLUMN_KEY.ORDER_ID, orderIds);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
 }

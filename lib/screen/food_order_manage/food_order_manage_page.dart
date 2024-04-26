@@ -58,7 +58,7 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
     final numberOfParty = isPartyOrder ? partyOrder.length : 0;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => Get.toNamed(Routes.ORDER_DETAIL, arguments: OrderDetailParameter(foodOrder: item, canEdit: true)),
+      onTap: () => Get.toNamed(Routes.ORDER_DETAIL, arguments: OrderDetailParameter(foodOrder: item)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

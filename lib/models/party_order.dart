@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -89,6 +90,26 @@ extension PartyOrderExtension on PartyOrder {
     var total = 0.0;
     for (final item in (orderItems ?? <OrderItem>[])) {
       total += item.quantity * (item.food?.price ?? 0);
+    }
+    if (voucher != null) {
+      if (voucher?.discountType == DiscountType.amount) {
+        total -= voucher?.discountValue ?? 0;
+      } else {
+        total = total * ((voucher?.discountValue ?? 100) / 100);
+      }
+    }
+    if (voucherPrice != null) {
+      total -= (voucherPrice ?? 0);
+    }
+    return total;
+  }
+
+  double get totalPriceWithoutPartyDone {
+    var total = 0.0;
+    for (final item in (orderItems ?? <OrderItem>[])) {
+      if (item.partyOrderStaus == ORDER_STATUS.CREATED) {
+        total += item.quantity * (item.food?.price ?? 0);
+      }
     }
     if (voucher != null) {
       if (voucher?.discountType == DiscountType.amount) {

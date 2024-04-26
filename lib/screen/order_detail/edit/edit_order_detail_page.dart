@@ -120,7 +120,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                         onChanged: (value) => controller.onChangePartyIndex(value ?? 0)),
                     SizedBox(height: 8.h),
                     if (controller.currentPartyOrder.value != null)
-                      _buildPartyOrder(controller.currentPartyIndex.value, controller.currentPartyOrder.value!)
+                      _buildPartyOrder(
+                          controller.currentPartyIndex.value, controller.currentPartyOrder.value!, isPartyOrderComplete)
                   ],
                 ),
               ),
@@ -138,7 +139,9 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                           Row(
                             children: [
                               Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
-                              Text(Utils.getCurrency(controller.currentPartyOrder.value?.totalPrice))
+                              Text(controller.currentPartyIndex.value == -2
+                                  ? Utils.getCurrency(controller.currentPartyOrder.value?.totalPriceWithoutPartyDone)
+                                  : Utils.getCurrency(controller.currentPartyOrder.value?.totalPrice))
                             ],
                           ),
                           SizedBox(height: 6.h),
@@ -167,11 +170,10 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     );
   }
 
-  Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder) {
+  Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder, bool isPartyOrderComplete) {
     final number = (partyOrder.partyNumber ?? 0) + 1;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
-    final isPartyOrderComplete = partyOrder.orderStatus == ORDER_STATUS.DONE;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,6 +308,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     var isComplete = isPartyOrderComplete;
     if (partyIndex == -2) {
       isComplete = item.partyOrderStaus == ORDER_STATUS.DONE;
+      if (isComplete) return SizedBox();
     }
     return GestureDetector(
       onTap: () {

@@ -37,8 +37,8 @@ class SummarizeOrder {
       day: map['day'] != null ? map['day'] as int : null,
       month: map['month'] != null ? map['month'] as int : null,
       year: map['year'] != null ? map['year'] as int : null,
-      totalOrder: map['totalOrder'] != null ? map['totalOrder'] as int : null,
-      totalOrderPrice: map['totalOrderPrice'] != null ? map['totalOrderPrice'] as double : null,
+      totalOrder: map['total_order'] != null ? map['total_order'] as int : null,
+      totalOrderPrice: map['total_order_price'] != null ? map['total_order_price'] as double : null,
     );
   }
 }

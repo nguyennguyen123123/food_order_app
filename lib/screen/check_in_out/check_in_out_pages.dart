@@ -4,7 +4,9 @@ import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/check_in_out.dart';
 import 'package:food_delivery_app/screen/check_in_out/check_in_out_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/utils/utils.dart';
+import 'package:food_delivery_app/widgets/image_asset_custom.dart';
 import 'package:food_delivery_app/widgets/load_more_delegate_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -26,6 +28,15 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
             Text('Checking', style: StyleThemeData.bold18(height: 0)),
           ],
         ),
+        actions: controller.accountService.isAdmin
+            ? [
+                GestureDetector(
+                  onTap: controller.onDeleteOrder,
+                  child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30),
+                ),
+                SizedBox(width: 12.w)
+              ]
+            : [],
       ),
       body: Padding(
         padding: padding(bottom: 16),
@@ -106,6 +117,14 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                 ),
               ),
             ),
+            if (controller.accountService.isAdmin) ...[
+              TabBar(
+                tabs: controller.tab,
+                controller: controller.tabCtr,
+                onTap: (value) => controller.onChangeTab(value),
+              ),
+              SizedBox(height: 12)
+            ],
             Obx(
               () => Expanded(
                 child: controller.listCheckInOut.value == null
@@ -134,74 +153,89 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
   }
 
   Widget itemDataWidget(CheckInOut data) {
-    return Container(
-      padding: padding(all: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: appTheme.background,
-        border: Border.all(color: appTheme.textDesColor),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text('user'.tr + ': ', style: StyleThemeData.bold18()),
-              Text(data.users?.name ?? '', style: StyleThemeData.bold14()),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      children: [
+        Obx(() {
+          if (controller.currentTab.value == 1) {
+            final isSelected = controller.selectedCheckinCheckout.value.contains(data.id);
+            return Checkbox(
+                value: isSelected,
+                onChanged: (value) => controller.onUpdateCurrentOrderSelect(value ?? false, data.id ?? 0));
+          }
+          return SizedBox();
+        }),
+        Expanded(
+          child: Container(
+            padding: padding(all: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: appTheme.background,
+              border: Border.all(color: appTheme.textDesColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text('Check in', style: StyleThemeData.regular16()),
-                    SizedBox(height: 8.h),
-                    Text(
-                      data.checkInTime != null
-                          ? DateFormat("yyyy/MM/dd HH:mm").format(DateTime.tryParse(data.checkInTime ?? '')!)
-                          : '',
-                      style: StyleThemeData.regular14(),
+                    Text('user'.tr + ': ', style: StyleThemeData.bold18()),
+                    Text(data.users?.name ?? '', style: StyleThemeData.bold14()),
+                  ],
+                ),
+                SizedBox(height: 12.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Check in', style: StyleThemeData.regular16()),
+                          SizedBox(height: 8.h),
+                          Text(
+                            data.checkInTime != null
+                                ? DateFormat("yyyy/MM/dd HH:mm").format(DateTime.tryParse(data.checkInTime ?? '')!)
+                                : '',
+                            style: StyleThemeData.regular14(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text('Check out', style: StyleThemeData.regular16()),
+                          SizedBox(height: 8.h),
+                          Text(
+                            data.checkOutTime != null
+                                ? DateFormat("yyyy/MM/dd HH:mm").format(DateTime.tryParse(data.checkOutTime ?? '')!)
+                                : '',
+                            style: StyleThemeData.regular14(),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                Divider(color: appTheme.blackText),
+                Row(
                   children: [
-                    Text('Check out', style: StyleThemeData.regular16()),
-                    SizedBox(height: 8.h),
-                    Text(
-                      data.checkOutTime != null
-                          ? DateFormat("yyyy/MM/dd HH:mm").format(DateTime.tryParse(data.checkOutTime ?? '')!)
-                          : '',
-                      style: StyleThemeData.regular14(),
-                    ),
+                    Text('total_profit'.tr + ': ', style: StyleThemeData.bold16()),
+                    Text(Utils.getCurrency(data.totalPrice), style: StyleThemeData.bold14()),
                   ],
                 ),
-              ),
-            ],
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    Text('total_order'.tr + ': ', style: StyleThemeData.bold16()),
+                    Text(data.totalOrders.toString(), style: StyleThemeData.bold14()),
+                  ],
+                ),
+              ],
+            ),
           ),
-          Divider(color: appTheme.blackText),
-          Row(
-            children: [
-              Text('total_profit'.tr + ': ', style: StyleThemeData.bold16()),
-              Text(Utils.getCurrency(data.totalPrice), style: StyleThemeData.bold14()),
-            ],
-          ),
-          SizedBox(height: 4.h),
-          Row(
-            children: [
-              Text('total_order'.tr + ': ', style: StyleThemeData.bold16()),
-              Text(data.totalOrders.toString(), style: StyleThemeData.bold14()),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
