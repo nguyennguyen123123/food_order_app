@@ -6,8 +6,8 @@ import 'package:food_delivery_app/models/food_model.dart';
 import 'package:food_delivery_app/models/food_type.dart';
 import 'package:food_delivery_app/models/printer.dart';
 import 'package:food_delivery_app/resourese/food/ifood_repository.dart';
-import 'package:food_delivery_app/resourese/printer/iprinter_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
+import 'package:food_delivery_app/resourese/service/printer_service.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
@@ -16,14 +16,15 @@ import 'package:image_picker/image_picker.dart';
 class FoodController extends GetxController {
   final IFoodRepository foodRepository;
   final AccountService accountService;
-  final IPrinterRepository printerRepository;
+  final PrinterService printerService;
 
-  FoodController({required this.foodRepository, required this.accountService, required this.printerRepository});
+  FoodController({required this.foodRepository, required this.accountService, required this.printerService});
 
   int page = 0;
   int limit = LIMIT;
 
-  // final foodList = Rx<List<FoodModel>?>(null);
+  List<Printer> get printers => printerService.printers.value;
+  final printerSelected = Rx<List<Printer>>([]);
   final foodList = Rx<List<FoodModel>?>([]);
 
   @override
@@ -31,7 +32,6 @@ class FoodController extends GetxController {
     super.onInit();
     onRefresh();
     getListFoodType();
-    getPrinter();
   }
 
   var isLoadingFood = false.obs;
@@ -39,9 +39,6 @@ class FoodController extends GetxController {
 
   var foodTypeList = <FoodType>[].obs;
   var selectedFoodType = Rx<FoodType?>(null);
-
-  var printerList = <Printer>[].obs;
-  List<Printer> selectedPrintersList = [];
 
   final ValueNotifier<File?> pickedImageNotifier = ValueNotifier<File?>(null);
   final ImagePicker imagePicker = ImagePicker();
@@ -83,18 +80,12 @@ class FoodController extends GetxController {
     }
   }
 
-  Future<void> getPrinter() async {
-    final result = await printerRepository.getPrinter();
-
-    printerList.assignAll(result);
-  }
-
   void addSelectedPrinter(Printer printer) {
-    selectedPrintersList.add(printer);
+    printerSelected.update((val) => val?.add(printer));
   }
 
   void removeSelectedPrinter(Printer printer) {
-    selectedPrintersList.remove(printer);
+    printerSelected.update((val) => val?.removeWhere((ele) => ele.id == printer.id));
   }
 
   final nameController = TextEditingController();

@@ -51,7 +51,7 @@ class FoodScreen extends GetWidget<FoodController> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Get.toNamed(Routes.ADDTYPEFOOD);
+                        Get.toNamed(Routes.UPSERT_TYPE_FOOD);
                       },
                       child: Container(
                         padding: padding(vertical: 8, horizontal: 16),

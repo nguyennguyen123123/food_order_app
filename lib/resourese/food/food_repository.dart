@@ -82,7 +82,7 @@ class FoodRepository extends IFoodRepository {
     try {
       final response = await baseService.client
           .from(TABLE_NAME.FOODTYPE)
-          .select()
+          .select('*')
           .withConverter((data) => data.map((e) => FoodType.fromJson(e)).toList());
 
       return response.toList();
