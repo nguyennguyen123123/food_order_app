@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/party_order.dart';
-import 'package:food_delivery_app/screen/order_detail/bottom_sheet/order_add_food_bts.dart';
 import 'package:food_delivery_app/screen/order_detail/view/order_detail_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
 import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/utils/utils.dart';
 import 'package:food_delivery_app/widgets/image_asset_custom.dart';
-import 'package:food_delivery_app/widgets/normal_quantity_view.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -28,7 +26,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
           children: [
             IconButton(onPressed: Get.back, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
             Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
-            if (controller.parameter.canEdit)
+            if (controller.accountService.isAdmin)
               GestureDetector(
                   onTap: () async {
                     final result = await DialogUtils.showYesNoDialog(title: 'delete_order_title'.tr);
@@ -64,16 +62,11 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
   Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder) {
     final number = partyOrder.partyNumber;
     late double total;
-    if (controller.parameter.canEdit) {
-      total = partyOrder.totalPrice;
-    } else {
-      total = partyOrder.priceInVoucher;
-    }
+
+    total = partyOrder.totalPrice;
+
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
     final maxGang = orderItems.fold<int?>(null, (a, b) {
-      if (b.sortOder == null) {
-        return a;
-      }
       if (a == null) {
         return b.sortOder;
       } else {
@@ -84,20 +77,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (number != null) ...[
-          Row(
-            children: [
-              Expanded(child: Text('party_number'.tr + ': $number', style: StyleThemeData.bold18())),
-              if (controller.parameter.canEdit)
-                GestureDetector(
-                    onTap: () async {
-                      final result = await DialogUtils.showBTSView(OrderAddFoodBTS());
-                      if (result != null) {
-                        controller.addFoodToPartyOrder(partyIndex, result);
-                      }
-                    },
-                    child: Icon(Icons.add, size: 24, color: appTheme.blackColor))
-            ],
-          ),
+          Text('party_index'.trParams({'number': '$number'}), style: StyleThemeData.bold18()),
           SizedBox(height: 8.h),
         ],
         if (maxGang == null)
@@ -121,11 +101,8 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
   }
 
   Widget _buildOrderItemByGangIndex(int partyIndex, int maxGang, List<OrderItem> orderItem) {
-    final orderItemNoGang = orderItem.where((element) => element.sortOder == null).toList();
-
     return Column(
       children: [
-        ...orderItemNoGang.map((e) => _buildOrderItem(partyIndex, e)),
         ...List.generate(maxGang + 1, (gangIndex) {
           final orderItemInGang = orderItem.where((element) => element.sortOder == gangIndex).toList();
           return Column(
@@ -136,7 +113,8 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
                 child: Row(
                   children: [
                     Expanded(
-                        child: Text('Gang ${gangIndex + 1}', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+                        child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
+                            style: StyleThemeData.bold16(color: appTheme.greyColor))),
                   ],
                 ),
               ),
@@ -171,33 +149,11 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
             children: [
               itemData(title: 'food'.tr, data: item.food?.name ?? ''),
               SizedBox(height: 8.h),
-              if (controller.parameter.canEdit) ...[
-                itemData(
-                    title: 'quantity'.tr,
-                    content: NormalQuantityView(
-                      canUpdate: true,
-                      quantity: item.quantity,
-                      showTitle: false,
-                      updateQuantity: (quantity) => controller.updateQuantityList(partyIndex, item, quantity),
-                    )),
-                SizedBox(height: 4.h)
-              ] else ...[
-                itemData(title: 'quantity'.tr, data: (item.quantity).toString()),
-                SizedBox(height: 4.h)
-              ],
+              itemData(title: 'quantity'.tr, data: (item.quantity).toString()),
+              SizedBox(height: 4.h),
               itemData(title: 'total'.tr, data: Utils.getCurrency((item.quantity) * (item.food?.price ?? 0))),
             ],
           )),
-          if (controller.parameter.canEdit)
-            GestureDetector(
-                onTap: () async {
-                  final result =
-                      await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa món ăn khỏi party $partyIndex không?');
-                  if (result == true) {
-                    controller.onRemoveItem(partyIndex, item);
-                  }
-                },
-                child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30)),
         ],
       ),
     );

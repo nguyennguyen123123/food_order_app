@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/order_item.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -94,35 +95,39 @@ extension PartyOrderExtension on PartyOrder {
       if (voucher?.discountType == DiscountType.amount) {
         total -= voucher?.discountValue ?? 0;
       } else {
-        total = total * ((voucher?.discountValue ?? 100) / 100);
+        total -= total * ((voucher?.discountValue ?? 100) / 100);
       }
+      return total;
+    }
+    if (voucherPrice != null && voucherType != null) {
+      if (voucherType == DiscountType.amount.toString()) {
+        total -= (voucherPrice ?? 0);
+      } else {
+        total -= total * ((voucherPrice ?? 100) / 100);
+      }
+    }
+    return total;
+  }
+
+  double get totalPriceWithoutPartyDone {
+    var total = 0.0;
+    for (final item in (orderItems ?? <OrderItem>[])) {
+      if (item.partyOrderStaus == ORDER_STATUS.CREATED) {
+        total += item.quantity * (item.food?.price ?? 0);
+      }
+    }
+    if (voucher != null) {
+      if (voucher?.discountType == DiscountType.amount) {
+        total -= voucher?.discountValue ?? 0;
+      } else {
+        total -= total * ((voucher?.discountValue ?? 100) / 100);
+      }
+      return total;
     }
     if (voucherPrice != null) {
       total -= (voucherPrice ?? 0);
     }
     return total;
-  }
-
-  double get priceInVoucher {
-    if (voucherPrice != null) {
-      return (total ?? 0) - (voucherPrice ?? 0);
-    }
-    return total ?? 0;
-  }
-
-  double get orderPrice {
-    var totalVal = 0.0;
-    for (final item in (orderItems ?? <OrderItem>[])) {
-      totalVal += item.quantity * (item.food?.price ?? 0);
-    }
-    if (voucherType != null) {
-      if (voucherType == DiscountType.amount.toString()) {
-        return totalVal - (voucherPrice ?? 0);
-      } else {
-        return totalVal * (1 - ((voucherPrice ?? 100) / 100));
-      }
-    }
-    return totalVal;
   }
 
   void clearVoucher() {

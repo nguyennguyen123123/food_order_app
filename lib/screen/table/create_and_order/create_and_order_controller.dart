@@ -55,7 +55,7 @@ class CreateAndOrderTableController extends GetxController {
   }
 
   void addTable() async {
-    if (tableNumberController.text.isEmpty || selectedAreaType.value?.areaId == null) return;
+    if (tableNumberController.text.isEmpty) return;
 
     try {
       isLoadingAdd(true);

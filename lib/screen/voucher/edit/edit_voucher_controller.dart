@@ -4,6 +4,7 @@ import 'package:food_delivery_app/resourese/voucher/ivoucher_repository.dart';
 import 'package:food_delivery_app/screen/voucher/voucher_controller.dart';
 import 'package:food_delivery_app/screen/voucher/voucher_parameter.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
+import 'package:food_delivery_app/utils/utils.dart';
 import 'package:get/get.dart';
 
 class EditVoucherController extends GetxController {
@@ -26,7 +27,8 @@ class EditVoucherController extends GetxController {
   void onInit() {
     super.onInit();
     nameController = TextEditingController(text: voucherParametar?.name.toString());
-    discountValueController = TextEditingController(text: voucherParametar?.discountValue.toString());
+    discountValueController =
+        TextEditingController(text: Utils.getCurrency(voucherParametar?.discountValue, removeCurrencyFormat: true));
     selectedType.value = voucherParametar?.discountType as DiscountType;
   }
 

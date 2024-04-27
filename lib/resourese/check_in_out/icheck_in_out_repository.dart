@@ -7,4 +7,6 @@ abstract class ICheckInOutRepository extends IBaseRepository {
   Future<Account?> checkInUser();
   Future<Account?> checkOutUser();
   Future<List<CheckInOut>> getListCheckInOut(bool role, {int page = 0, int limit = LIMIT});
+  Future<bool> onDeleteCheckinOut(List<int> ids);
+  Future<bool> onDeleteAll();
 }

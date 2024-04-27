@@ -14,7 +14,7 @@ class FoodType {
   int? order;
   @JsonKey(name: 'created_at')
   String? createdAt;
-  @JsonKey(name: 'printer', defaultValue: [])
+  @JsonKey(name: 'printers', defaultValue: [], includeToJson: false)
   List<String> printersIs;
 
   FoodType({

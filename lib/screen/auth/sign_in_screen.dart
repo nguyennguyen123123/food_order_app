@@ -16,8 +16,8 @@ class SignInScreen extends GetWidget<SignInController> {
             SizedBox(height: 36),
             EditTextFieldCustom(
               controller: controller.emailController,
-              hintText: 'Email',
-              label: 'Email',
+              hintText: 'enter_email'.tr,
+              label: 'email'.tr,
               suffix: Icon(Icons.email_outlined),
               textInputType: TextInputType.emailAddress,
             ),

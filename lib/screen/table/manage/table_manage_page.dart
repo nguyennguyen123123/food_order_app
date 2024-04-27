@@ -6,6 +6,7 @@ import 'package:food_delivery_app/screen/table/manage/table_manage_controller.da
 import 'package:food_delivery_app/screen/table/table_parameter.dart';
 import 'package:food_delivery_app/screen/table/widget/table_details_widget.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/widgets/load_more_list_vertical_view.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
@@ -37,11 +38,13 @@ class TableManagePage extends GetWidget<TableManageControlller> {
           else
             return RefreshIndicator(
               onRefresh: controller.getListTable,
-              child: GridView.count(
-                crossAxisCount: 3,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                children: controller.tableList.value!.map(itemTableView).toList(),
+              child: LoadMoreListVerticalItem<TableModels>(
+                lineItemCount: 3,
+                viewPadding: padding(),
+                divider: SizedBox(height: 8.h),
+                items: controller.tableList.value!,
+                loadMore: controller.onLoadMoreTable,
+                itemBuilder: (index, item) => itemTableView(item),
               ),
             );
         }),

@@ -56,7 +56,7 @@ class StaffManageController extends GetxController {
 
   Future<void> onAddAccount(Account account) async {
     excute(() async {
-      final id = await authRepository.createAuthentication(account.email ?? '', account.name ?? '');
+      final id = await authRepository.createAuthentication(account.email ?? '', account.name ?? '', account.password);
       if (id != null) {
         account.userId = id;
         final result = await authRepository.addAccount(account);

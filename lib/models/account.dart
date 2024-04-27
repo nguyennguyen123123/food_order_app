@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:json_annotation/json_annotation.dart';
 
 part 'account.g.dart';
@@ -18,6 +19,8 @@ class Account {
   int? numberOfOrder;
   @JsonKey(name: 'total_order_price')
   double totalOrderPrice;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String password;
 
   Account({
     this.createdAt,
@@ -29,6 +32,7 @@ class Account {
     this.checkInTime,
     this.numberOfOrder,
     this.totalOrderPrice = 0,
+    this.password = '',
   });
 
   Map<String, dynamic> toMap() => _$AccountToJson(this);
@@ -45,6 +49,7 @@ class Account {
     String? checkInTime,
     int? numberOfOrder,
     double? totalOrderPrice,
+    String? password,
   }) {
     return Account(
       createdAt: createdAt ?? this.createdAt,
@@ -56,6 +61,7 @@ class Account {
       checkInTime: checkInTime ?? this.checkInTime,
       numberOfOrder: numberOfOrder ?? this.numberOfOrder,
       totalOrderPrice: totalOrderPrice ?? this.totalOrderPrice,
+      password: password ?? this.password,
     );
   }
 }

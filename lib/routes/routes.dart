@@ -39,4 +39,5 @@ abstract class Routes {
   static const CREATE_ORDER_TABLE = '/create-order';
   static const UPSERT_TYPE_FOOD = '/upsert-type-food';
   static const EDITTYPE = '/edit-type';
+  static const STAFF_IN_WORKING = '/staff-in-working';
 }

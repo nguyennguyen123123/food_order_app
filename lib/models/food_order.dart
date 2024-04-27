@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/models/party_order.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -83,7 +84,20 @@ extension FoodOrderExtension on FoodOrder {
     }
     var total = 0.0;
     for (final order in partyOrders!) {
-      total += order.orderPrice;
+      total += order.totalPrice;
+    }
+    return total;
+  }
+
+  double get totalPriceInTable {
+    if (partyOrders?.isEmpty ?? true) {
+      return 0;
+    }
+    var total = 0.0;
+    for (final order in partyOrders!) {
+      if (order.orderStatus == ORDER_STATUS.CREATED) {
+        total += order.totalPrice;
+      }
     }
     return total;
   }

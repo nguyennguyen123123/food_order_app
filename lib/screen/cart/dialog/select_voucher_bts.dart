@@ -89,14 +89,14 @@ class _SelectVoucherBTSState extends State<SelectVoucherBTS> {
               if (isCustom)
                 Expanded(
                   child: EditTextFieldCustom(
-                    label: 'Số tiền voucher',
+                    label: 'total_voucher_price'.tr,
                     controller: voucherCustomPrice,
-                    hintText: 'Nhập số tiền voucher',
+                    hintText: 'hint_enter_voucher_price'.tr,
                     textInputType: TextInputType.number,
                   ),
                 )
               else
-                Text('Tự nhập số tiền', style: StyleThemeData.bold16())
+                Text('enter_voucher_price'.tr, style: StyleThemeData.bold16())
             ],
           ),
         ),

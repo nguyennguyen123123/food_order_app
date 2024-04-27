@@ -1,5 +1,6 @@
 //handle account data in here
 
+import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/service/base_service.dart';
@@ -29,6 +30,10 @@ class AccountService {
   bool isLogin() {
     return baseService.client.auth.currentSession != null;
   }
+
+  bool get isAdmin => myAccount?.role == USER_ROLE.ADMIN;
+
+  bool get hasCheckIn => myAccount?.checkInTime != null;
 
   Future<void> initAccount() async {
     account.value = await profileRepository.getProfile();

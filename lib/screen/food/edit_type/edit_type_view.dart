@@ -54,14 +54,14 @@ class EditTypeView extends GetWidget<EditTypeController> {
                               ),
                             ),
                           )
-                        : controller.editType?.image != null
+                        : controller.editType.image != null
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: SizedBox(
                                   width: 150.w,
                                   height: 150.h,
                                   child: Image.network(
-                                    controller.editType?.image ?? '',
+                                    controller.editType.image ?? '',
                                     width: 24.w,
                                     height: 24.h,
                                     fit: BoxFit.cover,

@@ -6,8 +6,10 @@ import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/screen/history_order/history_order_controller.dart';
 import 'package:food_delivery_app/screen/order_detail/view/order_detail_parameter.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
+import 'package:food_delivery_app/utils/images_asset.dart';
 import 'package:food_delivery_app/utils/utils.dart';
-import 'package:food_delivery_app/widgets/list_vertical_item.dart';
+import 'package:food_delivery_app/widgets/image_asset_custom.dart';
+import 'package:food_delivery_app/widgets/load_more_delegate_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -28,23 +30,44 @@ class HistoryOrderPage extends GetWidget<HistoryOrderController> {
             Text('order_list'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
+        actions: controller.accountService.isAdmin
+            ? [
+                GestureDetector(
+                  onTap: controller.onDeleteOrder,
+                  child: ImageAssetCustom(imagePath: ImagesAssets.trash, size: 30),
+                ),
+                SizedBox(width: 12.w)
+              ]
+            : [],
       ),
       body: Padding(
         padding: padding(all: 16),
         child: Obx(
-          () => LoadMore(
-            onLoadMore: controller.onLoadMore,
-            child: controller.foodOrderList.value == null
-                ? Center(child: CircularProgressIndicator())
-                : ListVerticalItem<FoodOrder>(
-                    lineItemCount: 1,
-                    items: controller.foodOrderList.value!,
-                    divider: Padding(
-                      padding: padding(vertical: 8),
-                      child: Divider(height: 1.h),
-                    ),
-                    itemBuilder: _buildFoodOrderItem,
-                  ),
+          () => Column(
+            children: [
+              TabBar(
+                tabs: controller.tab,
+                controller: controller.tabCtr,
+                onTap: (value) => controller.onChangeTab(value),
+              ),
+              Expanded(
+                child: LoadMore(
+                  onLoadMore: controller.onLoadMore,
+                  delegate: LoadMoreDelegateCustom(),
+                  child: controller.foodOrderList.value == null
+                      ? Center(child: CircularProgressIndicator())
+                      : ListView.separated(
+                          itemCount: controller.foodOrderList.value!.length,
+                          separatorBuilder: (context, index) => Padding(
+                            padding: padding(vertical: 8),
+                            child: Divider(height: 1.h),
+                          ),
+                          itemBuilder: (context, index) =>
+                              _buildFoodOrderItem(index, controller.foodOrderList.value![index]),
+                        ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -59,34 +82,51 @@ class HistoryOrderPage extends GetWidget<HistoryOrderController> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => Get.toNamed(Routes.ORDER_DETAIL, arguments: OrderDetailParameter(foodOrder: item)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text('order_person'.tr + (item.userOrder?.name ?? ''), style: StyleThemeData.bold18(height: 0)),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Obx(() {
+            if (controller.currentTab.value == 1) {
+              final isSelected = controller.orderSelecteIds.value.contains(item.orderId);
+              return Checkbox(
+                  value: isSelected,
+                  onChanged: (value) => controller.onUpdateCurrentOrderSelect(value ?? false, item.orderId ?? ''));
+            }
+            return SizedBox();
+          }),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('order_person'.tr + (item.userOrder?.name ?? ''), style: StyleThemeData.bold18(height: 0)),
+                SizedBox(height: 8.h),
+                Row(
                   children: [
-                    itemData(title: 'table_number'.tr, data: item.tableNumber ?? ''),
-                    SizedBox(height: 4.h),
-                    itemData(title: 'price'.tr, data: Utils.getCurrency(item.totalPrice)),
-                    SizedBox(height: 4.h),
-                    itemData(
-                        title: 'time'.tr,
-                        data: DateFormat("yyyy/MM/dd HH:mm")
-                            .format(DateTime.tryParse(item.createdAt ?? '') ?? DateTime.now())),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          itemData(title: 'table_number'.tr, data: item.tableNumber ?? ''),
+                          SizedBox(height: 4.h),
+                          itemData(title: 'price'.tr, data: Utils.getCurrency(item.totalPrice)),
+                          SizedBox(height: 4.h),
+                          itemData(
+                              title: 'time'.tr,
+                              data: DateFormat("yyyy/MM/dd HH:mm")
+                                  .format(DateTime.tryParse(item.createdAt ?? '') ?? DateTime.now())),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
+                if (isPartyOrder) ...[
+                  SizedBox(height: 6.h),
+                  Center(
+                      child: Text('total_party_in_order'.trParams({'number': '$numberOfParty'}),
+                          style: StyleThemeData.regular16()))
+                ]
+              ],
+            ),
           ),
-          if (isPartyOrder) ...[
-            SizedBox(height: 6.h),
-            Center(child: Text('Số lượng đơn hàng party: $numberOfParty', style: StyleThemeData.regular16()))
-          ]
         ],
       ),
     );

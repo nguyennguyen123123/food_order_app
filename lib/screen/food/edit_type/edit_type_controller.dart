@@ -15,15 +15,15 @@ class EditTypeController extends GetxController {
   final IFoodRepository foodRepository;
   final AccountService accountService;
   final PrinterService printerService;
-  final EditTypeParameter? parameter;
+  final EditTypeParameter parameter;
 
-  FoodType? get editType => parameter?.foodType;
+  FoodType get editType => parameter.foodType;
 
   EditTypeController({
     required this.foodRepository,
     required this.accountService,
     required this.printerService,
-    this.parameter,
+    required this.parameter,
   });
 
   List<Printer> get printers => printerService.printers.value;
@@ -91,18 +91,26 @@ class EditTypeController extends GetxController {
           fileName: typeId,
         );
       }
+      final newListId = printerSelected.value.map((e) => e.id ?? '').toList();
+      final oldListId = [...parameter.foodType.printersIs];
 
       FoodType foodType = FoodType(
         typeId: typeId,
         parentTypeId: selectedFoodType.value?.typeId,
         name: nameTypeController.text,
         description: desTypeController.text,
-        image: pickedImageNotifier.value?.path != null ? url : editType?.image,
+        image: pickedImageNotifier.value?.path != null ? url : editType.image,
         createdAt: DateTime.now().toString(),
-        printersIs: printerSelected.value.map((e) => e.id ?? '').toList(),
+        printersIs: newListId,
       );
 
-      await foodRepository.editTypeFood(typeId, foodType);
+      // final listAddPrinterId = newListId.where((element) => !oldListId.contains(element)).toList();
+      // final listRemovePrinterId = oldListId.where((element) => !newListId.contains(element)).toList();
+      await Future.wait([
+        foodRepository.editTypeFood(typeId, foodType),
+        // if (listAddPrinterId.isNotEmpty) foodRepository.upsertListPrinterInType(typeId, listAddPrinterId),
+        // if (listRemovePrinterId.isNotEmpty) foodRepository.deleteListPrinterInType(typeId, listRemovePrinterId),
+      ]);
 
       int index = Get.find<FoodController>().foodTypeList.indexWhere((element) => element.typeId == foodType.typeId);
       if (index != -1) {

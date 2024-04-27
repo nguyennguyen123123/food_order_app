@@ -95,7 +95,7 @@ class UpsertTypeFoodController extends GetxController {
               fileName: typeId,
             )
           : '';
-
+      final printerIds = printerSelected.value.map((e) => e.id ?? '').toList();
       FoodType foodType = FoodType(
         typeId: typeId,
         parentTypeId: selectedFoodType.value?.typeId,
@@ -103,10 +103,13 @@ class UpsertTypeFoodController extends GetxController {
         description: desTypeController.text,
         image: url,
         createdAt: DateTime.now().toString(),
-        printersIs: printerSelected.value.map((e) => e.id ?? '').toList(),
+        printersIs: printerIds,
       );
 
-      await foodRepository.addTypeFood(foodType);
+      await Future.wait([
+        foodRepository.addTypeFood(foodType),
+        // foodRepository.upsertListPrinterInType(typeId, printerIds),
+      ]);
 
       Get.find<FoodController>().foodTypeList.add(foodType);
 

@@ -34,7 +34,8 @@ abstract class TABLE_NAME {
   static const PARTY_ORDER_ITEM = 'party_order_item';
   static const ORDER_WITH_PARTY = 'order_with_party';
   static const AREA = 'area';
-  static const FOOD_TYPE_PRINTER = 'food_type_printers';
+  static const SUMMARIZE_ORDER = 'summarize_order';
+  static const FOOD_TYPE_PRINTER = 'food_type_printer';
 }
 
 abstract class ERROR_CODE {

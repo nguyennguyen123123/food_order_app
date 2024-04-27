@@ -128,14 +128,6 @@ class _AddItemPartyDialogState extends State<AddItemPartyDialog> {
           food?.name ?? '',
           style: StyleThemeData.bold14(),
         )),
-        // if (isSelected)
-        //   QuantityView(
-        //     checkUpdateValue: (newQuantity) => newQuantity <= orderItem.quantity,
-        //     updateQuantity: (quantity) {
-        //       final index = partyItems.value.indexWhere((element) => element.foodId == food?.foodId);
-        //       partyItems.value[index].quantity = quantity;
-        //     },
-        //   ),
       ],
     );
   }

@@ -167,5 +167,17 @@ const Map<String, String> enUS = {
   "profile_text": "Profile",
   "list_of_tables": "List of tables",
   "party_number": "Party number",
-
+  "price_order": "Đơn hàng: @price",
+  "warning_checkin": "Bạn cần check in trước khi vào đặt bàn",
+  "create_food": "Tạo món ăn",
+  "table_manage": "Quản lý số bàn",
+  "error_login": "Lỗi đăng nhập. Vui lòng kiểm tra mật khẩu",
+  "enter_voucher_price": "Tự nhập số tiền",
+  "hint_enter_voucher_price": "Nhập số tiền voucher",
+  "total_voucher_price": "Số tiền voucher",
+  "checking": "Checking",
+  "checkout": "Check Out",
+  "checkin": "Check In",
+  "total_price_working": "Tổng tiền thu được trong ca làm",
+  "total_party_in_order": "Số lượng đơn hàng party: @number"
 };

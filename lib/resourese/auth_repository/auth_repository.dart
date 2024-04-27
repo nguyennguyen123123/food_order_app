@@ -65,9 +65,13 @@ class AuthRepository extends IAuthRepository {
   }
 
   @override
-  Future<String?> createAuthentication(String email, String name) async {
+  Future<String?> createAuthentication(String email, String name, String password) async {
     try {
-      final response = await baseService.client.functions.invoke("create_user", body: {"email": email, "name": name});
+      final response = await baseService.client.functions.invoke("create_user", body: {
+        "email": email,
+        "name": name,
+        "password": password.isEmpty ? '123456' : password,
+      });
       return response.data['id'];
     } catch (e) {
       handleError(e);
@@ -123,6 +127,24 @@ class AuthRepository extends IAuthRepository {
     } catch (e) {
       handleError(e);
       return null;
+    }
+  }
+
+  @override
+  Future<List<Account>> getListAccountInWorking({int limit = LIMIT, int page = 0}) async {
+    try {
+      final result = await baseService.client
+          .from(TABLE_NAME.ACCOUNT)
+          .select()
+          // .eq("role", USER_ROLE.STAFF)
+          .not("check_in_time", 'is', null)
+          .limit(limit)
+          .range(page * limit + page, (page + 1) * limit + page)
+          .withConverter((data) => data.map((e) => Account.fromJson(e)).toList());
+      return result;
+    } catch (e) {
+      handleError(e);
+      return [];
     }
   }
 }

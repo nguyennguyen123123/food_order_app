@@ -45,6 +45,10 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
               children: [
                 IconButton(onPressed: controller.onBack, icon: Icon(Icons.arrow_back, color: appTheme.blackColor)),
                 Expanded(child: Text('detail_order'.tr, style: StyleThemeData.bold18(height: 0))),
+                if (isOrderNonComplete)
+                  GestureDetector(
+                      onTap: () => controller.printerService.onStartPrint(controller.parameter.foodOrder),
+                      child: Icon(Icons.print, size: 30)),
                 if (isOrderNonComplete && controller.hasCheckin)
                   GestureDetector(
                       onTap: () async {
@@ -90,8 +94,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                 child: ListView(
                   padding: padding(all: 12),
                   children: [
-                    itemData(title: 'order_id'.tr, data: order.orderId ?? ''),
-                    SizedBox(height: 4.h),
+                    // itemData(title: 'order_id'.tr, data: order.orderId ?? ''),
+                    // SizedBox(height: 4.h),
                     itemData(title: 'table_number'.tr, data: order.tableNumber ?? ''),
                     SizedBox(height: 4.h),
                     itemData(
@@ -116,7 +120,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                         onChanged: (value) => controller.onChangePartyIndex(value ?? 0)),
                     SizedBox(height: 8.h),
                     if (controller.currentPartyOrder.value != null)
-                      _buildPartyOrder(controller.currentPartyIndex.value, controller.currentPartyOrder.value!)
+                      _buildPartyOrder(
+                          controller.currentPartyIndex.value, controller.currentPartyOrder.value!, isPartyOrderComplete)
                   ],
                 ),
               ),
@@ -131,11 +136,29 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                             SizedBox(height: 6.h),
                             _buildVoucherField(controller.currentPartyOrder.value!)
                           ],
-                          Row(
-                            children: [
-                              Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
-                              Text(Utils.getCurrency(controller.currentPartyOrder.value?.totalPrice))
-                            ],
+                          Obx(
+                            () {
+                              double price = 0;
+                              if (controller.currentPartyIndex.value == -2) {
+                                if (controller.currentTab.value == 0) {
+                                  for (final party in (controller.newFoodOrder.value?.partyOrders ?? <PartyOrder>[])) {
+                                    if (party.orderStatus != ORDER_STATUS.DONE) price += party.totalPrice;
+                                  }
+                                } else {
+                                  for (final party in (controller.foodOrder.value?.partyOrders ?? <PartyOrder>[])) {
+                                    if (party.orderStatus != ORDER_STATUS.DONE) price += party.totalPrice;
+                                  }
+                                }
+                              } else {
+                                price = controller.currentPartyOrder.value?.totalPrice ?? 0;
+                              }
+                              return Row(
+                                children: [
+                                  Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())),
+                                  Text(Utils.getCurrency(price))
+                                ],
+                              );
+                            },
                           ),
                           SizedBox(height: 6.h),
                         ],
@@ -163,11 +186,10 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     );
   }
 
-  Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder) {
+  Widget _buildPartyOrder(int partyIndex, PartyOrder partyOrder, bool isPartyOrderComplete) {
     final number = (partyOrder.partyNumber ?? 0) + 1;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
-    final isPartyOrderComplete = partyOrder.orderStatus == ORDER_STATUS.DONE;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,6 +324,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
     var isComplete = isPartyOrderComplete;
     if (partyIndex == -2) {
       isComplete = item.partyOrderStaus == ORDER_STATUS.DONE;
+      if (isComplete) return SizedBox();
     }
     return GestureDetector(
       onTap: () {
@@ -400,7 +423,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
 
   Widget _buildVoucherField(PartyOrder partyOrder) {
     String getVoucherDiscountText() {
-      if (partyOrder.voucherType == DiscountType.amount) {
+      if (partyOrder.voucherType == DiscountType.amount.toString()) {
         return Utils.getCurrency((partyOrder.voucherPrice ?? 0));
       } else {
         return '${partyOrder.voucherPrice}%';

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:food_delivery_app/constant/app_constant_key.dart';
 import 'package:food_delivery_app/models/account.dart';
 import 'package:food_delivery_app/models/check_in_out.dart';
@@ -5,9 +6,10 @@ import 'package:food_delivery_app/resourese/check_in_out/icheck_in_out_repositor
 import 'package:food_delivery_app/resourese/profile/iprofile_repository.dart';
 import 'package:food_delivery_app/resourese/service/account_service.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
+import 'package:food_delivery_app/widgets/loading.dart';
 import 'package:get/get.dart';
 
-class CheckInOutController extends GetxController {
+class CheckInOutController extends GetxController with GetSingleTickerProviderStateMixin {
   final ICheckInOutRepository checkInOutRepository;
   final IProfileRepository profileRepository;
   final AccountService accountService;
@@ -22,6 +24,11 @@ class CheckInOutController extends GetxController {
 
   var listCheckInOut = Rx<List<CheckInOut>?>([]);
 
+  final selectedCheckinCheckout = Rx<List<int>>([]);
+  final currentTab = Rx<int>(0);
+  final tab = [Tab(text: 'view'.tr), Tab(text: 'edit'.tr)];
+  late final tabCtr = TabController(length: 2, vsync: this);
+
   int page = 0;
   int limit = LIMIT;
 
@@ -29,6 +36,19 @@ class CheckInOutController extends GetxController {
   void onInit() {
     super.onInit();
     onRefresh();
+  }
+
+  @override
+  void onClose() {
+    selectedCheckinCheckout.close();
+    currentTab.close();
+    tabCtr.dispose();
+    super.onClose();
+  }
+
+  void onChangeTab(int tab) {
+    currentTab.value = tab;
+    selectedCheckinCheckout.value = [];
   }
 
   Future<void> onRefresh() async {
@@ -96,6 +116,36 @@ class CheckInOutController extends GetxController {
       DialogUtils.showInfoErrorDialog(content: "check_out_failed".tr);
     } finally {
       isLoadingCheckOut(false);
+    }
+  }
+
+  void onUpdateCurrentOrderSelect(bool isSelect, int id) {
+    if (isSelect) {
+      selectedCheckinCheckout.update((val) => val?.add(id));
+    } else {
+      selectedCheckinCheckout.update((val) => val?.remove(id));
+    }
+    selectedCheckinCheckout.refresh();
+  }
+
+  Future<void> onDeleteOrder() async {
+    if (currentTab.value == 0) {
+      excute(() async {
+        final result = await checkInOutRepository.onDeleteAll();
+        if (result) {
+          listCheckInOut.value = [];
+        }
+      });
+    } else {
+      if (selectedCheckinCheckout.value.isEmpty) return;
+      excute(() async {
+        final result = await checkInOutRepository.onDeleteCheckinOut(selectedCheckinCheckout.value);
+        if (result) {
+          final list = [...listCheckInOut.value!];
+          list.removeWhere((element) => selectedCheckinCheckout.value.contains(element.id));
+          listCheckInOut.value = list;
+        }
+      });
     }
   }
 }
