@@ -80,7 +80,7 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
   void onBack() async {
     if (hasCheckin) {
       final result =
-          await DialogUtils.showYesNoDialog(title: 'Bạn có muốn cập nhật đơn hàng với dữ liệu mới nhất không?');
+          await DialogUtils.showYesNoDialog(title: 'do_you_want_to_update_the_order_with_the_latest_data'.tr + '?');
       if (result == true) {
         final result = await updatePartyOrder();
         if (result == true) return;

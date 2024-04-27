@@ -106,7 +106,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                     DropdownButton<int>(
                         value: controller.currentPartyIndex.value,
                         items: [
-                          buildDropDownItem(-2, content: 'Alles'),
+                          buildDropDownItem(-2, content: 'alles_text'.tr),
                           if (controller.currentTab.value == 0) ...[
                             ...(controller.newFoodOrder.value!.partyOrders ?? []).asMap().entries.map((e) =>
                                 buildDropDownItem(e.key,
@@ -285,8 +285,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                       SizedBox(width: 24.w),
                       GestureDetector(
                         onTap: () async {
-                          final result =
-                              await DialogUtils.showYesNoDialog(title: 'Bạn có muốn xóa gang ${gangIndex + 1} không?');
+                          final result = await DialogUtils.showYesNoDialog(
+                              title: 'do_you_want_to_delete_the_gang'.trParams({'gangIndex': '${gangIndex + 1}'}));
                           if (result == true) {
                             controller.onRemoveGangIndex(gangIndex);
                           }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/routes/pages.dart';
 import 'package:food_delivery_app/widgets/dot_indicators.dart';
 import 'package:get/get.dart';
+
 import 'components/onboard_content.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -49,7 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 onPressed: () {
                   Get.offAllNamed(Routes.SIGNIN);
                 },
-                child: Text("Get Started".toUpperCase()),
+                child: Text("gets_started".tr.toUpperCase()),
               ),
             ),
             const Spacer(),

@@ -18,7 +18,7 @@ abstract class _ORDER_COLUMN_KEY {
   static const ORDER_ITEM_ID = 'order_item_id';
   static const ORDER_ID = 'order_id';
   static const ORDER_STATUS = 'order_status';
-  static const USER_ORDER_ID = 'user_order_id';
+  // static const USER_ORDER_ID = 'user_order_id';
 }
 
 class OrderRepository extends IOrderRepository {

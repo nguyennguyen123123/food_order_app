@@ -53,18 +53,17 @@ class EditTypeController extends GetxController {
     super.onInit();
     getListFoodType();
 
-    nameTypeController = TextEditingController(text: editType?.name);
-    desTypeController = TextEditingController(text: editType?.description);
+    nameTypeController = TextEditingController(text: editType.name);
+    desTypeController = TextEditingController(text: editType.description);
 
-    printerSelected.value =
-        editType?.printersIs.map((e) => printers.firstWhere((element) => element.id == e)).toList() ?? [];
+    printerSelected.value = editType.printersIs.map((e) => printers.firstWhere((element) => element.id == e)).toList();
   }
 
   Future<void> getListFoodType() async {
     final data = await foodRepository.getTypeFood();
 
     foodTypeList.value = data ?? <FoodType>[];
-    selectedFoodType.value = foodTypeList.firstWhereOrNull((element) => element.typeId == parameter?.foodType?.typeId);
+    selectedFoodType.value = foodTypeList.firstWhereOrNull((element) => element.typeId == parameter.foodType.typeId);
   }
 
   void addSelectedPrinter(Printer printer) {
@@ -79,7 +78,7 @@ class EditTypeController extends GetxController {
     try {
       isLoadingEditType(true);
 
-      final typeId = editType?.typeId ?? '';
+      final typeId = editType.typeId ?? '';
 
       if (typeId.isEmpty) return;
       late String url;
@@ -92,7 +91,7 @@ class EditTypeController extends GetxController {
         );
       }
       final newListId = printerSelected.value.map((e) => e.id ?? '').toList();
-      final oldListId = [...parameter.foodType.printersIs];
+      // final oldListId = [...parameter.foodType.printersIs];
 
       FoodType foodType = FoodType(
         typeId: typeId,

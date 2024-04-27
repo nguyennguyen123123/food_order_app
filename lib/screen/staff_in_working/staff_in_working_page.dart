@@ -39,12 +39,12 @@ class StaffInWorkingPage extends GetWidget<StaffInWorkingController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Ngày: $day', style: StyleThemeData.bold14()),
+              Text('date'.tr + ': $day', style: StyleThemeData.bold14()),
               SizedBox(height: 8.h),
-              Text('Tổng doanh thu: ${Utils.getCurrency(today.totalOrderPrice)}'),
+              Text('total_revenue'.tr + ': ${Utils.getCurrency(today.totalOrderPrice)}'),
               SizedBox(height: 12.h),
               Text(
-                'Tổng doanh thu hiện tại của các nhân viên trong ca làm: ${Utils.getCurrency(total)}',
+                'total_current_revenue_of_employees_in_the_shift'.tr + ': ${Utils.getCurrency(total)}',
               ),
               SizedBox(height: 12.h),
               Expanded(
@@ -72,13 +72,13 @@ class StaffInWorkingPage extends GetWidget<StaffInWorkingController> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          LineItemView(title: 'Tên nhân viên', content: account.name ?? ''),
+          LineItemView(title: 'employee_name'.tr, content: account.name ?? ''),
           SizedBox(height: 8.h),
-          LineItemView(title: 'Email', content: account.email ?? ''),
+          LineItemView(title: 'email'.tr, content: account.email ?? ''),
           SizedBox(height: 8.h),
           Divider(height: 1, color: appTheme.blackColor),
           SizedBox(height: 8.h),
-          LineItemView(title: 'Tổng tiền', content: Utils.getCurrency(account.totalOrderPrice)),
+          LineItemView(title: 'total_amount'.tr, content: Utils.getCurrency(account.totalOrderPrice)),
         ],
       ),
     );
