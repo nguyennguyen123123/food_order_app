@@ -9,6 +9,7 @@ class EditTableBinding implements Binding {
       EditTableController(
         parameter: Get.arguments,
         tableRepository: Get.find(),
+        areaRepository: Get.find()
       ),
     );
   }
