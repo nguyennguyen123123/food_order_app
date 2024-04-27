@@ -66,6 +66,7 @@ class TableManageControlller extends GetxController {
 
       TableModels tableModels = TableModels(
         tableId: getUuid(),
+        area: selectedAreaType.value,
         areaId: selectedAreaType.value?.areaId,
         tableNumber: tableNumberController.text.replaceAll(',', ''),
         createdAt: DateTime.now().toString(),
