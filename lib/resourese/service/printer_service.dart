@@ -36,75 +36,92 @@ class PrinterService extends GetxService {
     if (printers.value.isEmpty) return;
     showPrinterLoading();
     try {
-      for (final printer in printers.value) {
-        _printerHandler(foodOrder, printer);
-      }
-
-      await Future.delayed(const Duration(seconds: 1));
+      _onHandlePrinter(foodOrder);
+      await Future.delayed(const Duration(milliseconds: 5000));
     } catch (e) {
       print(e);
     }
     dissmissLoading();
   }
 
-  Future<void> _printerHandler(FoodOrder foodOrder, Printer printer) async {
-    const PaperSize paper = PaperSize.mm80;
-    final profile = await CapabilityProfile.load();
-    final networkPrinter = NetworkPrinter(paper, profile);
-
-    final res = await networkPrinter.connect(printer.ip ?? '', port: int.tryParse(printer.port ?? '9100') ?? 9100);
-    if (res == PosPrintResult.success) {
-      await Future.wait((foodOrder.partyOrders ?? []).map((e) => _printReceipt(foodOrder, e, printer, networkPrinter)));
-      networkPrinter.disconnect();
+  Future<void> _onHandlePrinter(FoodOrder foodOrder) async {
+    for (final printer in printers.value) {
+      await _printerHandler(foodOrder, printer);
     }
   }
 
-  Future<void> _printReceipt(
-      FoodOrder foodOrder, PartyOrder partyOrder, Printer printer, NetworkPrinter networkPrinter) async {
+  Future<void> _printerHandler(FoodOrder foodOrder, Printer printer) async {
+    try {
+      const PaperSize paper = PaperSize.mm80;
+      final profile = await CapabilityProfile.load();
+      final networkPrinter = NetworkPrinter(paper, profile);
+
+      final res = await networkPrinter.connect(printer.ip ?? '', port: int.tryParse(printer.port ?? '9100') ?? 9100);
+      if (res == PosPrintResult.success) {
+        await Future.wait((foodOrder.partyOrders ?? []).map((partyOrder) async {
+          final items = (partyOrder.orderItems ?? <OrderItem>[]).where((element) {
+            final printerIds = element.food?.foodType?.printersIs ?? <String>[];
+            return printerIds.isEmpty || printerIds.contains(printer.id);
+          }).toList();
+          if (items.isEmpty) return;
+          items.sort((a, b) => (a.sortOder) > (b.sortOder) ? 1 : -1);
+          await _printReceipt(foodOrder, partyOrder, items, printer, networkPrinter);
+        }));
+        networkPrinter.disconnect();
+      }
+      printerRepository.log('Sucess', '', printer.id ?? '');
+    } catch (e) {
+      print(e.toString());
+      printerRepository.log('Error', e.toString(), printer.id ?? '');
+    }
+  }
+
+  Future<void> _printReceipt(FoodOrder foodOrder, PartyOrder partyOrder, List<OrderItem> orderItems, Printer printer,
+      NetworkPrinter networkPrinter) async {
     void createRowTitle(NetworkPrinter networkPrinter, String title, String content,
-        {PosTextSize contentSize = PosTextSize.size1, PosColumn? custom}) {
+        {PosTextSize contentSize = PosTextSize.size1, PosColumn? custom, int contentWidth = 8}) {
       networkPrinter.row([
         PosColumn(text: title, width: 4),
-        PosColumn(text: content, styles: PosStyles(height: contentSize, width: contentSize)),
+        PosColumn(text: content, width: contentWidth, styles: PosStyles(height: contentSize, width: contentSize)),
         if (custom != null) custom
       ]);
     }
 
     void createOrderItemRow(NetworkPrinter networkPrinter, OrderItem orderItem) {
-      networkPrinter.text(orderItem.food?.name ?? '',
-          styles: PosStyles(height: PosTextSize.size5, width: PosTextSize.size5));
       final price = orderItem.food?.price ?? 0;
       final quantity = orderItem.quantity;
-      final priceText = Utils.getCurrency(price);
-      networkPrinter.text('($priceText x $quantity) ${Utils.getCurrency(price * quantity)}',
-          styles: PosStyles(align: PosAlign.right));
-      networkPrinter.feed(1);
+      networkPrinter.text('${quantity}x' + "  " + (orderItem.food?.name ?? ''),
+          styles: PosStyles(height: PosTextSize.size2, width: PosTextSize.size2));
+
+      final priceText = Utils.getCurrency(orderItem.food?.price, removeCurrencyFormat: true);
+      networkPrinter.row([
+        PosColumn(
+            text: '($priceText) ${Utils.getCurrency(price * quantity, removeCurrencyFormat: true)}',
+            width: 12,
+            styles: PosStyles(align: PosAlign.right, height: PosTextSize.size2, width: PosTextSize.size2)),
+      ]);
+      // networkPrinter.text('($priceText x $quantity) ${Utils.getCurrency(price * quantity, removeCurrencyFormat: true)}',
+      //     styles: PosStyles(align: PosAlign.right));
       networkPrinter.hr();
-      networkPrinter.feed(1);
     }
 
     final date = DateTime.tryParse(foodOrder.createdAt ?? '') ?? DateTime.now();
     networkPrinter.feed(4);
     createRowTitle(networkPrinter, 'Bon', (foodOrder.bondNumber ?? 1).toString(),
-        contentSize: PosTextSize.size4, custom: PosColumn(text: 'Gangbon'));
+        contentWidth: 4, contentSize: PosTextSize.size2, custom: PosColumn(text: 'Gangbon', width: 4));
     createRowTitle(networkPrinter, 'Datum', DateFormat(PRINTER_DAY_FORMAT).format(date),
         contentSize: PosTextSize.size1);
     createRowTitle(networkPrinter, 'Bedient von', foodOrder.userOrder?.role ?? USER_ROLE.STAFF,
         contentSize: PosTextSize.size1);
     createRowTitle(networkPrinter, 'Terminal', '15a24e3a', contentSize: PosTextSize.size1);
-    createRowTitle(networkPrinter, 'Tisch', 'Tisch ${foodOrder.tableNumber ?? '0'}', contentSize: PosTextSize.size6);
+    createRowTitle(networkPrinter, 'Tisch', 'Tisch ${foodOrder.tableNumber ?? '0'}', contentSize: PosTextSize.size2);
     if (partyOrder.partyNumber != null) {
-      createRowTitle(networkPrinter, 'Partei', 'Partei ${partyOrder.partyNumber ?? 1}', contentSize: PosTextSize.size6);
+      createRowTitle(networkPrinter, 'Partei', 'Partei ${(partyOrder.partyNumber ?? 0) + 1}',
+          contentSize: PosTextSize.size2);
     }
 
     networkPrinter.hr();
-    final orderItem = (partyOrder.orderItems ?? <OrderItem>[]).where((element) {
-      final printerIds = element.food?.foodType?.printersIs ?? <String>[];
-      return printerIds.isEmpty || printerIds.contains(printer.id);
-    }).toList();
-
-    orderItem.sort((a, b) => (a.sortOder) > (b.sortOder) ? 1 : -1);
-    for (final item in orderItem) {
+    for (final item in orderItems) {
       createOrderItemRow(networkPrinter, item);
     }
     networkPrinter.feed(2);

@@ -36,6 +36,7 @@ abstract class TABLE_NAME {
   static const AREA = 'area';
   static const SUMMARIZE_ORDER = 'summarize_order';
   static const FOOD_TYPE_PRINTER = 'food_type_printer';
+  static const PRINTER_LOG = 'printer_log';
 }
 
 abstract class ERROR_CODE {

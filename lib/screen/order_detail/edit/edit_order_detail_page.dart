@@ -49,7 +49,8 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                   GestureDetector(
                       onTap: () => controller.printerService.onStartPrint(controller.parameter.foodOrder),
                       child: Icon(Icons.print, size: 30)),
-                if (isOrderNonComplete && controller.hasCheckin)
+                if (isOrderNonComplete && controller.hasCheckin) ...[
+                  SizedBox(width: 12.w),
                   GestureDetector(
                       onTap: () async {
                         final result = await DialogUtils.showDialogView(
@@ -59,6 +60,7 @@ class EditOrderDetailPage extends GetWidget<EditOrderDetailController> {
                         }
                       },
                       child: ImageAssetCustom(imagePath: ImagesAssets.waiter, size: 30)),
+                ],
                 SizedBox(width: 12.w),
                 if (isOrderNonComplete && controller.isAdmin)
                   GestureDetector(

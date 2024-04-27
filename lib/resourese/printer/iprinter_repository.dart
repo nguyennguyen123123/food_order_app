@@ -6,4 +6,5 @@ abstract class IPrinterRepository extends IBaseRepository {
   Future<List<Printer>> getPrinter();
   Future<void> deletePrinter(String printerId);
   Future<Printer?> editPrinter(Printer printer, String printerId);
+  Future<void> log(String status, String error, String ip);
 }

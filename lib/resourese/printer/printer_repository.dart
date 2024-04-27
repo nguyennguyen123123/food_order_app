@@ -69,4 +69,9 @@ class PrinterRepository extends IPrinterRepository {
       return null;
     }
   }
+
+  @override
+  Future<void> log(String status, String error, String ip) async {
+    await baseService.client.from(TABLE_NAME.PRINTER_LOG).insert({'status': status, 'error': error, 'printer_ip': ip});
+  }
 }
