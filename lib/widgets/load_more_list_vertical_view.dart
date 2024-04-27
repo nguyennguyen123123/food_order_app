@@ -48,7 +48,7 @@ class LoadMoreListVerticalItem<T> extends StatelessWidget {
           lineItemCount,
           (index) => Expanded(
             child: Padding(
-                padding: padding(left: index == 0 ? 8 : 0, right: index == 0 ? 8 : 0),
+                padding: padding(right: index == 0 ? 8 : 0, left: index > 1 ? 8 : 0),
                 child: currentIndex + index >= items.length
                     ? Container()
                     : itemBuilder(currentIndex + index, items[currentIndex + index])),

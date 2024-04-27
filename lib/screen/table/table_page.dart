@@ -4,7 +4,7 @@ import 'package:food_delivery_app/models/food_order.dart';
 import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
-import 'package:food_delivery_app/widgets/list_vertical_item.dart';
+import 'package:food_delivery_app/widgets/load_more_list_vertical_view.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
@@ -77,12 +77,11 @@ class TablePage extends GetWidget<TableControlller> {
                       return Expanded(
                         child: RefreshIndicator(
                           onRefresh: controller.getListTable,
-                          child: ListVerticalItem<TableModels>(
-                            physics: AlwaysScrollableScrollPhysics(),
+                          child: LoadMoreListVerticalItem<TableModels>(
                             items: controller.tableList.value!,
+                            loadMore: controller.onLoadMore,
                             lineItemCount: 2,
-                            paddingBetweenItem: 8.w,
-                            paddingBetweenLine: 8.w,
+                            viewPadding: padding(),
                             divider: SizedBox(height: 8.h),
                             itemBuilder: (index, item) => itemTableView(item),
                           ),

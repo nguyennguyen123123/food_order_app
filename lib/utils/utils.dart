@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 class Utils {
   static String getCurrency(double? price, {bool removeCurrencyFormat = false}) {
     if (removeCurrencyFormat) {
-      return NumberFormat('#,###').format(price ?? 0);
+      return NumberFormat.simpleCurrency(name: '').format(price ?? 0);
     }
     return NumberFormat.simpleCurrency(name: '€').format(price ?? 0);
   }

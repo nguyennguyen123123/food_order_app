@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/voucher.dart';
 import 'package:food_delivery_app/screen/voucher/edit/edit_voucher_controller.dart';
@@ -40,9 +39,9 @@ class EditVoucherView extends GetWidget<EditVoucherController> {
               ),
               SizedBox(height: 12.h),
               Obx(() {
-                final inputFormatter = controller.selectedType.value == DiscountType.percentage
-                    ? FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
-                    : FilteringTextInputFormatter.digitsOnly;
+                // final inputFormatter = controller.selectedType.value == DiscountType.percentage
+                //     ? FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
+                //     : FilteringTextInputFormatter.digitsOnly;
 
                 return EditTextFieldCustom(
                   controller: controller.discountValueController,
@@ -50,8 +49,10 @@ class EditVoucherView extends GetWidget<EditVoucherController> {
                   label: 'discount_value'.tr,
                   suffix: Icon(Icons.description),
                   textInputType: TextInputType.number,
-                  numberFormat: NumericTextFormatter(),
-                  inputFormatter: inputFormatter,
+                  numberFormat: controller.selectedType.value == DiscountType.percentage
+                      ? PercentageTextFormatter()
+                      : NumericTextFormatter(),
+                  // inputFormatter: inputFormatter,
                 );
               }),
               SizedBox(height: 12.h),

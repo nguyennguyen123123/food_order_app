@@ -169,4 +169,22 @@ class TableRepository extends ITableRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<List<TableModels>> getListTable({int page = 0, int limit = LIMIT}) async {
+    try {
+      var query = baseService.client.from(TABLE_NAME.TABLE).select('''
+          *, 
+          area_id(*)''');
+      final response = await query
+          .limit(limit)
+          .range(page * limit, (page + 1) * limit)
+          .withConverter((data) => data.map((e) => TableModels.fromJson(e)).toList());
+
+      return response.toList();
+    } catch (error) {
+      handleError(error);
+      rethrow;
+    }
+  }
 }

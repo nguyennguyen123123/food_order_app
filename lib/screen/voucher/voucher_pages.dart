@@ -47,7 +47,8 @@ class VoucherPages extends GetWidget<VoucherController> {
                             itemCount: controller.voucherList.value!.length,
                             separatorBuilder: (context, index) => SizedBox(height: 8.h),
                             itemBuilder: (context, index) => GestureDetector(
-                              onLongPressStart: (ontap) => Get.toNamed(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => Get.toNamed(
                                 Routes.EDITVOUCHER,
                                 arguments: VoucherParameter(voucher: controller.voucherList.value![index]),
                               ),

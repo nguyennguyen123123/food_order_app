@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/screen/printer/printer_controller.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
-import 'package:food_delivery_app/utils/number_formatter.dart';
 import 'package:food_delivery_app/widgets/confirmation_button_widget.dart';
 import 'package:food_delivery_app/widgets/edit_text_field_custom.dart';
 import 'package:food_delivery_app/widgets/reponsive/extension.dart';
@@ -29,7 +28,6 @@ class AddPrinterView extends GetWidget<PrinterController> {
                 label: 'IP',
                 suffix: Icon(Icons.title),
                 textInputType: TextInputType.number,
-                numberFormat: NumericTextFormatter(),
               ),
               SizedBox(height: 12.h),
               EditTextFieldCustom(

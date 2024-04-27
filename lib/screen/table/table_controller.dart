@@ -157,13 +157,6 @@ class TableControlller extends GetxController {
     }
   }
 
-  void updateTable(TableModels updatedTable) {
-    final index = tableList.value?.indexWhere((table) => table.tableId == updatedTable.tableId) ?? -1;
-    if (index != -1) {
-      tableList.value![index] = updatedTable;
-    }
-  }
-
   Future<void> getListAreaTable(String areaId) async {
     if (currentAreaId.value == areaId) return;
     currentAreaId.value = areaId;
