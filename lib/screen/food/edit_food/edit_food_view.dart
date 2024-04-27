@@ -29,7 +29,7 @@ class EditFoodView extends GetWidget<EditFoodController> {
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(Icons.arrow_back, color: appTheme.blackColor),
               ),
-              Text('Chỉnh sửa món', style: StyleThemeData.bold18(height: 0)),
+              Text('edit_food'.tr, style: StyleThemeData.bold18(height: 0)),
             ],
           ),
         ),
@@ -71,41 +71,41 @@ class EditFoodView extends GetWidget<EditFoodController> {
                                   borderRadius: BorderRadius.circular(8),
                                   color: appTheme.backgroundContainer,
                                 ),
-                                child: Text('Chọn ảnh', style: StyleThemeData.regular14()),
+                                child: Text('select_image'.tr, style: StyleThemeData.regular14()),
                               );
                   },
                 ),
                 ElevatedButton(
                   onPressed: controller.imageFromGallery,
-                  child: Text('Chọn ảnh', style: StyleThemeData.regular14()),
+                  child: Text('select_image'.tr, style: StyleThemeData.regular14()),
                 ),
                 SizedBox(height: 8.h),
                 EditTextFieldCustom(
                   controller: controller.nameController,
-                  hintText: 'Tên món ăn',
-                  label: 'Tên món ăn',
+                  hintText: 'food_name'.tr,
+                  label: 'food_name'.tr,
                   suffix: Icon(Icons.title),
                   textInputType: TextInputType.text,
                 ),
                 SizedBox(height: 8.h),
                 EditTextFieldCustom(
                   controller: controller.desController,
-                  hintText: 'Mô tả món ăn',
-                  label: 'Mô tả món ăn',
+                  hintText: 'food_description'.tr,
+                  label: 'food_description'.tr,
                   suffix: Icon(Icons.description),
                   textInputType: TextInputType.text,
                 ),
                 SizedBox(height: 8.h),
                 EditTextFieldCustom(
                   controller: controller.priceController,
-                  hintText: 'Giá món ăn',
-                  label: 'Giá món ăn',
+                  hintText: 'food_price'.tr,
+                  label: 'food_price'.tr,
                   suffix: Icon(Icons.price_change),
                   textInputType: TextInputType.number,
                   numberFormat: NumericTextFormatter(),
                 ),
                 SizedBox(height: 8.h),
-                Align(alignment: Alignment.centerLeft, child: Text('Phân loại', style: StyleThemeData.bold14())),
+                Align(alignment: Alignment.centerLeft, child: Text('food_type'.tr, style: StyleThemeData.bold14())),
                 SizedBox(height: 4.h),
                 Obx(
                   () => Container(
@@ -117,7 +117,7 @@ class EditFoodView extends GetWidget<EditFoodController> {
                     padding: padding(horizontal: 8),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<FoodType>(
-                        hint: Text('Chọn phân loại', style: StyleThemeData.regular16()),
+                        hint: Text('select_category'.tr, style: StyleThemeData.regular16()),
                         value: controller.selectedFoodType.value,
                         onChanged: (FoodType? newValue) {
                           controller.selectedFoodType.value = newValue!;
@@ -137,7 +137,7 @@ class EditFoodView extends GetWidget<EditFoodController> {
                   () => ConfirmationButtonWidget(
                     isLoading: controller.isLoading.isTrue,
                     onTap: controller.onEditFood,
-                    text: 'Chỉnh sửa',
+                    text: 'edit'.tr,
                   ),
                 ),
               ],

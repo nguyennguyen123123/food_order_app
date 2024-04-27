@@ -68,7 +68,7 @@ class CreateAndOrderTablePage extends GetWidget<CreateAndOrderTableController> {
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<TableModels>(
                           value: controller.currentTable.value,
-                          hint: Text('Danh sách bàn'.tr, style: StyleThemeData.regular16()),
+                          hint: Text('list_of_tables'.tr, style: StyleThemeData.regular16()),
                           onChanged: (TableModels? newValue) => controller.onSelectTable(newValue),
                           items: controller.tablesArea.value?.map((TableModels table) {
                                 return DropdownMenuItem<TableModels>(

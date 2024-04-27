@@ -29,7 +29,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
             if (controller.accountService.isAdmin)
               GestureDetector(
                   onTap: () async {
-                    final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa đơn này không?');
+                    final result = await DialogUtils.showYesNoDialog(title: 'delete_order_title'.tr);
                     if (result == true) {
                       controller.onDeleteOrder();
                     }
@@ -77,7 +77,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (number != null) ...[
-          Text('party number: $number', style: StyleThemeData.bold18()),
+          Text('party_index'.trParams({'number': '$number'}), style: StyleThemeData.bold18()),
           SizedBox(height: 8.h),
         ],
         if (maxGang == null)
@@ -91,7 +91,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
           _buildOrderItemByGangIndex(partyIndex, maxGang, orderItems),
         SizedBox(height: 6.h),
         if (partyOrder.voucherPrice != null) ...[
-          Text('Áp dụng mã giảm giá: Giảm ${Utils.getCurrency((partyOrder.voucherPrice ?? 0))}')
+          Text('apply_voucher_price'.trParams({'number': Utils.getCurrency((partyOrder.voucherPrice ?? 0))}))
         ],
         Row(
           children: [Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())), Text(Utils.getCurrency(total))],
@@ -113,7 +113,8 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
                 child: Row(
                   children: [
                     Expanded(
-                        child: Text('Gang ${gangIndex + 1}', style: StyleThemeData.bold16(color: appTheme.greyColor))),
+                        child: Text('gang_index'.trParams({'number': '${gangIndex + 1}'}),
+                            style: StyleThemeData.bold16(color: appTheme.greyColor))),
                   ],
                 ),
               ),

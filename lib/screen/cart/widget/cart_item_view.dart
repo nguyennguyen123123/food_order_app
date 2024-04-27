@@ -64,7 +64,9 @@ class CartItemView extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: () async {
-                  final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa món ăn này khỏi đơn không?');
+                  final result = await DialogUtils.showYesNoDialog(
+                    title: 'do_you_want_to_remove_this_dish_from_the_order'.tr + '?',
+                  );
                   if (result == true) {
                     removeCartItem();
                   }

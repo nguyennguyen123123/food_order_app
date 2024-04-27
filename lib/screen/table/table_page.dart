@@ -100,7 +100,7 @@ class TablePage extends GetWidget<TableControlller> {
                   color: Colors.black.withOpacity(0.2),
                   child: Center(
                       child: Text(
-                    "Bạn cần check in trước khi vào đặt bàn",
+                    "warning_checkin".tr,
                     textAlign: TextAlign.center,
                     style: StyleThemeData.bold24(),
                   )),
@@ -130,7 +130,7 @@ class TablePage extends GetWidget<TableControlller> {
             ),
             if (table.foodOrder != null) ...[
               SizedBox(height: 4.h),
-              Text('Đơn hàng: ${table.foodOrder?.totalPriceInTable.toStringAsFixed(2)}',
+              Text('price_order'.trParams({'price': '${table.foodOrder?.totalPriceInTable.toStringAsFixed(2)}'}),
                   textAlign: TextAlign.center, style: StyleThemeData.regular10())
             ]
           ],

@@ -73,7 +73,7 @@ class AddTableView extends GetWidget<TableManageControlller> {
                         padding: padding(horizontal: 8),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<TableModels>(
-                            hint: Text('Danh sách bàn'.tr, style: StyleThemeData.regular16()),
+                            hint: Text('list_of_tables'.tr, style: StyleThemeData.regular16()),
                             onChanged: (TableModels? newValue) {},
                             items: controller.tablesArea.value?.map((TableModels table) {
                                   return DropdownMenuItem<TableModels>(

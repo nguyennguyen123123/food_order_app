@@ -53,8 +53,8 @@ class HomeMain extends GetWidget<MainController> {
                   //         )
                   //       : null,
                   // ),
-                  _bottomAppBarItem(context, icon: IconAssets.cancelIcon, page: 0, label: 'Bàn'),
-                  _bottomAppBarItem(context, icon: IconAssets.settingsIcon, page: 1, label: 'Hồ sơ'),
+                  _bottomAppBarItem(context, icon: IconAssets.cancelIcon, page: 0, label: 'table'.tr),
+                  _bottomAppBarItem(context, icon: IconAssets.settingsIcon, page: 1, label: 'profile_text'.tr),
                 ],
               ),
             ),
