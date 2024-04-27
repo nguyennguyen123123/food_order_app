@@ -120,7 +120,9 @@ class HistoryOrderPage extends GetWidget<HistoryOrderController> {
                 ),
                 if (isPartyOrder) ...[
                   SizedBox(height: 6.h),
-                  Center(child: Text('Số lượng đơn hàng party: $numberOfParty', style: StyleThemeData.regular16()))
+                  Center(
+                      child: Text('total_party_in_order'.trParams({'number': '$numberOfParty'}),
+                          style: StyleThemeData.regular16()))
                 ]
               ],
             ),

@@ -33,7 +33,7 @@ class SignInController extends GetxController {
     } catch (e) {
       print(e);
       dissmissLoading();
-      DialogUtils.showInfoErrorDialog(content: 'Lỗi đăng nhập. Vui lòng kiểm tra mật khẩu');
+      DialogUtils.showInfoErrorDialog(content: 'error_login'.tr);
     }
   }
 

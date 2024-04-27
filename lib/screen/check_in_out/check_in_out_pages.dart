@@ -25,7 +25,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
         title: Row(
           children: [
             IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back, color: appTheme.blackText)),
-            Text('Checking', style: StyleThemeData.bold18(height: 0)),
+            Text('checking'.tr, style: StyleThemeData.bold18(height: 0)),
           ],
         ),
         actions: controller.accountService.isAdmin
@@ -71,7 +71,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                                   : Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text('Check In',
+                                        Text('checkin'.tr,
                                             style: StyleThemeData.bold18(height: 0, color: appTheme.appColor)),
                                         if (controller.account?.checkInTime != null) ...[
                                           SizedBox(height: 5.h),
@@ -106,7 +106,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                                       height: 20.h,
                                       child: CircularProgressIndicator(color: appTheme.whiteText),
                                     )
-                                  : Text('Check Out',
+                                  : Text('checkout'.tr,
                                       style: StyleThemeData.bold18(height: 0, color: appTheme.whiteText)),
                             ),
                           ),
@@ -117,7 +117,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                 ),
               ),
             ),
-            Text('Tổng tiền thu được trong ca làm', style: StyleThemeData.bold18()),
+            Text('total_price_working'.tr, style: StyleThemeData.bold18()),
             SizedBox(height: 4.h),
             Text(Utils.getCurrency(controller.accountService.myAccount?.totalOrderPrice),
                 style: StyleThemeData.regular16()),
@@ -193,7 +193,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Check in', style: StyleThemeData.regular16()),
+                          Text('checkin'.tr, style: StyleThemeData.regular16()),
                           SizedBox(height: 8.h),
                           Text(
                             data.checkInTime != null
@@ -208,7 +208,7 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text('Check out', style: StyleThemeData.regular16()),
+                          Text('checkout'.tr, style: StyleThemeData.regular16()),
                           SizedBox(height: 8.h),
                           Text(
                             data.checkOutTime != null

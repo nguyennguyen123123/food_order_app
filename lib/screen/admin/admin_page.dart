@@ -12,17 +12,17 @@ class AdminPage extends GetWidget<AdminController> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.FOOD), text: "Tạo món ăn"),
+          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.FOOD), text: "create_food".tr),
           SizedBox(height: 24.h),
           ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.STAFF_MANAGE), text: "create_staff".tr),
           SizedBox(height: 24.h),
-          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.TABLEMANAGE), text: 'Quản lý số bàn'),
+          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.TABLEMANAGE), text: 'table_manage'.tr),
           SizedBox(height: 24.h),
-          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.AREA), text: 'Khu vực'),
+          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.AREA), text: 'area'.tr),
           SizedBox(height: 24.h),
-          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.PRINT), text: 'Quản lý máy in'),
+          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.PRINT), text: 'printer_management'.tr),
           SizedBox(height: 24.h),
-          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.VOUCHER), text: 'Voucher'),
+          ConfirmationButtonWidget(onTap: () => Get.toNamed(Routes.VOUCHER), text: 'voucher'.tr),
         ],
       ),
     );

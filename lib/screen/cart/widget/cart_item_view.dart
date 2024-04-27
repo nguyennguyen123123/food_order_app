@@ -49,7 +49,7 @@ class CartItemView extends StatelessWidget {
                       updateQuantity: (value) => updateQuantity(value),
                     ),
                     SizedBox(width: 4.w),
-                    Text('Party ${orderItem.partyIndex + 1}'),
+                    Text('party_index'.trParams({'number': '${orderItem.partyIndex + 1}'})),
                   ],
                 )
               else
