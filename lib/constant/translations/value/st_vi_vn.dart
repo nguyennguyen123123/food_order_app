@@ -175,5 +175,12 @@ const Map<String, String> viVN = {
   "total_profit": "Tổng doanh thu",
   "edit_food_type": "Chỉnh sửa phân loại",
   "printer": "Máy in",
-  "select_printer": "Chọn máy in"
+  "select_printer": "Chọn máy in",
+  "edit_dish": "Chỉnh sửa món",
+  "do_you_want_to_remove_this_dish_from_the_order": "Bạn muốn xóa món ăn này khỏi đơn không",
+  "the_number_of_party_orders": "Số lượng đơn hàng party",
+  "table": "Bàn",
+  "profile_text": "Hồ sơ",
+  "list_of_tables": "Danh sách bàn",
+  "party_number": "Số lượng buổi tiệc",
 };

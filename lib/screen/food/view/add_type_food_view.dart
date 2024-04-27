@@ -100,7 +100,7 @@ class AddTypeFoodView extends GetWidget<FoodController> {
                   ),
                 ),
                 SizedBox(height: 8.h),
-                Align(alignment: Alignment.centerLeft, child: Text('Máy in'.tr, style: StyleThemeData.bold14())),
+                Align(alignment: Alignment.centerLeft, child: Text('printer'.tr, style: StyleThemeData.bold14())),
                 SizedBox(height: 4.h),
                 Container(
                   width: MediaQuery.of(context).size.width.w,
@@ -111,7 +111,7 @@ class AddTypeFoodView extends GetWidget<FoodController> {
                   padding: padding(horizontal: 8),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<Printer>(
-                      hint: Text('Chọn máy in'.tr, style: StyleThemeData.regular16()),
+                      hint: Text('select_printer'.tr, style: StyleThemeData.regular16()),
                       // value: controller.selectedPrinterType.value,
                       onChanged: (Printer? newValue) {
                         if (newValue != null) {

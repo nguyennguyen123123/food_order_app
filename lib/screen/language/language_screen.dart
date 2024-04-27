@@ -38,7 +38,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 icon: Icon(Icons.arrow_back, color: appTheme.blackColor),
               ),
               SizedBox(width: 8.w),
-              Text('Ngôn ngữ', style: StyleThemeData.bold14(height: 0)),
+              Text('language'.tr, style: StyleThemeData.bold14(height: 0)),
             ],
           ),
         ),

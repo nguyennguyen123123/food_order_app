@@ -159,5 +159,13 @@ const Map<String, String> enUS = {
   "total_profit": "Total profit",
   "edit_food_type": "Edit food type",
   "printer": "Printer",
-  "select_printer": "Select printer"
+  "select_printer": "Select printer",
+  "edit_dish": "Edit food",
+  "do_you_want_to_remove_this_dish_from_the_order": "Do you want to remove this dish from the order",
+  "the_number_of_party_orders": "The number of party orders",
+  "table": "Table",
+  "profile_text": "Profile",
+  "list_of_tables": "List of tables",
+  "party_number": "Party number",
+
 };

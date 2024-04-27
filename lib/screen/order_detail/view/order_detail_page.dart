@@ -31,7 +31,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
             if (controller.parameter.canEdit)
               GestureDetector(
                   onTap: () async {
-                    final result = await DialogUtils.showYesNoDialog(title: 'Bạn muốn xóa đơn này không?');
+                    final result = await DialogUtils.showYesNoDialog(title: 'delete_order_title'.tr);
                     if (result == true) {
                       controller.onDeleteOrder();
                     }
@@ -77,7 +77,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
       if (a == null) {
         return b.sortOder;
       } else {
-        return (b.sortOder ?? 0) > a ? b.sortOder : a;
+        return (b.sortOder) > a ? b.sortOder : a;
       }
     });
     return Column(
@@ -86,7 +86,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
         if (number != null) ...[
           Row(
             children: [
-              Expanded(child: Text('party number: $number', style: StyleThemeData.bold18())),
+              Expanded(child: Text('party_number'.tr + ': $number', style: StyleThemeData.bold18())),
               if (controller.parameter.canEdit)
                 GestureDetector(
                     onTap: () async {
@@ -111,7 +111,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
           _buildOrderItemByGangIndex(partyIndex, maxGang, orderItems),
         SizedBox(height: 6.h),
         if (partyOrder.voucherPrice != null) ...[
-          Text('Áp dụng mã giảm giá: Giảm ${Utils.getCurrency((partyOrder.voucherPrice ?? 0))}')
+          Text('apply_voucher_price'.trParams({'number': Utils.getCurrency((partyOrder.voucherPrice ?? 0))}))
         ],
         Row(
           children: [Expanded(child: Text('total'.tr, style: StyleThemeData.bold18())), Text(Utils.getCurrency(total))],

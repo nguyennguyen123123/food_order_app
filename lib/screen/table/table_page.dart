@@ -113,7 +113,7 @@ class TablePage extends GetWidget<TableControlller> {
             ),
             if (table.foodOrder != null) ...[
               SizedBox(height: 4.h),
-              Text('Đơn hàng: ${table.foodOrder?.totalPrice.toStringAsFixed(2)}',
+              Text('order'.tr + ': ${table.foodOrder?.totalPrice.toStringAsFixed(2)}',
                   textAlign: TextAlign.center, style: StyleThemeData.regular10())
             ]
           ],

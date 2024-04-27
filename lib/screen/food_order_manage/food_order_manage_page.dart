@@ -85,7 +85,7 @@ class FoodOrderManagePage extends GetWidget<FoodOrderManageController> {
           ),
           if (isPartyOrder) ...[
             SizedBox(height: 6.h),
-            Center(child: Text('Số lượng đơn hàng party: $numberOfParty', style: StyleThemeData.regular16()))
+            Center(child: Text('the_number_of_party_orders'.tr + ': $numberOfParty', style: StyleThemeData.regular16()))
           ]
         ],
       ),
