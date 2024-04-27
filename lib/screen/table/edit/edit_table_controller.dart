@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/models/area.dart';
 import 'package:food_delivery_app/models/table_models.dart';
+import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/screen/table/table_controller.dart';
 import 'package:food_delivery_app/screen/table/table_parameter.dart';
@@ -8,21 +10,32 @@ import 'package:get/get.dart';
 
 class EditTableController extends GetxController {
   final ITableRepository tableRepository;
+  final IAreaRepository areaRepository;
   final TableParameter? parameter;
 
   TableModels? get tableParametar => parameter?.tableModels;
 
-  EditTableController({required this.tableRepository, this.parameter});
+  EditTableController({required this.tableRepository, required this.areaRepository, this.parameter});
 
   var isLoading = false.obs;
 
   late TextEditingController tableNumberController;
 
+  var areaList = <Area>[].obs;
+  var selectedArea = Rx<Area?>(null);
+
   @override
   void onInit() {
     super.onInit();
-
+    getListArea();
     tableNumberController = TextEditingController(text: tableParametar?.tableNumber.toString());
+  }
+
+  Future<void> getListArea() async {
+    final data = await areaRepository.getArea();
+    areaList.assignAll(data);
+    
+    selectedArea.value = areaList.firstWhereOrNull((element) => element.areaId == parameter?.tableModels?.area?.areaId);
   }
 
   void editTable() async {
@@ -33,7 +46,8 @@ class EditTableController extends GetxController {
       isLoading(true);
       TableModels tableModels = TableModels(
         tableId: tableId,
-        tableNumber: tableNumberController.text.replaceAll(',', ''),
+        tableNumber: tableParametar!.tableNumber,
+        areaId: selectedArea.value?.areaId,
         createdAt: tableParametar?.createdAt,
       );
 
