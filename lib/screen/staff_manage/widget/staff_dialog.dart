@@ -21,6 +21,8 @@ class _StaffDialogState extends State<StaffDialog> {
   final emailController = TextEditingController();
   final roleController = TextEditingController();
   final genderController = TextEditingController();
+  final passwordController = TextEditingController();
+  final isObscureNotifier = ValueNotifier(true);
   var roleKey = '';
   var genderKey = '';
   final validateForm = Rx(false);
@@ -45,6 +47,8 @@ class _StaffDialogState extends State<StaffDialog> {
     emailController.dispose();
     genderController.dispose();
     roleController.dispose();
+    passwordController.dispose();
+    isObscureNotifier.dispose();
     super.dispose();
   }
 
@@ -70,17 +74,19 @@ class _StaffDialogState extends State<StaffDialog> {
         email: emailController.text,
         role: roleKey,
         gender: genderKey,
+        password: passwordController.text,
       ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: padding(all: 12),
-      child: Obx(
-        () => Column(
-          mainAxisSize: MainAxisSize.min,
+    return Obx(
+      () => SizedBox(
+        height: 500.h,
+        width: 300.w,
+        child: ListView(
+          padding: padding(all: 12),
           children: [
             Text('info_account'.tr, style: StyleThemeData.bold16()),
             EditTextFieldCustom(
@@ -102,6 +108,24 @@ class _StaffDialogState extends State<StaffDialog> {
               isShowErrorText: validateForm.value,
             ),
             SizedBox(height: 8.h),
+            if (widget.account == null) ...[
+              ValueListenableBuilder<bool>(
+                valueListenable: isObscureNotifier,
+                builder: (context, isObscure, child) => EditTextFieldCustom(
+                  label: 'password'.tr,
+                  hintText: 'enter_password'.tr,
+                  isRequire: true,
+                  canEdit: widget.account == null,
+                  controller: passwordController,
+                  isShowErrorText: validateForm.value,
+                  isObscure: isObscure,
+                  suffix: GestureDetector(
+                      onTap: () => isObscureNotifier.value = !isObscureNotifier.value,
+                      child: Icon(isObscure ? Icons.remove_red_eye_rounded : Icons.remove_red_eye_outlined)),
+                ),
+              ),
+              SizedBox(height: 8.h)
+            ],
             EditTextFieldCustom(
               label: 'gender'.tr,
               hintText: 'select_gender'.tr,

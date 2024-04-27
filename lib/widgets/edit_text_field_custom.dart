@@ -141,19 +141,4 @@ class EditTextFieldCustom extends StatelessWidget {
       ],
     );
   }
-
-  // Widget _buildIcon() {
-  //   return Padding(
-  //     padding: padding(right: 16),
-  //     child: Transform.rotate(
-  //       angle: -pi / 2,
-  //       child: SvgImageCustom(
-  //         imagePath: ImagePaths.back_arrow,
-  //         height: width(18),
-  //         width: width(24),
-  //         color: AppTheme.color.black4,
-  //       ),
-  //     ),
-  //   );
-  // }
 }
