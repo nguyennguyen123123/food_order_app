@@ -117,6 +117,10 @@ class CheckInOutPages extends GetWidget<CheckInOutController> {
                 ),
               ),
             ),
+            Text('Tổng tiền thu được trong ca làm', style: StyleThemeData.bold18()),
+            SizedBox(height: 4.h),
+            Text(Utils.getCurrency(controller.accountService.myAccount?.totalOrderPrice),
+                style: StyleThemeData.regular16()),
             if (controller.accountService.isAdmin) ...[
               TabBar(
                 tabs: controller.tab,

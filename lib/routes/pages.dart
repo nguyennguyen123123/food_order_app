@@ -43,6 +43,8 @@ import 'package:food_delivery_app/screen/product/product_details_screen.dart';
 import 'package:food_delivery_app/screen/profile/view/my_account_view.dart';
 import 'package:food_delivery_app/screen/splash/splash_binding.dart';
 import 'package:food_delivery_app/screen/splash/splash_page.dart';
+import 'package:food_delivery_app/screen/staff_in_working/staff_in_working_binding.dart';
+import 'package:food_delivery_app/screen/staff_in_working/staff_in_working_page.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_binding.dart';
 import 'package:food_delivery_app/screen/staff_manage/staff_manage_page.dart';
 import 'package:food_delivery_app/screen/table/create_and_order/create_and_order_binding.dart';
@@ -252,6 +254,11 @@ abstract class AppPages {
       name: Routes.EDITTYPE,
       page: () => EditTypeView(),
       binding: EditTypeBinding(),
+    ),
+    GetPage(
+      name: Routes.STAFF_IN_WORKING,
+      page: () => StaffInWorkingPage(),
+      binding: StaffInWorkingBinding(),
     ),
   ];
 }

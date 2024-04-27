@@ -63,7 +63,7 @@ class OrderDetailPage extends GetWidget<OrderDetailController> {
     final number = partyOrder.partyNumber;
     late double total;
 
-    total = partyOrder.priceInVoucher;
+    total = partyOrder.totalPrice;
 
     final orderItems = partyOrder.orderItems ?? <OrderItem>[];
     final maxGang = orderItems.fold<int?>(null, (a, b) {

@@ -191,12 +191,30 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
       voucherType: voucher.discountType?.toString(),
       voucherPrice: voucher.discountValue,
     );
+    if (currentPartyIndex.value != -2) {
+      originalOrder.partyOrders![currentPartyIndex.value] =
+          originalOrder.partyOrders![currentPartyIndex.value].copyWith(
+        voucher: voucher,
+        voucherType: voucher.discountType?.toString(),
+        voucherPrice: voucher.discountValue,
+      );
+      foodOrder.value?.partyOrders?[currentPartyIndex.value] =
+          foodOrder.value!.partyOrders![currentPartyIndex.value].copyWith(
+        voucher: voucher,
+        voucherType: voucher.discountType?.toString(),
+        voucherPrice: voucher.discountValue,
+      );
+    }
     updateNewPartyWithCurrentParty();
   }
 
   void clearVoucherParty() {
     final party = currentPartyOrder.value;
     party?.clearVoucher();
+    if (currentPartyIndex.value != -2) {
+      originalOrder.partyOrders![currentPartyIndex.value].clearVoucher();
+      foodOrder.value!.partyOrders![currentPartyIndex.value].clearVoucher();
+    }
     currentPartyOrder.value = party;
     currentPartyOrder.refresh();
     updateNewPartyWithCurrentParty();
@@ -493,9 +511,9 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
         var total = 0.0;
         for (var i = 0; i < (newOrder.partyOrders?.length ?? 0); i++) {
           if (newOrder.partyOrders![i].orderStatus == ORDER_STATUS.CREATED) {
-            totalPrice += newOrder.partyOrders?[i].orderPrice ?? 0.0;
+            totalPrice += newOrder.partyOrders?[i].totalPrice ?? 0.0;
           }
-          total += newOrder.partyOrders?[i].orderPrice ?? 0.0;
+          total += newOrder.partyOrders?[i].totalPrice ?? 0.0;
           newOrder.partyOrders![i] = newOrder.partyOrders![i].copyWith(orderStatus: ORDER_STATUS.DONE);
         }
         newOrder.orderStatus = ORDER_STATUS.DONE;
@@ -524,27 +542,27 @@ class EditOrderDetailController extends GetxController with GetSingleTickerProvi
           /// Trường hợp order còn một party là hoàn thành
           var total = 0.0;
           for (var i = 0; i < (newOrder.partyOrders?.length ?? 0); i++) {
-            total += newOrder.partyOrders?[i].orderPrice ?? 0.0;
+            total += newOrder.partyOrders?[i].totalPrice ?? 0.0;
           }
           newOrder.orderStatus = ORDER_STATUS.DONE;
           await Future.wait([
             summarizeRepository.increaseTodayRecord(total),
-            accountService.onUpdateTotalPriceInAccount(newPartyOrder.orderPrice),
+            accountService.onUpdateTotalPriceInAccount(newPartyOrder.totalPrice),
             orderRepository.completeOrder(newOrder.orderId ?? '', newOrder.tableNumber ?? ''),
             orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? ''),
           ]);
           dissmissLoading();
-          await _showCompleteOrder(newPartyOrder.orderPrice);
+          await _showCompleteOrder(newPartyOrder.totalPrice);
           Get.back(result: EditOrderResponse(type: EditType.UPDATE, orignalTable: newOrder.tableNumber ?? ''));
         } else {
           /// Trường hợp order có nhiều hơn một party chưa hoàn thành
           await Future.wait([
             orderRepository.completePartyOrder(newPartyOrder.partyOrderId ?? ''),
-            accountService.onUpdateTotalPriceInAccount(newPartyOrder.orderPrice)
+            accountService.onUpdateTotalPriceInAccount(newPartyOrder.totalPrice)
           ]);
 
           dissmissLoading();
-          await _showCompleteOrder(newPartyOrder.orderPrice);
+          await _showCompleteOrder(newPartyOrder.totalPrice);
           final index = newFoodOrder.value?.partyOrders
                   ?.indexWhere((element) => element.partyOrderId == newPartyOrder.partyOrderId) ??
               -1;

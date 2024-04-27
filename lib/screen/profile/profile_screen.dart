@@ -95,49 +95,54 @@ class ProfileScreen extends GetWidget<ProfileController> {
                 ),
               ),
               SizedBox(height: 16.h),
-              Container(
-                padding: padding(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: appTheme.whiteText,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'general_management'.tr,
-                      style: StyleThemeData.regular16(),
-                    ),
-                    SizedBox(height: 8.h),
-                    // if (controller.accountService.myAccount?.role == USER_ROLE.STAFF) ...[
-                    // newMethod(
-                    //   onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
-                    //   text: "order_management".tr,
-                    //   icons: IconAssets.cancelIcon,
-                    // ),
-                    // const Divider(thickness: 1),
-                    // ],
-                    if (controller.accountService.myAccount?.role == USER_ROLE.ADMIN) ...[
+              if (controller.accountService.myAccount?.role == USER_ROLE.ADMIN)
+                Container(
+                  padding: padding(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: appTheme.whiteText,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'general_management'.tr,
+                        style: StyleThemeData.regular16(),
+                      ),
+                      SizedBox(height: 8.h),
+                      // if (controller.accountService.myAccount?.role == USER_ROLE.STAFF) ...[
+                      // newMethod(
+                      //   onTap: () => Get.toNamed(Routes.MANAGE_ORDER),
+                      //   text: "order_management".tr,
+                      //   icons: IconAssets.cancelIcon,
+                      // ),
+                      // const Divider(thickness: 1),
+                      // ],
                       newMethod(
                         onTap: () => Get.toNamed(Routes.HISTORY_ORDER),
                         text: "Lịch sử đơn hàng".tr,
                         icons: IconAssets.cancelIcon,
                       ),
                       const Divider(thickness: 1),
+                      newMethod(
+                        onTap: () => Get.toNamed(Routes.STAFF_IN_WORKING),
+                        text: "Danh sách nhân viên đang làm việc".tr,
+                        icons: IconAssets.cancelIcon,
+                      ),
+                      const Divider(thickness: 1),
                       newMethod(onTap: () => Get.toNamed(Routes.ADMIN), text: "Admin", icons: IconAssets.adminIcon),
                       // const Divider(thickness: 1),
+                      // newMethod(
+                      //   onTap: () {
+                      //     Get.toNamed(Routes.LANGUAGE);
+                      //   },
+                      //   text: 'language'.tr,
+                      //   lable: LocalizationService.locale.languageCode == 'en' ? 'english'.tr : 'vietnamese'.tr,
+                      //   icons: IconAssets.languageIcon,
+                      // ),
                     ],
-                    // newMethod(
-                    //   onTap: () {
-                    //     Get.toNamed(Routes.LANGUAGE);
-                    //   },
-                    //   text: 'language'.tr,
-                    //   lable: LocalizationService.locale.languageCode == 'en' ? 'english'.tr : 'vietnamese'.tr,
-                    //   icons: IconAssets.languageIcon,
-                    // ),
-                  ],
+                  ),
                 ),
-              ),
               SizedBox(height: 16.h),
               Container(
                 padding: padding(horizontal: 16, vertical: 12),

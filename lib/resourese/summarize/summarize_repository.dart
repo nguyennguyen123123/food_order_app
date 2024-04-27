@@ -36,4 +36,33 @@ class SummarizeRepository extends ISummarizeRepository {
       print(e);
     }
   }
+
+  @override
+  Future<SummarizeOrder> getTodaySummarize() async {
+    try {
+      final today = DateTime.now();
+      final records = await baseService.client
+          .from(TABLE_NAME.SUMMARIZE_ORDER)
+          .select('*')
+          .eq('day', today.day)
+          .eq('month', today.month)
+          .eq('year', today.year)
+          .maybeSingle()
+          .withConverter((data) => data != null ? SummarizeOrder.fromMap(data) : null);
+      if (records != null) {
+        return records;
+      } else {
+        return SummarizeOrder(
+          day: today.day,
+          month: today.month,
+          year: today.year,
+          totalOrder: 0,
+          totalOrderPrice: 0,
+        );
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

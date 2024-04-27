@@ -97,7 +97,6 @@ class CheckInOutRepository extends ICheckInOutRepository {
   @override
   Future<List<CheckInOut>> getListCheckInOut(bool role, {int page = 0, int limit = LIMIT}) async {
     try {
-      // final role = baseService.client.auth.currentSession!.user.role;
       final userId = baseService.client.auth.currentSession!.user.id;
 
       if (role) {
@@ -106,6 +105,7 @@ class CheckInOutRepository extends ICheckInOutRepository {
         final response = await dataAdmin
             .limit(20)
             .range(page * limit + page, (page + 1) * limit + page)
+            .order("check_out_time")
             .withConverter((data) => data.map((e) => CheckInOut.fromJson(e)).toList());
 
         return response;
@@ -115,6 +115,7 @@ class CheckInOutRepository extends ICheckInOutRepository {
         final response = await dataUser
             .limit(limit)
             .range(page * limit + page, (page + 1) * limit + page)
+            .order("check_out_time")
             .withConverter((data) => data.map((e) => CheckInOut.fromJson(e)).toList());
 
         return response;

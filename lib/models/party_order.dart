@@ -130,28 +130,6 @@ extension PartyOrderExtension on PartyOrder {
     return total;
   }
 
-  double get priceInVoucher {
-    if (voucherPrice != null) {
-      return (total ?? 0) - (voucherPrice ?? 0);
-    }
-    return total ?? 0;
-  }
-
-  double get orderPrice {
-    var totalVal = 0.0;
-    for (final item in (orderItems ?? <OrderItem>[])) {
-      totalVal += item.quantity * (item.food?.price ?? 0);
-    }
-    if (voucherType != null) {
-      if (voucherType == DiscountType.amount.toString()) {
-        return totalVal - (voucherPrice ?? 0);
-      } else {
-        return totalVal * (1 - ((voucherPrice ?? 100) / 100));
-      }
-    }
-    return totalVal;
-  }
-
   void clearVoucher() {
     this.voucherPrice = null;
     this.voucher = null;
