@@ -98,7 +98,7 @@ class PrinterService extends GetxService {
         PosColumn(
             text: '($priceText) ${Utils.getCurrency(price * quantity, removeCurrencyFormat: true)}',
             width: 12,
-            styles: PosStyles(align: PosAlign.right, height: PosTextSize.size2, width: PosTextSize.size2)),
+            styles: PosStyles(align: PosAlign.right)),
       ]);
       // networkPrinter.text('($priceText x $quantity) ${Utils.getCurrency(price * quantity, removeCurrencyFormat: true)}',
       //     styles: PosStyles(align: PosAlign.right));
@@ -106,7 +106,7 @@ class PrinterService extends GetxService {
     }
 
     final date = DateTime.tryParse(foodOrder.createdAt ?? '') ?? DateTime.now();
-    networkPrinter.feed(4);
+    networkPrinter.feed(1);
     createRowTitle(networkPrinter, 'Bon', (foodOrder.bondNumber ?? 1).toString(),
         contentWidth: 4, contentSize: PosTextSize.size2, custom: PosColumn(text: 'Gangbon', width: 4));
     createRowTitle(networkPrinter, 'Datum', DateFormat(PRINTER_DAY_FORMAT).format(date),
@@ -124,7 +124,7 @@ class PrinterService extends GetxService {
     for (final item in orderItems) {
       createOrderItemRow(networkPrinter, item);
     }
-    networkPrinter.feed(2);
+    networkPrinter.feed(1);
     networkPrinter.cut();
   }
 }
