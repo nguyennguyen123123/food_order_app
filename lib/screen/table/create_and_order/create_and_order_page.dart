@@ -93,7 +93,7 @@ class CreateAndOrderTablePage extends GetWidget<CreateAndOrderTableController> {
             Obx(
               () => ConfirmationButtonWidget(
                 isLoading: controller.isLoadingAdd.isTrue,
-                onTap: controller.addTable,
+                onTap: controller.checkTable,
                 text: 'confirm'.tr,
               ),
             ),

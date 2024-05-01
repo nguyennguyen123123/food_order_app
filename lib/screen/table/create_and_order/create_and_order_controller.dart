@@ -4,7 +4,6 @@ import 'package:food_delivery_app/models/table_models.dart';
 import 'package:food_delivery_app/resourese/area/iarea_repository.dart';
 import 'package:food_delivery_app/resourese/table/itable_repository.dart';
 import 'package:food_delivery_app/utils/dialog_util.dart';
-import 'package:food_delivery_app/widgets/reponsive/extension.dart';
 import 'package:get/get.dart';
 
 class CreateAndOrderTableController extends GetxController {
@@ -54,7 +53,7 @@ class CreateAndOrderTableController extends GetxController {
     tableNumberController.text = model?.tableNumber ?? '';
   }
 
-  void addTable() async {
+  void checkTable() async {
     if (tableNumberController.text.isEmpty) return;
 
     try {
@@ -67,20 +66,8 @@ class CreateAndOrderTableController extends GetxController {
       if (tableDetail != null) {
         Get.back(result: tableDetail);
         return;
-      }
-      TableModels tableModels = TableModels(
-        tableId: getUuid(),
-        areaId: selectedAreaType.value?.areaId,
-        tableNumber: tableNumberController.text.replaceAll(',', ''),
-        createdAt: DateTime.now().toString(),
-      );
-
-      final result = await tableRepository.addTable(tableModels);
-
-      if (result != null) {
-        Get.back(result: TableModels.fromJson(result));
       } else {
-        DialogUtils.showInfoErrorDialog(content: "table_number_already_exists_text".tr);
+        DialogUtils.showInfoErrorDialog(content: "not_find_table".tr);
       }
     } catch (error) {
       print(error);

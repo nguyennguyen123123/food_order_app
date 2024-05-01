@@ -94,14 +94,14 @@ class PrinterService extends GetxService {
           styles: PosStyles(height: PosTextSize.size2, width: PosTextSize.size2));
 
       final priceText = Utils.getCurrency(orderItem.food?.price, removeCurrencyFormat: true);
-      networkPrinter.row([
-        PosColumn(
-            text: '($priceText) ${Utils.getCurrency(price * quantity, removeCurrencyFormat: true)}',
-            width: 12,
-            styles: PosStyles(align: PosAlign.right)),
-      ]);
-      // networkPrinter.text('($priceText x $quantity) ${Utils.getCurrency(price * quantity, removeCurrencyFormat: true)}',
-      //     styles: PosStyles(align: PosAlign.right));
+      final lineTxt = '($priceText x $quantity) ${Utils.getCurrency(price * quantity, removeCurrencyFormat: true)}';
+      // networkPrinter.row([
+      //   PosColumn(
+      //       text: '($priceText) ${Utils.getCurrency(price * quantity, removeCurrencyFormat: true)}',
+      //       width: 12,
+      //       styles: PosStyles(align: PosAlign.right)),
+      // ]);
+      networkPrinter.text('$lineTxt\x32', styles: PosStyles(align: PosAlign.right));
       networkPrinter.hr();
     }
 

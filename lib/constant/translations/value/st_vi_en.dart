@@ -194,5 +194,6 @@ const Map<String, String> enUS = {
   "total_current_revenue_of_employees_in_the_shift": "Total current revenue of employees in the shift",
   "employee_name": "Employee name",
   "total_amount": "Total amount",
-  "total_revenue": "Total revenue"
+  "total_revenue": "Total revenue",
+  "not_find_table": "Table does not exist."
 };

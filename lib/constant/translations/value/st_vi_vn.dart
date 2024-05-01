@@ -210,5 +210,6 @@ const Map<String, String> viVN = {
   "total_current_revenue_of_employees_in_the_shift": "Tổng doanh thu hiện tại của các nhân viên trong ca làm",
   "employee_name": "Tên nhân viên",
   "total_amount": "Tổng tiền",
-  "total_revenue": "Tổng doanh thu"
+  "total_revenue": "Tổng doanh thu",
+  "not_find_table": "Bàn không tồn tại."
 };
