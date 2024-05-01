@@ -88,7 +88,7 @@ class ProfileScreen extends GetWidget<ProfileController> {
                     const Divider(thickness: 1),
                     newMethod(
                       onTap: () => Get.toNamed(Routes.CHECKINOUT),
-                      text: 'Checking'.tr,
+                      text: 'checking'.tr,
                       icons: IconAssets.timetableIcon,
                     ),
                   ],
@@ -120,13 +120,13 @@ class ProfileScreen extends GetWidget<ProfileController> {
                       // ],
                       newMethod(
                         onTap: () => Get.toNamed(Routes.HISTORY_ORDER),
-                        text: "Lịch sử đơn hàng".tr,
+                        text: "order_history".tr,
                         icons: IconAssets.cancelIcon,
                       ),
                       const Divider(thickness: 1),
                       newMethod(
                         onTap: () => Get.toNamed(Routes.STAFF_IN_WORKING),
-                        text: "Danh sách nhân viên đang làm việc".tr,
+                        text: "list_of_working_staff".tr,
                         icons: IconAssets.cancelIcon,
                       ),
                       const Divider(thickness: 1),

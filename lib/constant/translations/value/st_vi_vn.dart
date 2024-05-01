@@ -195,5 +195,20 @@ const Map<String, String> viVN = {
   "checkout": "Check Out",
   "checkin": "Check In",
   "total_price_working": "Tổng tiền thu được trong ca làm",
-  "total_party_in_order": "Số lượng đơn hàng party: @number"
+  "total_party_in_order": "Số lượng đơn hàng party: @number",
+  "gets_started": "Bắt đầu",
+  "cannot_select_current_table": "Không thể chọn bàn hiện tại",
+  "current_table_has_orders": "Bàn hiện tai đang có đơn không thể chuyển được",
+  "failed_to_create_table": "Tạo bàn thất bại",
+  "select_table_to_transfer": "Chọn bàn để chuyển",
+  "do_you_want_to_update_the_order_with_the_latest_data": "Bạn có muốn cập nhật đơn hàng với dữ liệu mới nhất không",
+  "alles_text": "Alles",
+  "do_you_want_to_delete_the_gang": "Bạn có muốn xóa gang @gangIndex không",
+  "order_history": "Lịch sử đơn hàng",
+  "list_of_working_staff": "Danh sách nhân viên đang làm việc",
+  "date": "Ngày",
+  "total_current_revenue_of_employees_in_the_shift": "Tổng doanh thu hiện tại của các nhân viên trong ca làm",
+  "employee_name": "Tên nhân viên",
+  "total_amount": "Tổng tiền",
+  "total_revenue": "Tổng doanh thu"
 };

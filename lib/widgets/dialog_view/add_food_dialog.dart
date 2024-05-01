@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/models/food_model.dart';
-import 'package:food_delivery_app/resourese/service/order_cart_service.dart';
 import 'package:food_delivery_app/theme/style/style_theme.dart';
 import 'package:food_delivery_app/widgets/custom_network_image.dart';
 import 'package:food_delivery_app/widgets/edit_text_field_custom.dart';
@@ -79,7 +78,7 @@ class _AddFoodBTSState extends State<AddFoodBTS> {
           SizedBox(height: 12.h),
           PrimaryButton(
             onPressed: () {
-              final cart = Get.find<OrderCartService>();
+              // final cart = Get.find<OrderCartService>();
               // cart.onAddOrderItem(
               //     OrderItem(note: noteController.text, food: food, foodId: food.foodId, quantity: quantity));
               Get.back();

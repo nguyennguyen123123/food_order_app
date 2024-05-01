@@ -43,5 +43,9 @@ class FoodOrderManageController extends GetxController {
   }
 
   Future<List<FoodOrder>> getListFoodOrders() => orderRepository.getListFoodOrders(
-      page: page, limit: limit, orderStatus: ORDER_STATUS.CREATED, userOrderId: accountService.myAccount?.userId);
+        page: page,
+        limit: limit,
+        orderStatus: ORDER_STATUS.CREATED,
+        userOrderId: accountService.myAccount?.userId,
+      );
 }

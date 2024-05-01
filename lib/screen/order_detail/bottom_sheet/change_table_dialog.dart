@@ -53,7 +53,7 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
       if (tableNotifier.value != null && tableNumberCtrl.text != tableNotifier.value?.tableNumber) {
         tableNotifier.value = null;
       } else {
-        errorTextNotifier.value = '';
+        errorTextNotifier.value = 'cannot_select_current_table'.tr;
       }
     });
   }
@@ -96,7 +96,7 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
     isLoading.value = true;
     final number = tableNumberCtrl.text;
     if (number == widget.currentTable) {
-      errorTextNotifier.value = 'Không thể chọn bàn hiện tại';
+      errorTextNotifier.value = '';
       isLoading.value = false;
       return;
     }
@@ -107,7 +107,7 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
         currentArea.value = '';
       } else {
         if (widget.isLimitTableHasOrder && table.foodOrder != null) {
-          errorTextNotifier.value = 'Bàn hiện tai đang có đơn không thể chuyển được';
+          errorTextNotifier.value = 'current_table_has_orders'.tr;
         } else {
           tableNotifier.value = table;
           Get.back(result: table);
@@ -132,7 +132,7 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
     if (newTable != null) {
       Get.back(result: TableModels.fromJson(newTable));
     } else {
-      errorTextNotifier.value = 'Tạo bàn thất bại';
+      errorTextNotifier.value = 'failed_to_create_table'.tr;
     }
   }
 
@@ -143,13 +143,13 @@ class _ChangeTableDialogState extends State<ChangeTableDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Chọn bàn để chuyển', style: StyleThemeData.bold18()),
+          Text('select_table_to_transfer'.tr, style: StyleThemeData.bold18()),
           ValueListenableBuilder<String>(
             valueListenable: errorTextNotifier,
             builder: (context, errorText, child) => EditTextFieldCustom(
-              label: 'Số bàn',
+              label: 'table_number'.tr,
               controller: tableNumberCtrl,
-              hintText: 'Nhập số bàn',
+              hintText: 'enter_table_number'.tr,
               textInputType: TextInputType.number,
               errorText: errorText,
               isShowErrorText: errorText.isNotEmpty,
