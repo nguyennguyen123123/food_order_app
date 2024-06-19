@@ -1,47 +1,67 @@
-/*
- * Copyright (c) 2021 Akshay Jadhav <jadhavakshay0701@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 3 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/resourese/auth_methods.dart';
-import 'package:food_delivery_app/screens/homepage.dart';
-import 'package:food_delivery_app/screens/loginpages/login.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:food_delivery_app/constant/translations/localization_service.dart';
+import 'package:food_delivery_app/resourese/service/app_service.dart';
+import 'package:food_delivery_app/routes/pages.dart';
+import 'package:food_delivery_app/theme/app_theme_util.dart';
+import 'package:food_delivery_app/theme/base_theme_data.dart';
 import 'package:food_delivery_app/utils/universal_variables.dart';
+import 'package:food_delivery_app/widgets/reponsive/size_config.dart';
+import 'package:get/get.dart';
+
+import 'utils/local_storage.dart';
+
+AppThemeUtil themeUtil = AppThemeUtil();
+BaseThemeData get appTheme => themeUtil.getAppTheme();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await AppService.initAppService();
+  await LocalStorage.init();
 
-  runApp(MyApp());
+  runApp(LayoutBuilder(builder: (context, constraints) {
+    SizeConfig.instance.init(constraints: constraints, screenHeight: 812, screenWidth: 375);
+
+    return MyApp();
+  }));
 }
 
 class MyApp extends StatefulWidget {
-  // This widget is the root of your application.
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  final AuthMethods _authMethods = AuthMethods();
+class MyAppState extends State<MyApp> {
+  @override
+  void dispose() {
+    themeUtil.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Food App',
       debugShowCheckedModeBanner: false,
+      locale: LocalizationService.locale,
+      supportedLocales: LocalizationService.locales,
+      localizationsDelegates: [
+        GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      fallbackLocale: LocalizationService.fallbackLocale,
+      translations: LocalizationService(),
+      localeResolutionCallback: (locale, supportedLocales) {
+        for (var supportedLocale in supportedLocales) {
+          if (supportedLocale.languageCode == locale?.languageCode &&
+              supportedLocale.countryCode == locale?.countryCode) {
+            return supportedLocale;
+          }
+        }
+        return supportedLocales.first;
+      },
       theme: ThemeData(
         primarySwatch: MaterialColor(
           UniversalVariables.orangeColor.value,
@@ -60,16 +80,9 @@ class _MyAppState extends State<MyApp> {
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: StreamBuilder<User?>(
-        stream: _authMethods.onAuthStateChanged,
-        builder: (context, AsyncSnapshot<User?> snapshot) {
-          if (snapshot.hasData && snapshot.data != null) {
-            return HomePage();
-          } else {
-            return LoginPage();
-          }
-        },
-      ),
+      initialRoute: Routes.SPLASH,
+      getPages: AppPages.pages,
+      builder: EasyLoading.init(),
     );
   }
 }

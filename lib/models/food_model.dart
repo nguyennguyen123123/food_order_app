@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 /*
  * Copyright (c) 2021 Akshay Jadhav <jadhavakshay0701@gmail.com>
  *
@@ -14,47 +15,66 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:food_delivery_app/models/food_type.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'food_model.g.dart';
+
+@JsonSerializable()
 class FoodModel {
-  final String description;
-  final String discount;
-  final String image;
-  final String menuId;
-  final String name;
-  final String price;
-  final String keys;
+  final String? foodId;
+  final String? name;
+  final String? description;
+  final double? price;
+  final String? image;
+  @JsonKey(includeToJson: true, includeFromJson: false)
+  final String? typeId;
+  @JsonKey(name: 'created_at')
+  String? createdAt;
+  @JsonKey(includeToJson: false, includeFromJson: true, name: 'typeId')
+  FoodType? foodType;
+  @JsonKey(name: 'number_order', includeToJson: false)
+  int? numberOrder;
 
-  FoodModel(
-      {required this.description,
-      required this.discount,
-      required this.image,
-      required this.menuId,
-      required this.name,
-      required this.price,
-      required this.keys});
+  FoodModel({
+    this.foodId,
+    this.name,
+    this.description,
+    this.price,
+    this.image,
+    this.typeId,
+    this.createdAt,
+    this.foodType,
+    this.numberOrder,
+  });
 
-  Map toMap(FoodModel food) {
-    var data = Map<String, dynamic>();
-    data['description'] = food.description;
-    data['discount'] = food.discount;
-    data['image'] = food.image;
-    data['menuId'] = food.menuId;
-    data['name'] = food.name;
-    data['price'] = food.price;
-    data['keys'] = food.keys;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$FoodModelToJson(this);
 
-  factory FoodModel.fromMap(
-    Map<dynamic, dynamic> mapData,
-  ) {
+  Map toMap(FoodModel food) => _$FoodModelToJson(this);
+
+  factory FoodModel.fromJson(Map<String, dynamic> json) => _$FoodModelFromJson(json);
+
+  FoodModel copyWith({
+    String? foodId,
+    String? name,
+    String? description,
+    double? price,
+    String? image,
+    String? typeId,
+    String? createdAt,
+    FoodType? foodType,
+    int? numberOrder,
+  }) {
     return FoodModel(
-      description: mapData['description'],
-      discount: mapData['discount'],
-      image: mapData['image'],
-      menuId: mapData['menuId'],
-      name: mapData['name'],
-      price: mapData['price'],
-      keys: mapData['keys'],
+      foodId: foodId ?? this.foodId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      image: image ?? this.image,
+      typeId: typeId ?? this.typeId,
+      createdAt: createdAt ?? this.createdAt,
+      foodType: foodType ?? this.foodType,
+      numberOrder: numberOrder ?? this.numberOrder,
     );
   }
 }

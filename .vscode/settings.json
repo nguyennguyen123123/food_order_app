@@ -1,0 +1,41 @@
+{
+  "git.ignoreLimitWarning": true,
+  "search.exclude": {
+    "**/.fvm": true
+  },
+  // Remove from file watching
+  "files.watcherExclude": {
+    "**/.fvm": true
+  },
+  "dart.lineLength": 120,
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [
+      120
+    ],
+    "editor.selectionHighlight": true,
+    // "editor.suggest.snippetsPreventQuickSuggestions": true,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "matchingDocuments"
+  },
+  "cSpell.words": [
+    "Aclonica",
+    "cupertino",
+    "mobileapp",
+    "nullsafety",
+    "statusbarcolor",
+    "Wifihouse"
+  ],
+  "editor.formatOnSave": true,
+  "dart.flutterSdkPath": "/Users/190bhvt/fvm/versions/3.13.7",
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports": "explicit",
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.tabCompletion": "on",
+  "diffEditor.codeLens": true
+}
