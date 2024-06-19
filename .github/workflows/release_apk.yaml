@@ -25,4 +25,4 @@ jobs:
           name: release-apk
           path: build/app/outputs/apk/release/app-release.apk
       - run: |
-          curl -F document=@"build/app/outputs/apk/release/app-release.apk" https://api.telegram.org/bot${{ secret.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secret.CHAT_ID }}
+          curl -F document=@"build/app/outputs/apk/release/app-release.apk" https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.CHAT_ID }}
