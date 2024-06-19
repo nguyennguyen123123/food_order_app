@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - tuyen
+      - main
 
 jobs:
   build:
